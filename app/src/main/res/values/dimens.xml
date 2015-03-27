@@ -1,0 +1,25 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="grid_item_margin">2dp</dimen>
+    <dimen name="padding_normal">8dp</dimen>
+
+    <dimen name="text_size_small">11sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_large">24sp</dimen>
+    <dimen name="text_title_size">48sp</dimen>
+    <dimen name="text_button_size">21sp</dimen>
+    <dimen name="text_action_size">18sp</dimen>
+
+    <dimen name="profile_image_size">120dp</dimen>
+    <dimen name="spinner_label_padding">64dp</dimen>
+    <dimen name="navdrawer_width">290dp</dimen>
+    <dimen name="toolbar_title_height">36dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="history_item_logo">72dp</dimen>
+    <dimen name="icon_delete">42dp</dimen>
+    <dimen name="divider">0.3dp</dimen>
+    <dimen name="picker_item_size">60dp</dimen>
+</resources>

@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:font="http://schemas.android.com/apk/res-auto"
+    xmlns:iosched="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="MergeRootFrame">
+
+    <View
+        android:id="@+id/height_hack"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/primary_dark" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_dark"
+        android:elevation="4dp"
+        iosched:popupTheme="@style/ActionBarPopupThemeOverlay"
+        iosched:theme="@style/ActionBarThemeOverlay"
+        iosched:titleTextAppearance="@style/ActionBar.TitleText"
+        tools:ignore="UnusedAttribute">
+        <!-- android:background="@null" -->
+        <!--android:layout_height="?actionBarSize"-->
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/empty"
+            android:gravity="start|center"
+            android:padding="4dp"
+            android:text="@string/title_fridge"
+            android:textColor="@color/text_icons"
+            android:textSize="@dimen/text_size_large"
+            font:customFont="@string/font_light" />
+        <!--android:layout_height="@dimen/toolbar_title_height"-->
+    </android.support.v7.widget.Toolbar>
+
+    <Spinner
+        android:id="@+id/spinner_toolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start" />
+
+    <com.etsy.android.grid.StaggeredGridView
+        android:id="@+id/grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:column_count="@integer/grid_columns"
+        app:item_margin="@dimen/grid_item_margin" />
+</LinearLayout>

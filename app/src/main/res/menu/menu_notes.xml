@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_clear_notes"
+        android:icon="@drawable/ic_clear"
+        android:orderInCategory="98"
+        android:title="@string/action_clear_notes"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_share_notes"
+        android:icon="@drawable/ic_share"
+        android:orderInCategory="97"
+        android:title="@string/action_share_notes"
+        app:showAsAction="ifRoom" />
+</menu>

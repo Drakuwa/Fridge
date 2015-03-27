@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:font="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <ImageView
+        android:id="@+id/image_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_normal"
+        android:src="@mipmap/ic_launcher"
+        tools:ignore="UnusedAttribute" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/text_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_small"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/app_name"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_large"
+        font:customFont="@string/font_light" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/text_login_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_small"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/hint_login_description"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_size_medium"
+        font:customFont="@string/font_light" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/button_facebook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/padding_small"
+        android:background="#3b5998"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/facebook"
+        android:textColor="@color/text_icons"
+        android:textSize="@dimen/text_button_size"
+        font:customFont="@string/font_light" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/button_twitter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/padding_small"
+        android:background="#4099ff"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/twitter"
+        android:textColor="@color/text_icons"
+        android:textSize="@dimen/text_button_size"
+        font:customFont="@string/font_light" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/button_gplus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/padding_small"
+        android:background="#dd4b39"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/gplus"
+        android:textColor="@color/text_icons"
+        android:textSize="@dimen/text_button_size"
+        font:customFont="@string/font_light" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/button_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/padding_small"
+        android:background="@color/primary"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/logout"
+        android:textColor="@color/text_icons"
+        android:textSize="@dimen/text_button_size"
+        font:customFont="@string/font_light" />
+
+</LinearLayout>

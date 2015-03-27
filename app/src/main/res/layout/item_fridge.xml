@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    xmlns:font="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/card_view"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="@dimen/padding_small"
+                                    android:padding="@dimen/padding_normal"
+                                    card_view:cardCornerRadius="4dp"
+                                    card_view:cardElevation="2dp">
+    <!--android:background="@android:drawable/dialog_holo_light_frame"-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="@string/shared_image_transition"
+            android:contentDescription="@string/app_name"/>
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_item"
+            android:layout_marginLeft="@dimen/padding_normal"
+            android:layout_marginRight="@dimen/padding_normal"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_action_size"
+            android:transitionName="@string/shared_name_transition"
+            font:customFont="@string/font_light"/>
+
+        <ImageView
+            android:id="@+id/image_delete"
+            android:layout_width="@dimen/icon_delete"
+            android:layout_height="@dimen/icon_delete"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/padding_normal"
+            android:src="@drawable/ic_delete_history"/>
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/text_expiration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_name"
+            android:layout_marginBottom="@dimen/padding_normal"
+            android:layout_marginLeft="@dimen/padding_normal"
+            android:layout_marginRight="@dimen/padding_normal"
+            android:textColor="@color/accent"
+            android:textSize="@dimen/text_size_medium"
+            font:customFont="@string/font_light"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

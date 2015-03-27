@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:font="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_normal">
+
+    <CheckBox
+        android:id="@+id/checkbox_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true" />
+    <!--com.gc.materialdesign.views.-->
+
+    <com.app.afridge.views.AutoResizeEditText
+        android:id="@+id/edit_note_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/checkbox_note"
+        android:layout_toLeftOf="@+id/image_delete_note"
+        android:layout_toRightOf="@+id/checkbox_note"
+        android:layout_toStartOf="@+id/image_delete_note"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center_vertical"
+        android:imeOptions="actionDone"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:maxLength="160"
+        android:padding="@dimen/padding_small"
+        android:scrollHorizontally="false"
+        android:text="@string/shopping_list"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_button_size"
+        font:customFont="@string/font_light" />
+    <!--android:textAllCaps="true"-->
+
+    <ImageView
+        android:id="@+id/image_delete_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/padding_normal"
+        android:src="@drawable/ic_action_content_clear" />
+
+</RelativeLayout>

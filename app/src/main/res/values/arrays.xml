@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="time_period_array">
+        <item>Morning (9:00 AM)</item>
+        <item>Afternoon (1:00 PM)</item>
+        <item>Evening (5:00 PM)</item>
+        <item>Night (8:00 PM)</item>
+    </string-array>
+    <string-array name="measurement_type_array">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+    <string-array name="quantity_type_metric">
+        <item>kilogram(s)</item>
+        <item>gram(s)</item>
+        <item>liter(s)</item>
+        <item>peace(s)</item>
+        <item>cup(s)</item>
+        <item>slice(s)</item>
+        <item>unknown</item>
+    </string-array>
+    <string-array name="quantity_type_imperial">
+        <item>pound(s)</item>
+        <item>ounce(s)</item>
+        <item>gallon(s)</item>
+        <item>peace(s)</item>
+        <item>cup(s)</item>
+        <item>slice(s)</item>
+        <item>unknown</item>
+    </string-array>
+    <string-array name="date_array">
+        <item>Today</item>
+        <item>Yesterday</item>
+        <item>Choose date</item>
+        <item>Clear filter</item>
+    </string-array>
+
+    <string-array name="jazzy_effects">
+        <item>Standard</item>
+        <item>Tablet</item>
+        <item>CubeIn</item>
+        <item>CubeOut</item>
+        <item>FlipVertical</item>
+        <item>FlipHorizontal</item>
+        <item>Stack</item>
+        <item>ZoomIn</item>
+        <item>ZoomOut</item>
+        <item>RotateUp</item>
+        <item>RotateDown</item>
+        <item>Accordion</item>
+    </string-array>
+</resources>

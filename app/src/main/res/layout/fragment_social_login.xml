@@ -1,0 +1,88 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    xmlns:font="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:padding="@dimen/padding_normal"
+                                    card_view:cardCornerRadius="4dp"
+                                    card_view:cardElevation="2dp">
+
+    <RelativeLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.app.afridge.ui.fragments.wizard.SocialLoginFragment">
+
+        <com.app.afridge.views.Typewriter
+            android:id="@+id/text_title_social"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:gravity="center"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/social_title"
+            android:textColor="@color/primary_dark"
+            android:textSize="@dimen/text_size_large"
+            font:customFont="@string/font_light"/>
+
+        <ImageView
+            android:id="@+id/image_facebook"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_alignLeft="@+id/text_title_social"
+            android:layout_alignStart="@+id/text_title_social"
+            android:layout_below="@+id/text_title_social"
+            android:layout_marginLeft="52dp"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="35dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/facebook"/>
+
+        <ImageView
+            android:id="@+id/image_twitter"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_alignEnd="@+id/text_title_social"
+            android:layout_alignRight="@+id/text_title_social"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="38dp"
+            android:layout_marginRight="38dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/twitter"/>
+
+        <ImageView
+            android:id="@+id/image_gplus"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_below="@+id/image_facebook"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:layout_above="@+id/text_description_social"
+            android:src="@drawable/gplus"/>
+
+        <com.app.afridge.views.Typewriter
+            android:id="@+id/text_description_social"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/height_hack"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:gravity="center"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/social_description"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_medium"
+            font:customFont="@string/font_light"/>
+
+        <View
+            android:id="@+id/height_hack"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

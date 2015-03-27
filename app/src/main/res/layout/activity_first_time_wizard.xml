@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="@dimen/activity_horizontal_margin">
+
+    <View
+        android:id="@+id/status_height_hack"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <com.app.afridge.views.JazzyViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_normal"
+        android:paddingRight="@dimen/padding_normal"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/padding_small"
+        app:fillColor="@color/accent"
+        app:pageColor="@color/divider"
+        app:radius="5dp"
+        app:strokeColor="@color/text_secondary"
+        app:strokeWidth="1dp"/>
+
+    <View
+        android:id="@+id/height_hack"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+</LinearLayout>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:font="http://schemas.android.com/apk/res-auto"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/text_settings_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_normal"
+        android:background="@android:color/transparent"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+        android:text="@string/action_settings"
+        android:textAllCaps="true"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_large"
+        font:customFont="@string/font_light" />
+
+    <View
+        android:id="@+id/divider"
+        style="@style/DividerStyle" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/text_show_notifications_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/padding_normal"
+        android:layout_marginStart="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_small"
+        android:text="@string/hint_show_notifications_label"
+        android:textColor="@color/text_secondary"
+        font:customFont="@string/font_light" />
+
+    <RelativeLayout
+        android:id="@+id/holder_show_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/text_show_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/padding_normal"
+            android:layout_toLeftOf="@+id/checkbox_show_notifications"
+            android:layout_toStartOf="@+id/checkbox_show_notifications"
+            android:text="@string/show_notifications"
+            android:textAllCaps="true"
+            android:textColor="@color/text_primary"
+            font:customFont="@string/font_light" />
+
+        <CheckBox
+            android:id="@+id/checkbox_show_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/padding_normal" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/holder_time_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/text_time_of_day"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_normal"
+            android:layout_weight="1"
+            android:text="@string/time_of_day"
+            android:textAllCaps="true"
+            android:textColor="@color/text_primary"
+            font:customFont="@string/font_light" />
+
+        <Spinner
+            android:id="@+id/spinner_time_period"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_one"
+        style="@style/DividerStyle" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/text_warning_days_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_normal"
+        android:text="@string/hint_warning_days_label"
+        android:textAllCaps="true"
+        android:textColor="@color/text_primary"
+        font:customFont="@string/font_light" />
+
+    <com.gc.materialdesign.views.Slider
+        android:id="@+id/slider_warning_days"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        materialdesign:max="31"
+        materialdesign:min="0"
+        materialdesign:showNumberIndicator="true" />
+
+    <View
+        android:id="@+id/divider_two"
+        style="@style/DividerStyle" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/text_measurement_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_normal"
+        android:text="@string/measurement_type"
+        android:textAllCaps="true"
+        android:textColor="@color/text_primary"
+        font:customFont="@string/font_light" />
+
+    <com.app.afridge.views.AdvancedTextView
+        android:id="@+id/text_measurement_type_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/padding_normal"
+        android:layout_marginStart="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_small"
+        android:text="@string/hint_measurement_type"
+        android:textColor="@color/text_secondary"
+        font:customFont="@string/font_light" />
+
+    <View
+        android:id="@+id/divider_three"
+        style="@style/DividerStyle" />
+
+    <com.gc.materialdesign.views.ButtonRectangle
+        android:id="@+id/button_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/primary"
+        android:text="@string/done" />
+</LinearLayout>

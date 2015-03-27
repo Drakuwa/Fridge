@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <!--
+    item_margin - The margin around each grid item (default 0dp).
+    column_count - The number of columns displayed. Will override column_count_portrait and column_count_landscape if present (default 0)
+    column_count_portrait - The number of columns displayed when the grid is in portrait (default 2).
+    column_count_landscape - The number of columns displayed when the grid is in landscape (default 3).
+    grid_paddingLeft - Padding to the left of the grid. Does not apply to headers and footers (default 0).
+    grid_paddingRight - Padding to the right of the grid. Does not apply to headers and footers (default 0).
+    grid_paddingTop - Padding to the top of the grid. Does not apply to headers and footers (default 0).
+    grid_paddingBottom - Padding to the bottom of the grid. Does not apply to headers and footers (default 0).
+    -->
+    <com.etsy.android.grid.StaggeredGridView
+        android:id="@+id/grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        app:column_count="@integer/column_count"
+        app:column_count_landscape="@integer/column_count_landscape"
+        app:column_count_portrait="@integer/column_count"
+        app:item_margin="@dimen/grid_item_margin" />
+
+    <LinearLayout
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="48dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/empty_fridge" />
+
+        <com.app.afridge.views.AdvancedTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:gravity="center"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/hint_no_items"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/text_secondary"
+            app:customFont="@string/font_light" />
+    </LinearLayout>
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/button_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/height_hack"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:src="@drawable/ic_add"
+        fab:fab_colorNormal="@color/accent"
+        fab:fab_colorPressed="@color/accent_material_dark"
+        fab:fab_colorRipple="@color/accent_material_light"
+        fab:fab_type="normal" />
+    <!--android:tag="#8bc34a"-->
+
+    <View
+        android:id="@+id/height_hack"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

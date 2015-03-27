@@ -1,0 +1,116 @@
+<resources>
+    <string name="app_name">Fridge</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="facebook_app_id">368710909825016</string>
+    <string name="twitter_consumer_key">Cnnj5TZcfybYaevKZzDO3zvbD</string>
+    <string name="twitter_consumer_secret">JFLVrcofB3LGEOZQ9q7Vi0slzTpXckLKNcm0xzOPHYMqLx7M2z</string>
+    <string name="empty"/>
+    <string name="not_set">Not set</string>
+    <string name="title_fridge">fridge</string>
+    <string name="never">never</string>
+    <string name="done">DONE</string>
+    <string name="button_create">Create</string>
+    <string name="text_selected_category">selected category: </string>
+    <string name="add_item">add item</string>
+    <string name="choose_image">choose image</string>
+    <string name="type_camera">CAMERA</string>
+    <string name="type_error">ERROR</string>
+    <string name="title_activity_item_details">item details</string>
+    <string name="shared_image_transition">ImageTransition</string>
+    <string name="shared_name_transition">TextTransition</string>
+    <string name="history">History</string>
+    <string name="notes">Notes</string>
+    <string name="delete">Delete</string>
+    <string name="delete_out_confirmation">Are you sure you want to delete: %s</string>
+    <string name="clear_history_confirmation">Are you sure you want to clear the entire history?</string>
+    <string name="clear_notes_confirmation">Are you sure you want to delete all the notes?</string>
+    <string name="item_details">Item details</string>
+    <string name="clear_history">Clear history?</string>
+    <string name="clear_notes">Clear notes?</string>
+    <string name="undo">UNDO</string>
+    <string name="item_deleted">%s: deleted</string>
+    <string name="label_item_name">Item name</string>
+    <string name="label_list_name">List name</string>
+    <string name="label_item_expiration">Expiration date</string>
+    <string name="shopping_list">SHOPPING LIST</string>
+    <string name="last_edited">Last edited: %s</string>
+    <string name="show_notifications">Show notifications</string>
+    <string name="measurement_type">Measurement type</string>
+    <string name="time_of_day">Time of day</string>
+    <string name="pick_measurement_type">Preferred type?</string>
+
+    <!--actions-->
+    <string name="action_settings">Settings</string>
+    <string name="action_camera">Camera</string>
+    <string name="action_clear_history">Clear history</string>
+    <string name="action_clear_notes">Clear notes</string>
+    <string name="action_share_notes">Share notes</string>
+
+    <string name="just_now">Just now</string>
+    <string name="one_minute_ago">1 minute ago</string>
+    <string name="minutes_ago">" minutes ago"</string>
+
+    <!-- fonts -->
+    <string name="font_thin">fonts/Roboto-Thin.ttf</string>
+    <string name="font_medium">fonts/Roboto-Medium.ttf</string>
+    <string name="font_light">fonts/Roboto-Light.ttf</string>
+    <string name="font_regular">fonts/Roboto-Regular.ttf</string>
+    <string name="font_bold">fonts/Roboto-Bold.ttf</string>
+
+    <!--hints-->
+    <string name="hint_no_items">Looks like you have no items in the fridge! :D\n\nHit the button bellow to get started&#8230;</string>
+    <string name="hint_no_history">Looks like you had no items in the fridge&#8230;</string>
+    <string name="hint_no_notes">Looks like you had no notes on the fridge&#8230;</string>
+    <string name="hint_all">All Galleries</string>
+    <string name="hint_choose_photo">Choose Photo</string>
+    <string name="hint_item_name">item name</string>
+    <string name="hint_enter_note">enter note…</string>
+    <string name="hint_show_notifications_label">Show notifications for expired items?</string>
+    <string name="hint_warning_days_label">Expiration date warning: %s days</string>
+    <string name="hint_measurement_type">Metric or Imperial?</string>
+    <string name="hint_login_description">Sign in with one of your social accounts, so we can synchronize your data.</string>
+
+    <!--errors-->
+    <string name="error_remote_file">Remote files can\'t be handled.</string>
+    <string name="error_no_item_name">You must enter an item name.</string>
+    <string name="error_no_list_name">You must enter a list name.</string>
+
+    <!--menu-->
+    <string name="menu_fridge_notes">Fridge Notes</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_history">History</string>
+    <string name="menu_feedback">Feedback</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_login">Login</string>
+    <string name="context_menu_dialog_fragment">ContextMenuDialogFragment</string>
+    <string name="add_quantity">add quantity</string>
+    <string name="label_item_quantity">Item quantity</string>
+    <string name="action_filter_history">Filter history</string>
+    <string name="date">Date</string>
+    <string name="since">Since</string>
+    <string name="date_filter">Date filter:</string>
+    <string name="no_filter">No filter</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="gplus">Google+</string>
+    <string name="fridge_rocks">http://fridge.rocks</string>
+    <string name="logout">Logout</string>
+    <string name="signing_in">Signing in</string>
+    <string name="please_wait">Please wait…</string>
+
+    <string name="welcome_title">Welcome to Fridge</string>
+    <string name="welcome_description">A convenient way to keep track of your refrigerator items</string>
+    <string name="social_description">Sign in with Facebook, Twitter or Google+ and sync your data on multiple devices</string>
+    <string name="social_title">Sync your data</string>
+    <string name="shopping_description">Easily create and share shopping lists with your friends or loved ones</string>
+    <string name="shopping_title">Create your shopping list</string>
+    <string name="customize_title">Customize your experience</string>
+    <string name="customize_description">Customize your app experience and set your desired preferences</string>
+    <string name="title_activity_first_time_wizard">First time wizard</string>
+    <string name="metric">Metric</string>
+    <string name="imperial">Imperial</string>
+
+</resources>

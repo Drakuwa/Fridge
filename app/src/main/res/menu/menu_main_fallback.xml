@@ -1,0 +1,39 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_notes"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="100"
+        android:title="@string/menu_fridge_notes"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_history"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="101"
+        android:title="@string/menu_history"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_profile"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="102"
+        android:title="@string/menu_profile"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_menu_settings"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="103"
+        android:title="@string/menu_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_feedback"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="104"
+        android:title="@string/menu_feedback"
+        app:showAsAction="never" />
+</menu>

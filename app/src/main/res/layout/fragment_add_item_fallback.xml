@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:coverflow="http://schemas.android.com/apk/res-auto"
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                xmlns:font="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/primary">
+
+    <RelativeLayout
+        android:id="@+id/circular_view_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/edit_ingredient_holder"
+        android:layout_alignParentTop="true"
+        android:elevation="2dp"
+        tools:ignore="UnusedAttribute">
+
+        <!--<it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow-->
+        <!--android:id="@+id/horizontal_picker"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--coverflow:coverHeight="@dimen/picker_item_size"-->
+        <!--coverflow:coverWidth="@dimen/picker_item_size"-->
+        <!--coverflow:maxScaleFactor="2.0"-->
+        <!--coverflow:reflectionGap="0px"-->
+        <!--coverflow:rotationThreshold="0.5"-->
+        <!--coverflow:scalingThreshold="0.5"-->
+        <!--coverflow:spacing="0.9" />-->
+        <com.app.afridge.views.FancyCoverFlow
+            android:id="@+id/horizontal_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            coverflow:maxRotation="0"
+            coverflow:unselectedAlpha="0.3"
+            coverflow:unselectedSaturation="0.0"
+            coverflow:unselectedScale="0.4"/>
+
+        <ImageView
+            android:id="@+id/image_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/horizontal_picker"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:src="@mipmap/ic_launcher"
+            android:transitionName="@string/shared_image_transition"
+            tools:ignore="UnusedAttribute"
+            android:contentDescription="@string/app_name"/>
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/text_item_type_label"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/text_item_type"
+            android:layout_gravity="bottom"
+            android:background="@null"
+            android:contentDescription="@string/empty"
+            android:gravity="start"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal"
+            android:paddingTop="@dimen/padding_normal"
+            android:text="@string/text_selected_category"
+            android:textColor="@color/primary_light"
+            android:textSize="@dimen/text_size_small"
+            android:textStyle="bold"
+            font:customFont="@string/font_bold"/>
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/text_item_type"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@null"
+            android:contentDescription="@string/empty"
+            android:gravity="start"
+            android:paddingBottom="@dimen/padding_normal"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal"
+            android:textColor="@color/text_icons"
+            android:textSize="@dimen/text_size_large"
+            font:customFont="@string/font_light"/>
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/edit_ingredient_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/height_hack"
+        android:background="@android:color/white"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingTop="36dp">
+
+        <com.app.afridge.views.AdvancedAutoCompleteTextView
+            android:id="@+id/edit_ingredient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/hint_item_name"
+            android:imeOptions="actionDone"
+            android:inputType="textAutoComplete"
+            android:paddingEnd="36dp"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="36dp"
+            android:singleLine="true"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_large"
+            font:customFont="@string/font_light"/>
+        <!--android:drawableLeft="@drawable/ic_action_search"-->
+        <!--android:drawableStart="@drawable/ic_action_search"-->
+        <!--android:gravity="center" TODO breaks the adjustPan :)-->
+
+        <ImageView
+            android:id="@+id/image_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:contentDescription="@string/app_name"
+            android:paddingEnd="@dimen/padding_normal"
+            android:paddingStart="@dimen/padding_normal"
+            android:src="@drawable/ic_action_content_clear"/>
+    </FrameLayout>
+
+    <View
+        android:id="@+id/height_hack"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"/>
+
+    <View
+        android:id="@+id/shadow_hack"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@+id/circular_view_holder"
+        android:layout_marginEnd="-8dp"
+        android:layout_marginStart="-8dp"
+        android:layout_marginTop="-2dp"
+        android:background="@drawable/square_shadow"/>
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/button_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/edit_ingredient_holder"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-30dp"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:src="@drawable/ic_check"
+        fab:fab_colorNormal="@color/accent"
+        fab:fab_colorPressed="@color/accent_material_dark"
+        fab:fab_colorRipple="@color/accent_material_light"
+        fab:fab_type="normal"/>
+
+</RelativeLayout>
