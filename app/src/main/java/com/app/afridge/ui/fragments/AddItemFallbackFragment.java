@@ -38,11 +38,11 @@ import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.FileUtils;
 import com.app.afridge.utils.KeyboardUtils;
 import com.app.afridge.utils.Log;
-import com.app.afridge.views.AdvancedAutoCompleteTextView;
 import com.app.afridge.views.AdvancedTextView;
 import com.app.afridge.views.FancyCoverFlow;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -67,7 +67,7 @@ public class AddItemFallbackFragment extends Fragment implements Screenshotable 
   @InjectView(R.id.horizontal_picker)
   FancyCoverFlow horizontalPicker;
   @InjectView(R.id.edit_ingredient)
-  AdvancedAutoCompleteTextView autoCompleteTextView;
+  MaterialAutoCompleteTextView autoCompleteTextView;
   @InjectView(R.id.text_item_type)
   AdvancedTextView textType;
   @InjectView(R.id.button_create)

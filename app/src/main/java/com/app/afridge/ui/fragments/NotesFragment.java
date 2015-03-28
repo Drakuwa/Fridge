@@ -44,6 +44,7 @@ import com.app.afridge.utils.TimeSpans;
 import com.app.afridge.views.AdvancedAutoCompleteTextView;
 import com.app.afridge.views.AdvancedTextView;
 import com.gc.materialdesign.widgets.SnackBar;
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -72,7 +73,7 @@ public class NotesFragment extends Fragment implements LoaderManager.LoaderCallb
   @InjectView(R.id.edit_list_name)
   AdvancedAutoCompleteTextView textListName;
   @InjectView(R.id.edit_list_item)
-  AdvancedAutoCompleteTextView editListItem;
+  MaterialAutoCompleteTextView editListItem;
   @InjectView(R.id.text_last_edited)
   AdvancedTextView textLastEdited;
 

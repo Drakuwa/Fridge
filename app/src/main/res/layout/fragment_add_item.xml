@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:font="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary">
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                xmlns:font="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/primary">
 
     <RelativeLayout
         android:id="@+id/circular_view_holder"
@@ -23,7 +23,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin" />
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
         <!--app:centerBackgroundColor="@color/primary_light"-->
         <!--app:centerDrawable="@drawable/ic_cake"-->
 
@@ -43,7 +43,7 @@
             android:textColor="@color/primary_light"
             android:textSize="@dimen/text_size_small"
             android:textStyle="bold"
-            font:customFont="@string/font_bold" />
+            font:customFont="@string/font_bold"/>
 
         <com.app.afridge.views.AdvancedTextView
             android:id="@+id/text_item_type"
@@ -58,7 +58,7 @@
             android:paddingRight="@dimen/padding_normal"
             android:textColor="@color/text_icons"
             android:textSize="@dimen/text_size_large"
-            font:customFont="@string/font_light" />
+            font:customFont="@string/font_light"/>
     </RelativeLayout>
 
 
@@ -71,7 +71,7 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingTop="36dp">
 
-        <com.app.afridge.views.AdvancedAutoCompleteTextView
+        <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
             android:id="@+id/edit_ingredient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,12 +82,17 @@
             android:inputType="textAutoComplete"
             android:paddingEnd="36dp"
             android:paddingLeft="@dimen/padding_normal"
+            android:paddingStart="@dimen/padding_normal"
             android:paddingRight="36dp"
             android:singleLine="true"
             android:textAllCaps="false"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_large"
-            font:customFont="@string/font_light" />
+            font:met_baseColor="@color/text_primary"
+            font:met_floatingLabel="highlight"
+            font:met_primaryColor="@color/accent"
+            font:met_singleLineEllipsis="true"
+            font:met_accentTypeface="@string/font_light"/>
         <!--android:drawableLeft="@drawable/ic_action_search"-->
         <!--android:drawableStart="@drawable/ic_action_search"-->
         <!--android:gravity="center" TODO breaks the adjustPan :)-->
@@ -100,7 +105,7 @@
             android:contentDescription="@string/app_name"
             android:paddingEnd="@dimen/padding_normal"
             android:paddingStart="@dimen/padding_normal"
-            android:src="@drawable/ic_action_content_clear" />
+            android:src="@drawable/ic_action_content_clear"/>
     </FrameLayout>
 
     <View
@@ -108,7 +113,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white" />
+        android:background="@android:color/white"/>
 
     <View
         android:id="@+id/shadow_hack"
@@ -118,7 +123,7 @@
         android:layout_marginEnd="-8dp"
         android:layout_marginStart="-8dp"
         android:layout_marginTop="-2dp"
-        android:background="@drawable/square_shadow" />
+        android:background="@drawable/square_shadow"/>
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/button_create"
@@ -135,6 +140,6 @@
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_material_dark"
         fab:fab_colorRipple="@color/accent_material_light"
-        fab:fab_type="normal" />
+        fab:fab_type="normal"/>
 
 </RelativeLayout>

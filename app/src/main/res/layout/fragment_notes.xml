@@ -1,12 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:font="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+                xmlns:font="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin">
 
     <com.app.afridge.views.AdvancedTextView
         android:id="@+id/text_list_name_label"
@@ -15,7 +14,7 @@
         android:layout_margin="@dimen/padding_small"
         android:text="@string/label_list_name"
         android:textColor="@color/text_secondary"
-        font:customFont="@string/font_bold" />
+        font:customFont="@string/font_bold"/>
 
     <com.app.afridge.views.AdvancedAutoCompleteTextView
         android:id="@+id/edit_list_name"
@@ -29,7 +28,7 @@
         android:text="@string/shopping_list"
         android:textColor="@color/text_primary"
         android:textSize="@dimen/text_size_large"
-        font:customFont="@string/font_light" />
+        font:customFont="@string/font_light"/>
     <!--android:textAllCaps="true"-->
 
     <!-- A RecyclerView with some commonly used attributes -->
@@ -39,7 +38,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/text_last_edited"
         android:layout_below="@+id/edit_list_name"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"/>
 
     <com.app.afridge.views.AdvancedTextView
         android:id="@+id/text_last_edited"
@@ -50,9 +49,9 @@
         android:gravity="end"
         android:text="@string/last_edited"
         android:textColor="@color/text_secondary"
-        font:customFont="@string/font_light" />
+        font:customFont="@string/font_light"/>
 
-    <com.app.afridge.views.AdvancedAutoCompleteTextView
+    <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
         android:id="@+id/edit_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +62,12 @@
         android:maxLength="160"
         android:singleLine="true"
         android:textColor="@color/text_primary"
-        font:customFont="@string/font_light" />
+        font:met_baseColor="@color/text_primary"
+        font:met_floatingLabel="highlight"
+        font:met_primaryColor="@color/accent"
+        font:met_singleLineEllipsis="true"
+        font:met_maxCharacters="160"
+        font:met_accentTypeface="@string/font_light"/>
 
     <LinearLayout
         android:id="@android:id/empty"
@@ -83,13 +87,13 @@
             android:text="@string/hint_no_notes"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/text_secondary"
-            app:customFont="@string/font_light" />
+            font:customFont="@string/font_light"/>
     </LinearLayout>
 
     <View
         android:id="@+id/height_hack"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

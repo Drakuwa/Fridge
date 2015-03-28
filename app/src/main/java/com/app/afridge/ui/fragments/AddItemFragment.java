@@ -42,6 +42,7 @@ import com.app.afridge.views.AdvancedAutoCompleteTextView;
 import com.app.afridge.views.AdvancedTextView;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 import com.sababado.circularview.CircularView;
 import com.sababado.circularview.Marker;
 import com.squareup.picasso.Picasso;
@@ -66,7 +67,7 @@ public class AddItemFragment extends Fragment implements Screenshotable {
   @InjectView(R.id.circular_view)
   CircularView circularView;
   @InjectView(R.id.edit_ingredient)
-  AdvancedAutoCompleteTextView autoCompleteTextView;
+  MaterialAutoCompleteTextView autoCompleteTextView;
   @InjectView(R.id.text_item_type)
   AdvancedTextView textType;
   @InjectView(R.id.button_create)

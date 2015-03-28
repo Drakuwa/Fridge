@@ -95,7 +95,7 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingTop="36dp">
 
-        <com.app.afridge.views.AdvancedAutoCompleteTextView
+        <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
             android:id="@+id/edit_ingredient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,10 +108,13 @@
             android:paddingLeft="@dimen/padding_normal"
             android:paddingRight="36dp"
             android:singleLine="true"
-            android:textAllCaps="false"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_large"
-            font:customFont="@string/font_light"/>
+            font:met_baseColor="@color/text_primary"
+            font:met_floatingLabel="highlight"
+            font:met_primaryColor="@color/accent"
+            font:met_singleLineEllipsis="true"
+            font:met_accentTypeface="@string/font_light"/>
         <!--android:drawableLeft="@drawable/ic_action_search"-->
         <!--android:drawableStart="@drawable/ic_action_search"-->
         <!--android:gravity="center" TODO breaks the adjustPan :)-->
