@@ -71,7 +71,7 @@ public class GalleryAdapter extends BaseAdapter implements Filterable {
   public View getView(int position, View convertView, ViewGroup parent) {
 
     if (convertView == null) {
-      convertView = inflater.inflate(R.layout.item_gallery, null);
+      convertView = inflater.inflate(R.layout.item_gallery, parent, false);
     }
 
     GalleryItem item = items.get(position);
