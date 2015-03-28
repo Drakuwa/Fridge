@@ -112,5 +112,7 @@
     <string name="title_activity_first_time_wizard">First time wizard</string>
     <string name="metric">Metric</string>
     <string name="imperial">Imperial</string>
+    <string name="label_expires">expires: </string>
+    <string name="label_expired">expired: </string>
 
 </resources>

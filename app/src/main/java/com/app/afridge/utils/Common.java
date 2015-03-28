@@ -65,18 +65,21 @@ public class Common {
   }
 
   public static float parametric(float t, float min, float max) {
+
     return t * (max - min) + min;
   }
 
   /**
    * Clamps a value between lower and upper bounds. Formally, given value v,
    * and an interval [lower, upper], lower <= clamp(v, lower, upper) <= upper holds true
-   * @param v the value to clamp
+   *
+   * @param v     the value to clamp
    * @param lower the lower bound of the interval
    * @param upper the upper bound of the interval
    * @return the clamped value of v in the [lower, upper] interval
    */
   public static float clamp(float v, float lower, float upper) {
+
     return Math.max(lower, Math.min(upper, v));
   }
 
@@ -134,6 +137,7 @@ public class Common {
   public static String getTimestamp(Object item, FridgeApplication application) {
     // "2014-11-20T17:33:38Z"
 
+    String prefix = "";
     Calendar calendar = Calendar.getInstance();
     long currentTimesamp = calendar.getTime().getTime() / 1000; // seconds
     long itemTimestamp = 0;
@@ -155,7 +159,13 @@ public class Common {
     long delta = currentTimesamp - itemTimestamp;
 
     if (item instanceof FridgeItem) {
-      return TimeSpans.getRelativeTimeSince(itemTimestamp * 1000, currentTimesamp * 1000);
+      if (itemTimestamp > currentTimesamp) {
+        prefix = application.getString(R.string.label_expires);
+      }
+      else {
+        prefix = application.getString(R.string.label_expired);
+      }
+      return prefix + " " + TimeSpans.getRelativeTimeSince(itemTimestamp * 1000, currentTimesamp * 1000);
     }
 
     if (currentTimesamp - itemTimestamp < 60) {
@@ -174,7 +184,7 @@ public class Common {
       relativeTimeSince = TimeSpans.getRelativeTimeSince(itemTimestamp * 1000, currentTimesamp * 1000);
     }
 
-    return relativeTimeSince;
+    return prefix + relativeTimeSince;
   }
 
   /**

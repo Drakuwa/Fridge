@@ -128,7 +128,7 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
     else if (TextUtils.isDigitsOnly(item.getType())) {
       Picasso.with(application.getApplicationContext())
               .load(ItemType.DRAWABLES[Integer.parseInt(item.getType())])
-              // .centerInside()
+                      // .centerInside()
               .transform(new CircleTransform())
               .error(R.mipmap.ic_launcher)
               .into(holder.image);
