@@ -32,6 +32,7 @@ import com.app.afridge.utils.Log;
 import com.app.afridge.views.AdvancedTextView;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -116,37 +117,19 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
     // check if the type of the item is one of the predefined, or a file
     // and set the image accordingly - find a better way!
     File itemType = new File(item.getType());
-    if (itemType.exists()) {
-      Picasso.with(application.getApplicationContext())
-              .load(itemType)
-              .resize(application.screenWidth / 2, application.screenWidth / 2)
-              .centerInside()
-              .transform(new CircleTransform())
-              .error(R.mipmap.ic_launcher)
-              .into(holder.image);
-    }
-    else if (TextUtils.isDigitsOnly(item.getType())) {
-      Picasso.with(application.getApplicationContext())
-              .load(ItemType.DRAWABLES[Integer.parseInt(item.getType())])
-                      // .centerInside()
-              .transform(new CircleTransform())
-              .error(R.mipmap.ic_launcher)
-              .into(holder.image);
+    Picasso loader = Picasso.with(application.getApplicationContext());
+    RequestCreator requestCreator;
+    if (TextUtils.isDigitsOnly(item.getType())) {
+      requestCreator = loader.load(ItemType.DRAWABLES[Integer.parseInt(item.getType())]);
     }
     else {
-      // we have a missing path?
-      try {
-        Picasso.with(application.getApplicationContext())
-                .load(itemType)
-                .resize(application.screenWidth / 2, application.screenWidth / 2)
-                .centerInside()
-                .transform(new CircleTransform())
-                .error(R.mipmap.ic_launcher)
-                .into(holder.image);
-      }
-      catch (Exception ignored) {
-      }
+      requestCreator = loader.load(itemType);
     }
+    requestCreator.resize(application.screenWidth / 2, application.screenWidth / 2)
+            .centerInside()
+            .transform(new CircleTransform())
+            .error(R.drawable.fridge_placeholder)
+            .into(holder.image);
 
     // set the expiration date label
     if (item.getExpirationDate() != 0) {

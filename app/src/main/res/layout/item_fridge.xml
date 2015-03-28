@@ -14,13 +14,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/image_item"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/grid_image_size"
+            android:layout_height="@dimen/grid_image_size"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/padding_normal"
+            android:adjustViewBounds="true"
             android:transitionName="@string/shared_image_transition"
             android:contentDescription="@string/app_name"/>
 
@@ -51,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_name"
+            android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/padding_normal"
             android:layout_marginLeft="@dimen/padding_normal"
             android:layout_marginRight="@dimen/padding_normal"
