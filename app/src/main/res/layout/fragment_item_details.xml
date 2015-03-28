@@ -25,9 +25,11 @@
 
         <ImageView
             android:id="@+id/image_item"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/item_image_size"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_launcher"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
             android:transitionName="@string/shared_image_transition"
             tools:ignore="UnusedAttribute"
             android:contentDescription="@string/app_name"/>

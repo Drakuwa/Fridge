@@ -47,6 +47,7 @@ import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.AdvancedAutoCompleteTextView;
 import com.app.afridge.views.AdvancedTextView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.Calendar;
@@ -186,33 +187,22 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
     textName.setText(item.getName());
     AnimationsController.fadeInAndScale(textName);
     File itemType = new File(item.getType());
-    if (itemType.exists()) {
-      Picasso.with(application.getApplicationContext())
-              .load(itemType)
-              .resize(application.screenWidth / 2, application.screenWidth / 2)
-              .centerInside()
-              .transform(new CircleTransform())
-              .error(R.mipmap.ic_launcher)
-              .into(image);
-    }
-    else if (TextUtils.isDigitsOnly(item.getType())) {
-      Picasso.with(application.getApplicationContext())
-              .load(ItemType.DRAWABLES[Integer.parseInt(item.getType())])
-                      // .centerInside()
-              .transform(new CircleTransform())
-              .error(R.mipmap.ic_launcher)
-              .into(image);
+
+    // get the Picasso loader and request creator
+    Picasso loader = Picasso.with(application.getApplicationContext());
+    RequestCreator requestCreator;
+
+    if (TextUtils.isDigitsOnly(item.getType())) {
+      requestCreator = loader.load(ItemType.DRAWABLES[Integer.parseInt(item.getType())]);
     }
     else {
-      // we have a missing path?
-      Picasso.with(application.getApplicationContext())
-              .load(itemType)
-              .resize(application.screenWidth / 2, application.screenWidth / 2)
-              .centerInside()
-              .transform(new CircleTransform())
-              .error(R.mipmap.ic_launcher)
-              .into(image);
+      requestCreator = loader.load(itemType);
     }
+    requestCreator.resize(application.screenWidth / 2, application.screenWidth / 2)
+            .centerInside()
+            .transform(new CircleTransform())
+            .error(R.drawable.fridge_placeholder)
+            .into(image);
 
     // set expiration date
     if (item.getExpirationDate() != 0) {

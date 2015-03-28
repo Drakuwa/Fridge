@@ -14,6 +14,7 @@
     <dimen name="text_action_size">18sp</dimen>
 
     <dimen name="profile_image_size">120dp</dimen>
+    <dimen name="item_image_size">180dp</dimen>
     <dimen name="grid_image_size">100dp</dimen>
     <dimen name="spinner_label_padding">64dp</dimen>
     <dimen name="navdrawer_width">290dp</dimen>
