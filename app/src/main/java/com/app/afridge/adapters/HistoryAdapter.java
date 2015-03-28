@@ -17,6 +17,7 @@ import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Log;
 import com.app.afridge.views.AdvancedTextView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -82,58 +83,36 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     holder.textName.setText(item.getFridgeItem().getName());
     File itemType = new File(item.getFridgeItem().getType());
-    if (itemType.exists()) {
-      Picasso.with(application.getApplicationContext())
-              .load(itemType)
-              .resize((int) application.getResources().getDimension(R.dimen.history_item_logo),
-                      (int) application.getResources().getDimension(R.dimen.history_item_logo))
-              .centerInside()
-              .transform(new CircleTransform())
-              .error(R.mipmap.ic_launcher)
-              .into(holder.image);
-    }
-    else if (TextUtils.isDigitsOnly(item.getFridgeItem().getType())) {
-      Picasso.with(application.getApplicationContext())
-              .load(ItemType.DRAWABLES[Integer.parseInt(item.getFridgeItem().getType())])
-              // .centerInside()
-              .transform(new CircleTransform())
-              .error(R.mipmap.ic_launcher)
-              .into(holder.image);
+
+    Picasso loader = Picasso.with(application.getApplicationContext());
+    RequestCreator requestCreator;
+    if (TextUtils.isDigitsOnly(item.getFridgeItem().getType())) {
+      requestCreator = loader.load(ItemType.DRAWABLES[Integer.parseInt(item.getFridgeItem().getType())]);
     }
     else {
-      // we have a missing path?
-      try {
-        Picasso.with(application.getApplicationContext())
-                .load(itemType)
-                .resize((int) application.getResources().getDimension(R.dimen.history_item_logo),
-                        (int) application.getResources().getDimension(R.dimen.history_item_logo))
-                .centerInside()
-                .transform(new CircleTransform())
-                .error(R.mipmap.ic_launcher)
-                .into(holder.image);
-      }
-      catch (Exception ignored) {
-
-      }
+      requestCreator = loader.load(itemType);
     }
+    requestCreator.resize((int) application.getResources().getDimension(R.dimen.history_item_logo),
+            (int) application.getResources().getDimension(R.dimen.history_item_logo))
+            .centerInside()
+            .transform(new CircleTransform())
+            .error(R.mipmap.ic_launcher)
+            .into(holder.image);
 
     // set the item type drawable
     switch (item.getChangeType()) {
       case ADD:
-        Picasso.with(application.getApplicationContext())
-                .load(R.drawable.ic_add_history)
+        loader.load(R.drawable.ic_add_history)
                 .error(R.mipmap.ic_launcher)
                 .into(holder.imageType);
         break;
       case MODIFY:
-        Picasso.with(application.getApplicationContext())
-                .load(R.drawable.ic_edit_history)
+        loader.load(R.drawable.ic_edit_history)
                 .error(R.mipmap.ic_launcher)
                 .into(holder.imageType);
         break;
       case DELETE:
-        Picasso.with(application.getApplicationContext())
-                .load(R.drawable.ic_delete_history)
+        loader.load(R.drawable.ic_delete_history)
                 .error(R.mipmap.ic_launcher)
                 .into(holder.imageType);
         break;
@@ -166,12 +145,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     return items.size();
   }
 
+  @SuppressWarnings("unused")
   public void addItem(int position, HistoryItem item) {
 
     items.add(position, item);
     notifyItemInserted(position);
   }
 
+  @SuppressWarnings("unused")
   public void removeItem(int position) {
 
     items.remove(position);

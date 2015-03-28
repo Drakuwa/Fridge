@@ -13,13 +13,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/image_item"
             android:layout_width="@dimen/history_item_logo"
             android:layout_height="@dimen/history_item_logo"
+            android:layout_margin="@dimen/padding_normal"
             android:layout_centerVertical="true"
             android:contentDescription="@string/app_name"/>
 
