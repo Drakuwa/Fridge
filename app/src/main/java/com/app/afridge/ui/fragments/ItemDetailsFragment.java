@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -46,6 +47,7 @@ import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.AdvancedAutoCompleteTextView;
 import com.app.afridge.views.AdvancedTextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -57,7 +59,7 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import uk.co.senab.photoview.PhotoView;
 
 
 /**
@@ -369,10 +371,14 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
 
     Dialog builder = new Dialog(getActivity());
     builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    builder.setContentView(R.layout.dialog_image);
+
+    builder.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    builder.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT);
     builder.getWindow().setBackgroundDrawable(
             new ColorDrawable(android.graphics.Color.TRANSPARENT));
-    builder.setContentView(getActivity().getLayoutInflater().inflate(R.layout.dialog_image, (ViewGroup) containerView, false));
-    builder.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
@@ -382,32 +388,42 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
       }
     });
 
-    ImageView imageView = (ImageView) builder.findViewById(R.id.image);
+    final PhotoView imageView = (PhotoView) builder.findViewById(R.id.image);
+    imageView.setAlpha(0.0f);
+
+    // get the file
     File itemType = new File(item.getType());
-    if (itemType.exists()) {
-      Picasso.with(application.getApplicationContext())
-              .load(itemType)
-              .resize(application.screenWidth / 2, application.screenWidth / 2)
-              .error(R.mipmap.ic_launcher)
-              .into(imageView);
-    }
-    else if (TextUtils.isDigitsOnly(item.getType())) {
-      Picasso.with(application.getApplicationContext())
-              .load(ItemType.DRAWABLES[Integer.parseInt(item.getType())])
-              .error(R.mipmap.ic_launcher)
-              .into(imageView);
+
+    // get the Picasso loader and request creator
+    Picasso loader = Picasso.with(application.getApplicationContext());
+    RequestCreator requestCreator;
+
+    if (TextUtils.isDigitsOnly(item.getType())) {
+      requestCreator = loader.load(ItemType.DRAWABLES[Integer.parseInt(item.getType())]);
     }
     else {
-      // we have a missing path?
-      Picasso.with(application.getApplicationContext())
-              .load(itemType)
-              .resize(application.screenWidth / 2, application.screenWidth / 2)
-              .error(R.mipmap.ic_launcher)
-              .into(imageView);
+      requestCreator = loader.load(itemType)
+              .resize(application.screenWidth,
+                      application.screenHeight)
+              .onlyScaleDown()
+              .centerInside();
     }
+    requestCreator
+            .error(R.drawable.fridge_placeholder)
+            .into(imageView, new Callback() {
 
-    // Attach a PhotoViewAttacher, which takes care of all of the zooming functionality.
-    new PhotoViewAttacher(imageView);
+              @Override
+              public void onSuccess() {
+
+                AnimationsController.fadeInAndScale(imageView);
+              }
+
+              @Override
+              public void onError() {
+
+                imageView.setImageResource(R.drawable.fridge_placeholder);
+              }
+            });
 
     // show the dialog
     builder.show();
