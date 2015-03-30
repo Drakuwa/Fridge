@@ -93,6 +93,16 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".receivers.NotificationReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.app.afridge.DELETE_ITEM"/>
+
+                <action android:name="com.app.afridge.UNDO_DELETE"/>
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="com.app.afridge.sync.provider.StubProvider"
             android:authorities="com.app.afridge.sync.provider"
