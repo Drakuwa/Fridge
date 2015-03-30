@@ -111,7 +111,8 @@ public class SharedPrefStore {
     HAS_MIGRATED,
     USER,
     SYNC_SETUP_COMPLETE,
-    FIRST_TIME_WIZARD_COMPLETE;
+    FIRST_TIME_WIZARD_COMPLETE,
+    STAT_RANDOM_SPIN;
 
     private String getKey() {
 

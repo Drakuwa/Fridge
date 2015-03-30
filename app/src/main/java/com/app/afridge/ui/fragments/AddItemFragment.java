@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -38,7 +39,7 @@ import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.FileUtils;
 import com.app.afridge.utils.KeyboardUtils;
 import com.app.afridge.utils.Log;
-import com.app.afridge.views.AdvancedAutoCompleteTextView;
+import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.AdvancedTextView;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
@@ -158,37 +159,21 @@ public class AddItemFragment extends Fragment implements Screenshotable {
     // The highlighted Degree can also be defined in XML
     circularView.setHighlightedDegree(CircularView.RIGHT);
 
-    //        // set the current selected item
-    //        Marker marker = circularView.getHighlightedMarker();
-    //        circularView.getCenterCircle().setSrc(marker.getDrawable());
-    //
-    //        circularView.setOnCircularViewObjectClickListener(new CircularView.OnClickListener() {
-    //            @Override
-    //            public void onClick(final CircularView view) {
-    //                // Start animation from the bottom of the circle, going clockwise.
-    //                final float start = CircularView.BOTTOM;
-    //                final float end = start + 360f + (float) (Math.random() * 720f);
-    //                // animate the highlighted degree value but also make sure it isn't so fast that it's skipping marker animations.
-    //                final long duration = (long) (Marker.ANIMATION_DURATION * 2L * end / (270L - adapter.getCount()));
-    //                circularView.animateHighlightedDegree(start, end, duration);
-    //            }
-    //
-    //            public void onMarkerClick(CircularView view, Marker marker, int position) {
-    //                Toast.makeText(getActivity(), "Clicked " + marker.getId(), Toast.LENGTH_SHORT).show();
-    //                marker.animateBounce();
-    //                // marker.setVisibility(marker.getVisibility() == View.INVISIBLE || marker.getVisibility() == View.GONE ? View.VISIBLE : View.INVISIBLE);
-    //                circularView.setTextSize(24 + position);
-    //                circularView.setTextColor(Color.BLACK);
-    //            }
-    //        });
-    //        circularView.setOnHighlightAnimationEndListener(new CircularView.OnHighlightAnimationEndListener() {
-    //            @Override
-    //            public void onHighlightAnimationEnd(CircularView view, Marker marker, int position) {
-    //                Toast.makeText(getActivity(), "Spin ends on " + marker.getId(), Toast.LENGTH_SHORT).show();
-    //                // marker.setVisibility(marker.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-    //                circularView.setTextColor(Color.BLUE);
-    //            }
-    //        });
+    circularView.setOnHighlightAnimationEndListener(new CircularView.OnHighlightAnimationEndListener() {
+
+      @Override
+      public void onHighlightAnimationEnd(CircularView view, Marker marker, int position) {
+
+        circularView.getCenterCircle().setSrc(marker.getDrawable());
+        // startAngle = currentAngle;
+        textType.setText(adapter.getMarkerName(marker.getId()));
+
+        SnackBar snackBar = new SnackBar(getActivity(), "Spin ends on " + adapter.getMarkerName(marker.getId()));
+        snackBar.show();
+        // marker.setVisibility(marker.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        circularView.setTextColor(Color.BLUE);
+      }
+    });
 
     circularView.setOnTouchListener(new MyOnTouchListener());
     new Handler().postDelayed(new Runnable() {
@@ -383,6 +368,19 @@ public class AddItemFragment extends Fragment implements Screenshotable {
               (int) buttonCreate.getY() + buttonCreate.getHeight() / 2);
       mListener.onFragmentInteraction(false, buttonCenter, FridgeFragment.class.getCanonicalName());
     }
+  }
+
+  @OnClick(R.id.random)
+  public void randomSpin() {
+    // increment the random counter
+    int randomSpinCount = application.prefStore.getInt(SharedPrefStore.Pref.STAT_RANDOM_SPIN);
+    application.prefStore.setInt(SharedPrefStore.Pref.STAT_RANDOM_SPIN, ++randomSpinCount);
+    // Start animation from the bottom of the circle, going clockwise.
+    final float start = CircularView.BOTTOM;
+    final float end = start + 360f + (float) (Math.random() * 720f);
+    // animate the highlighted degree value but also make sure it isn't so fast that it's skipping marker animations.
+    final long duration = (long) (Marker.ANIMATION_DURATION * 2L * end / (270L - adapter.getCount()));
+    circularView.animateHighlightedDegree(start, end, duration);
   }
 
   public void takePicture() {

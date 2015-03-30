@@ -27,6 +27,17 @@
         <!--app:centerBackgroundColor="@color/primary_light"-->
         <!--app:centerDrawable="@drawable/ic_cake"-->
 
+        <ImageView
+            android:id="@+id/random"
+            android:src="@android:drawable/ic_menu_rotate"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/padding_normal"
+            android:contentDescription="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <com.app.afridge.views.AdvancedTextView
             android:id="@+id/text_item_type_label"
             android:layout_width="fill_parent"
