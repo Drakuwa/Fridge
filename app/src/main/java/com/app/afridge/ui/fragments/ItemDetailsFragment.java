@@ -382,24 +382,27 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
     builder.getWindow().setBackgroundDrawable(
             new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
+    // get the Picasso loader and request creator
+    final Picasso loader = Picasso.with(application.getApplicationContext());
+    RequestCreator requestCreator;
+
+    final PhotoView imageView = (PhotoView) builder.findViewById(R.id.image);
+    imageView.setAlpha(0.0f); // TODO maybe use View.INVISIBLE
+
     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
       @Override
       public void onDismiss(DialogInterface dialogInterface) {
         // show the image when we dismiss the dialog
         AnimationsController.fadeInAndScale(image);
+        // prevent temporary leaking since we're using a Callback
+        loader.cancelRequest(imageView);
       }
     });
-
-    final PhotoView imageView = (PhotoView) builder.findViewById(R.id.image);
-    imageView.setAlpha(0.0f); // TODO maybe use View.INVISIBLE
 
     // get the file
     File itemType = new File(item.getType());
 
-    // get the Picasso loader and request creator
-    Picasso loader = Picasso.with(application.getApplicationContext());
-    RequestCreator requestCreator;
 
     if (TextUtils.isDigitsOnly(item.getType())) {
       requestCreator = loader.load(ItemType.DRAWABLES[Integer.parseInt(item.getType())]);
