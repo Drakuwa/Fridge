@@ -32,9 +32,12 @@ public class Constants {
   public static final String EXTRA_FRIEND_GENDER = "extraFriendGender";
   public static final String EXTRA_IS_FRIEND = "extraIsFriend";
   public static final String EXTRA_ITEM_ID = "itemId";
+  public static final String EXTRA_HISTORY_ITEM_ID = "historyItemId";
   public static final String EXTRA_RESTART_LOADER = "isDatabaseChanged";
   public static final String EXTRA_FILTER_TYPE = "filterType";
+  public static final String EXTRA_NOTIFICATION_ID = "notificationId";
   public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
+  public static final int DISMISS_NOTIFICATION_LENGTH = 5000;
 
   // intent extras
   public static String EXTRA_FRAGMENT_NAME = "extraFragmentName";
@@ -55,7 +58,8 @@ public class Constants {
   public static final String SKU_THOUGHTS = "more_thoughts"; // "android.test.purchased" for testing; "more_thoughts" for production
   public static final int PURCHASE_REQUEST = 101;
   public static String SERVER_HOST = "http://fridgecheck.com/fc";
-  public static String ACTION_DISMISS = "dismiss";
+  public static String ACTION_DELETE = "com.app.afridge.DELETE_ITEM";
+  public static String ACTION_UNDO = "com.app.afridge.UNDO_DELETE";
 
 
   // types of fragments

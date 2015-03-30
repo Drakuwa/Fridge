@@ -75,6 +75,19 @@
     <string name="error_no_item_name">You must enter an item name.</string>
     <string name="error_no_list_name">You must enter a list name.</string>
 
+    <!-- first run wizard -->
+    <string name="welcome_title">Welcome to Fridge</string>
+    <string name="welcome_description">A convenient way to keep track of your refrigerator items</string>
+    <string name="social_description">Sign in with Facebook, Twitter or Google+ and sync your data on multiple devices</string>
+    <string name="social_title">Sync your data</string>
+    <string name="shopping_description">Easily create and share shopping lists with your friends or loved ones</string>
+    <string name="shopping_title">Create your shopping list</string>
+    <string name="customize_title">Customize your experience</string>
+    <string name="customize_description">Customize your app experience and set your desired preferences</string>
+    <string name="title_activity_first_time_wizard">First time wizard</string>
+    <string name="metric">Metric</string>
+    <string name="imperial">Imperial</string>
+
     <!--menu-->
     <string name="menu_fridge_notes">Fridge Notes</string>
     <string name="menu_settings">Settings</string>
@@ -101,18 +114,9 @@
     <string name="signing_in">Signing in</string>
     <string name="please_wait">Please wait…</string>
 
-    <string name="welcome_title">Welcome to Fridge</string>
-    <string name="welcome_description">A convenient way to keep track of your refrigerator items</string>
-    <string name="social_description">Sign in with Facebook, Twitter or Google+ and sync your data on multiple devices</string>
-    <string name="social_title">Sync your data</string>
-    <string name="shopping_description">Easily create and share shopping lists with your friends or loved ones</string>
-    <string name="shopping_title">Create your shopping list</string>
-    <string name="customize_title">Customize your experience</string>
-    <string name="customize_description">Customize your app experience and set your desired preferences</string>
-    <string name="title_activity_first_time_wizard">First time wizard</string>
-    <string name="metric">Metric</string>
-    <string name="imperial">Imperial</string>
     <string name="label_expires">expires: </string>
     <string name="label_expired">expired: </string>
+    <string name="title_notification">Expiration date warning</string>
+    <string name="title_notification_deleted">Item deleted</string>
 
 </resources>

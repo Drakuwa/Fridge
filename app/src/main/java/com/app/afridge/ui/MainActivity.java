@@ -161,6 +161,9 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         initExpirationDateService();
       }
 
+      // TODO remove this, only for testing
+      //      showNotificatgionTest();
+
       if (savedInstanceState == null) {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, FridgeFragment.getInstance(bottomMargin))
@@ -558,4 +561,18 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
     alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
             AlarmManager.INTERVAL_DAY, pIntent);
   }
+
+  //  private void showNotificatgionTest() {
+  //    // get the service intent and alarm manager
+  //    Intent intent = new Intent(this, ExpirationDateService.class);
+  //    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+  //    PendingIntent pIntent = PendingIntent.getService(this, 0, intent, 0);
+  //
+  //    // set the new time
+  //    Calendar cal = Calendar.getInstance();
+  //    cal.add(Calendar.SECOND, 10);
+  //
+  //    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+  //            AlarmManager.INTERVAL_DAY, pIntent);
+  //  }
 }

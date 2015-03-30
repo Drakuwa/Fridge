@@ -18,11 +18,14 @@ import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
 import com.app.afridge.dom.FridgeItem;
 import com.app.afridge.dom.ItemType;
+import com.app.afridge.receivers.NotificationReceiver;
 import com.app.afridge.ui.MainActivity;
+import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
 import java.io.File;
@@ -128,15 +131,16 @@ public class ExpirationDateService extends IntentService {
     final NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.ic_photo_camera)
-                    .setContentTitle("Expiration date warning")
-                    .setContentText("Item: " + item.getName() + " is about to expire.")
+                    .setContentTitle(getString(R.string.title_notification))
+                    .setContentText("Item: " + item.getName() + " " + Common.getTimestamp(item, application))
                     .setAutoCancel(true);
 
     // Sets up the Dismiss action buttons that will appear in the
     // big view of the notification.
-    Intent dismissIntent = new Intent(this, MainActivity.class);
-    dismissIntent.setAction(Constants.ACTION_DISMISS);
-    final PendingIntent piDismiss = PendingIntent.getService(this, 0, dismissIntent, 0);
+    Intent deleteIntent = new Intent(this, NotificationReceiver.class);
+    deleteIntent.setAction(Constants.ACTION_DELETE);
+    deleteIntent.putExtra(Constants.EXTRA_ITEM_ID, item.getItemId());
+    final PendingIntent piDelete = PendingIntent.getBroadcast(this, item.getItemId(), deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     // set the image
     final Target target = new Target() {
@@ -155,8 +159,7 @@ public class ExpirationDateService extends IntentService {
 
         mBuilder.setContentIntent(contentIntent);
         mBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
-        mBuilder.addAction(android.R.drawable.ic_delete,
-                getString(R.string.dismiss), piDismiss);
+        mBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.delete), piDelete);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
@@ -176,52 +179,28 @@ public class ExpirationDateService extends IntentService {
     // Get a handler that can be used to post to the main thread
     Handler mainHandler = new Handler(this.getMainLooper());
 
-    final File itemType = new File(item.getType());
-    if (itemType.exists()) {
-      Runnable runnable = new Runnable() {
-
-        @Override
-        public void run() {
-
-          Picasso.with(application.getApplicationContext())
-                  .load(itemType)
-                  .resize(application.screenWidth / 2, application.screenWidth / 2)
-                  .error(R.mipmap.ic_launcher)
-                  .into(target);
-        }
-      };
-      mainHandler.post(runnable);
-    }
-    else if (TextUtils.isDigitsOnly(item.getType())) {
-      Runnable runnable = new Runnable() {
-
-        @Override
-        public void run() {
-
-          Picasso.with(application.getApplicationContext())
-                  .load(ItemType.DRAWABLES[Integer.parseInt(item.getType())])
-                  .error(R.mipmap.ic_launcher)
-                  .into(target);
-        }
-      };
-      mainHandler.post(runnable);
+    // create the Picasso loader
+    Picasso loader = Picasso.with(application.getApplicationContext());
+    final RequestCreator requestCreator;
+    if (TextUtils.isDigitsOnly(item.getType())) {
+      requestCreator = loader.load(ItemType.DRAWABLES[Integer.parseInt(item.getType())]);
     }
     else {
-      // we have a missing path?
-      Runnable runnable = new Runnable() {
-
-        @Override
-        public void run() {
-
-          Picasso.with(application.getApplicationContext())
-                  .load(itemType)
-                  .resize(application.screenWidth / 2, application.screenWidth / 2)
-                  .error(R.mipmap.ic_launcher)
-                  .into(target);
-        }
-      };
-      mainHandler.post(runnable);
+      requestCreator = loader.load(new File(item.getType()))
+              .resize(application.screenWidth / 2, application.screenWidth / 2);
     }
+
+    Runnable runnable = new Runnable() {
+
+      @Override
+      public void run() {
+
+        requestCreator
+                .error(R.mipmap.ic_launcher)
+                .into(target);
+      }
+    };
+    mainHandler.post(runnable);
   }
 
   @Override
@@ -253,7 +232,7 @@ public class ExpirationDateService extends IntentService {
     // Sets up the Snooze and Dismiss action buttons that will appear in the
     // big view of the notification.
     Intent dismissIntent = new Intent(this, MainActivity.class);
-    dismissIntent.setAction(Constants.ACTION_DISMISS);
+    dismissIntent.setAction(Constants.ACTION_DELETE);
     final PendingIntent piDismiss = PendingIntent.getService(this, 0, dismissIntent, 0);
 
     // set the image
