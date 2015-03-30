@@ -9,6 +9,7 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
 import com.app.afridge.api.RestService;
 import com.app.afridge.dom.ItemType;
+import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.CustomDateFormatter;
 import com.app.afridge.utils.DatabaseMigrationAsyncTask;
@@ -111,10 +112,17 @@ public class FridgeApplication extends Application {
     // get screen size
     WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
     Display display = wm.getDefaultDisplay();
-    Point size = new Point();
-    display.getSize(size); // TODO find a backwards compatible method
-    screenWidth = size.x;
-    screenHeight = size.y;
+
+    if (Common.versionAtLeast(13)) {
+      Point size = new Point();
+      display.getSize(size);
+      screenWidth = size.x;
+      screenHeight = size.y;
+    }
+    else {
+      screenWidth = display.getWidth();  // deprecated
+      screenHeight = display.getHeight(); // deprecated
+    }
 
     // try to migrate old database users
     if (!prefStore.getBoolean(SharedPrefStore.Pref.HAS_MIGRATED)) {
