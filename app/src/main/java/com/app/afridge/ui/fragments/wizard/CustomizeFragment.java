@@ -241,6 +241,8 @@ public class CustomizeFragment extends Fragment implements FragmentLifecycle {
             AnimationsController.fadeInAndScale(separator2);
             AnimationsController.fadeInAndScale(separator3);
           }
+          // enable the view pager
+          ((FirstTimeWizardActivity) getActivity()).setPagingEnabled(true);
         }
       }, 100);
     }

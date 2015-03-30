@@ -18,6 +18,7 @@ import com.app.afridge.ui.fragments.wizard.SocialLoginFragment;
 import com.app.afridge.ui.fragments.wizard.WelcomeFragment;
 import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.JazzyViewPager;
+import com.app.afridge.views.NonSwipableViewPager;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
@@ -31,7 +32,7 @@ import com.viewpagerindicator.PageIndicator;
  */
 public class FirstTimeWizardActivity extends AbstractActivity {
 
-  private JazzyViewPager pager;
+  private NonSwipableViewPager pager;
   private static final int[] TAB_TITLES = new int[] {1, 2, 3, 4};
 
   @Override
@@ -50,7 +51,7 @@ public class FirstTimeWizardActivity extends AbstractActivity {
     FragmentPagerAdapter adapter = new FragmentTitleAdapter(getSupportFragmentManager());
 
     // initialize the ViewPager with the FragmentTitleAdapter adapter
-    pager = (JazzyViewPager) findViewById(R.id.viewpager);
+    pager = (NonSwipableViewPager) findViewById(R.id.viewpager);
     pager.setTransitionEffect(JazzyViewPager.TransitionEffect.ZoomOutAndIn);
     pager.setAdapter(adapter);
 
@@ -69,6 +70,8 @@ public class FirstTimeWizardActivity extends AbstractActivity {
 
       @Override
       public void onPageSelected(int position) {
+
+        setPagingEnabled(false);
 
         FragmentLifecycle fragmentToShow = (FragmentLifecycle) ((FragmentTitleAdapter) pager.getAdapter()).getItem(position);
         fragmentToShow.onResumeFragment();
@@ -115,6 +118,11 @@ public class FirstTimeWizardActivity extends AbstractActivity {
     startActivity(mainIntent);
     finish();
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+  }
+
+  public void setPagingEnabled(boolean isPagingEnabled) {
+
+    pager.setPagingEnabled(isPagingEnabled);
   }
 
   /**

@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.app.afridge.R;
 import com.app.afridge.interfaces.FragmentLifecycle;
 import com.app.afridge.interfaces.OnAnimationEvent;
+import com.app.afridge.ui.FirstTimeWizardActivity;
 import com.app.afridge.utils.AnimationsController;
 import com.app.afridge.utils.Common;
 import com.app.afridge.views.Typewriter;
@@ -176,6 +177,8 @@ public class SocialLoginFragment extends Fragment implements FragmentLifecycle {
               });
             }
           }
+          // enable the view pager
+          ((FirstTimeWizardActivity) getActivity()).setPagingEnabled(true);
         }
       }, 100);
     }
