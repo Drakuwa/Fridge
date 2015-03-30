@@ -132,7 +132,8 @@ public class ExpirationDateService extends IntentService {
             new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.ic_photo_camera)
                     .setContentTitle(getString(R.string.title_notification))
-                    .setContentText("Item: " + item.getName() + " " + Common.getTimestamp(item, application))
+                    .setContentText("Item: " + item.getName() + " " + Common.getTimestamp(item, application) +
+                            " Would you like to remove it from the Fridge?")
                     .setAutoCancel(true);
 
     // Sets up the Dismiss action buttons that will appear in the

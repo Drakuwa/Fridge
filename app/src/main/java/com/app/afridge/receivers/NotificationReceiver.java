@@ -64,7 +64,8 @@ public class NotificationReceiver extends BroadcastReceiver {
               new NotificationCompat.Builder(context)
                       .setSmallIcon(R.drawable.ic_photo_camera)
                       .setContentTitle(context.getString(R.string.title_notification_deleted))
-                      .setContentText("Item: " + item.getName() + " has been successfully deleted.")
+                      .setContentText("Item: " + item.getName() + " has been successfully deleted. " +
+                              "Click on the UNDO button to revert the changes.")
                       .setAutoCancel(true);
 
       // create the history item in advance, so we can set the HistoryItem id to the undo action
