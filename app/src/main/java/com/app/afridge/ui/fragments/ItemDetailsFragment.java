@@ -392,7 +392,7 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
     });
 
     final PhotoView imageView = (PhotoView) builder.findViewById(R.id.image);
-    imageView.setAlpha(0.0f);
+    imageView.setAlpha(0.0f); // TODO maybe use View.INVISIBLE
 
     // get the file
     File itemType = new File(item.getType());
