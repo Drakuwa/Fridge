@@ -200,13 +200,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_small"
                 android:layout_toEndOf="@+id/image_quantity"
-                android:layout_toLeftOf="@+id/spinner_quantity_type"
                 android:layout_toRightOf="@+id/image_quantity"
-                android:layout_toStartOf="@+id/spinner_quantity_type"
                 android:text="@string/label_item_quantity"
                 android:textColor="@color/text_secondary"
                 android:visibility="gone"
                 font:customFont="@string/font_light"/>
+            <!--android:layout_toLeftOf="@+id/spinner_quantity_type"-->
+            <!--android:layout_toStartOf="@+id/spinner_quantity_type"-->
 
             <com.app.afridge.views.AdvancedAutoCompleteTextView
                 android:id="@+id/text_quantity"
@@ -219,13 +219,13 @@
                 android:layout_toRightOf="@+id/image_quantity"
                 android:layout_toStartOf="@+id/spinner_quantity_type"
                 android:background="@android:color/transparent"
-                android:text="@string/not_set"
+                android:hint="@string/not_set"
                 android:imeOptions="actionDone"
-                android:padding="@dimen/padding_small"
                 android:singleLine="true"
                 android:textColor="@color/text_primary"
                 android:visibility="gone"
                 font:customFont="@string/font_light"/>
+            <!--android:padding="@dimen/padding_small"-->
 
             <ImageView
                 android:id="@+id/image_quantity_delete"
@@ -241,7 +241,7 @@
 
             <Spinner
                 android:id="@+id/spinner_quantity_type"
-                android:layout_width="120dp"
+                android:layout_width="128dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/text_quantity"
                 android:layout_toLeftOf="@+id/image_quantity_delete"

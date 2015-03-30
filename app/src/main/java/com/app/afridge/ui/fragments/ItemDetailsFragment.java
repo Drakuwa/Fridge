@@ -249,7 +249,7 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
       }
       else {
         textQuantity.setText("");
-        textQuantity.setHint(application.getString(R.string.not_set).toUpperCase(Locale.US));
+        textQuantity.setHint(application.getString(R.string.not_set)); // .toUpperCase(Locale.US)
       }
     }
   }
@@ -368,6 +368,8 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
 
   @OnClick(R.id.image_item)
   public void showImage(View view) {
+    // hide the original fragment image
+    AnimationsController.fadeOutAndScale(image);
 
     Dialog builder = new Dialog(getActivity());
     builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -384,7 +386,8 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
 
       @Override
       public void onDismiss(DialogInterface dialogInterface) {
-        //nothing;
+        // show the image when we dismiss the dialog
+        AnimationsController.fadeInAndScale(image);
       }
     });
 
