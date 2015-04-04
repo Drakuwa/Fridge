@@ -112,7 +112,7 @@ public class SharedPrefStore {
     USER,
     SYNC_SETUP_COMPLETE,
     FIRST_TIME_WIZARD_COMPLETE,
-    STAT_RANDOM_SPIN;
+    STAT_RANDOM_SPIN, STAT_FRIDGE_OPEN;
 
     private String getKey() {
 
