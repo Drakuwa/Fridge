@@ -99,6 +99,10 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         setActionBarIcon(R.mipmap.ic_launcher);
       }
 
+      // increment the fridge opened counter
+      int fridgeOpenCount = application.prefStore.getInt(SharedPrefStore.Pref.STAT_FRIDGE_OPEN);
+      application.prefStore.setInt(SharedPrefStore.Pref.STAT_FRIDGE_OPEN, ++fridgeOpenCount);
+
       // setup context menu
       menuObjects.add(MenuType.CLOSE.ordinal(), new MenuObject(R.drawable.ic_close));
       menuObjects.add(MenuType.NOTES.ordinal(), new MenuObject(R.drawable.ic_note, getString(R.string.menu_fridge_notes)));
