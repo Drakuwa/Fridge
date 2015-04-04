@@ -60,16 +60,16 @@ public class RandomStats {
 
       int randomSpinCount = SharedPrefStore.load(context).getInt(SharedPrefStore.Pref.STAT_RANDOM_SPIN);
       int openFridgeCount = SharedPrefStore.load(context).getInt(SharedPrefStore.Pref.STAT_FRIDGE_OPEN);
-      int cheeseItemsCount = new Select().from(FridgeItem.class).where("type = ?", "3").and("status = 1").count();
-      int meatItemsCount = new Select().from(FridgeItem.class).where("type = ?", "4").and("status = 1").count();
-      int leftoversItemsCount = new Select().from(FridgeItem.class).where("type = ?", "10").and("status = 1").count();
-      int drinksItemsCount = new Select().from(FridgeItem.class).where("type = ?", "16").and("status = 1").count();
-      int cakeItemsCount = new Select().from(FridgeItem.class).where("type = ?", "20").and("status = 1").count();
+      int cheeseItemsCount = new Select().from(FridgeItem.class).where("type = ?", "3").and("status = ?", false).count();
+      int meatItemsCount = new Select().from(FridgeItem.class).where("type = ?", "4").and("status = ?", false).count();
+      int leftoversItemsCount = new Select().from(FridgeItem.class).where("type = ?", "10").and("status = ?", false).count();
+      int drinksItemsCount = new Select().from(FridgeItem.class).where("type = ?", "16").and("status = ?", false).count();
+      int cakeItemsCount = new Select().from(FridgeItem.class).where("type = ?", "20").and("status = ?", false).count();
       Calendar calendar = Calendar.getInstance();
       long currentTimestamp = calendar.getTimeInMillis() / 1000;
       int expiredItemsCount = new Select().from(FridgeItem.class)
               .where("expiration_date != 0")
-              .and("status = 1") // still not removed
+              .and("status = ?", false) // still not removed
               .and("expiration_date < ?", currentTimestamp)
               .count();
       int thrownAwayItems = new Select().from(FridgeItem.class).where("status = ?", true).count();
@@ -95,7 +95,7 @@ public class RandomStats {
 
   public Stat getItemCount() {
 
-    int fridgeItemsCount = new Select().from(FridgeItem.class).where("status = ?", true).count();
+    int fridgeItemsCount = new Select().from(FridgeItem.class).where("status = ?", false).count();
     return new Stat("Total item count:", fridgeItemsCount);
   }
 
