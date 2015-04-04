@@ -2,18 +2,25 @@ package com.app.afridge.ui.fragments;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.graphics.Palette;
+import android.transitions.everywhere.ChangeBounds;
+import android.transitions.everywhere.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
+import com.app.afridge.dom.RandomStats;
 import com.app.afridge.dom.User;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
 import com.app.afridge.utils.CircleTransform;
@@ -29,6 +36,8 @@ import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
 import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,6 +62,8 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   ImageView imageProfile;
   @InjectView(R.id.text_username)
   AdvancedTextView textUsername;
+  @InjectView(R.id.holder_profile)
+  LinearLayout holderProfile;
   @InjectView(R.id.text_login_description)
   AdvancedTextView textLoginDescription;
   @InjectView(R.id.button_facebook)
@@ -63,6 +74,12 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   AdvancedTextView buttonGplus;
   @InjectView(R.id.button_logout)
   AdvancedTextView buttonLogout;
+  @InjectView(R.id.text_item_count)
+  AdvancedTextView textItemCount;
+  @InjectView(R.id.text_notes_count)
+  AdvancedTextView textNotesCount;
+  @InjectView(R.id.text_random_stat)
+  AdvancedTextView textRandomStat;
 
   /**
    * SocialNetwork Ids in ASNE:
@@ -81,8 +98,8 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   private FridgeApplication application;
   private SocialNetworkManager socialNetworkManager;
   private MaterialDialog progressDialog;
-  private View containerView;
 
+  View containerView;
   OnFragmentInteractionListener mListener;
 
   // Singleton
@@ -114,8 +131,9 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   public void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
-    setRetainInstance(true); // try to fix orientation change TODO
+    setRetainInstance(true); // try to fix orientation change
     setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme); // 0 is the default theme for the selected style
+    RandomStats.with(getActivity()).generateList(true); // generate random stats
   }
 
   private void initSocialNetworkManager() {
@@ -188,14 +206,14 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
             .progress(true, 0).build();
 
     if (application.authState.isAuthenticated()) {
-      // show profile image and name
-      Picasso.with(getActivity())
-              .load(application.authState.getUser().getImageUrl())
-              .resize(application.screenWidth / 2, application.screenWidth / 2)
-              .centerInside()
-              .transform(new CircleTransform())
-              .into(imageProfile);
+      // set the user name
       textUsername.setText(application.authState.getUser().getFullName());
+
+      // set the profile image
+      setProfileImage(application.authState.getUser().getImageUrl(), R.mipmap.ic_launcher);
+
+      // set profile stats
+      setProfileStats();
     }
     else {
       textUsername.setText(application.getString(R.string.menu_login).toUpperCase(Locale.ENGLISH));
@@ -245,28 +263,29 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   }
 
   private void refreshViewState() {
-    // TODO TransitionManager.beginDelayedTransition((ViewGroup) containerView, new Fade());
+    TransitionManager.beginDelayedTransition((ViewGroup) containerView, new ChangeBounds());
     if (application.authState.isAuthenticated()) {
       textLoginDescription.setVisibility(View.GONE);
       buttonFacebook.setVisibility(View.GONE);
       buttonTwitter.setVisibility(View.GONE);
       buttonGplus.setVisibility(View.GONE);
       buttonLogout.setVisibility(View.VISIBLE);
-      // TODO color the profile with Palette
+      textItemCount.setVisibility(View.VISIBLE);
+      textNotesCount.setVisibility(View.VISIBLE);
+      textRandomStat.setVisibility(View.VISIBLE);
     }
     else {
-      Picasso.with(getActivity())
-              .load(R.mipmap.ic_launcher)
-              .resize(application.screenWidth / 2, application.screenWidth / 2)
-              .centerInside()
-              .transform(new CircleTransform())
-              .into(imageProfile);
+      // set the app profile image
+      setProfileImage(null, R.mipmap.ic_launcher);
       textUsername.setText(application.getString(R.string.menu_login).toUpperCase(Locale.ENGLISH));
       textLoginDescription.setVisibility(View.VISIBLE);
       buttonFacebook.setVisibility(View.VISIBLE);
       buttonTwitter.setVisibility(View.VISIBLE);
       buttonGplus.setVisibility(View.VISIBLE);
       buttonLogout.setVisibility(View.GONE);
+      textItemCount.setVisibility(View.GONE);
+      textNotesCount.setVisibility(View.GONE);
+      textRandomStat.setVisibility(View.GONE);
     }
   }
 
@@ -352,18 +371,14 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   public void onRequestSocialPersonSuccess(int i, SocialPerson socialPerson) {
 
     showProgress(false);
-    textUsername.setText(socialPerson.name);
-    //        id.setText(socialPerson.id);
-    //        String socialPersonString = socialPerson.toString();
-    //        String infoString = socialPersonString.substring(socialPersonString.indexOf("{")+1, socialPersonString.lastIndexOf("}"));
-    //        info.setText(infoString.replace(", ", "\n"));
-    Picasso.with(getActivity())
-            .load(socialPerson.avatarURL)
-            .resize(application.screenWidth / 2, application.screenWidth / 2)
-            .centerInside()
-            .transform(new CircleTransform())
-            .into(imageProfile);
-
+    if (isAdded()) {
+      textUsername.setText(socialPerson.name);
+      //        id.setText(socialPerson.id);
+      //        String socialPersonString = socialPerson.toString();
+      //        String infoString = socialPersonString.substring(socialPersonString.indexOf("{")+1, socialPersonString.lastIndexOf("}"));
+      //        info.setText(infoString.replace(", ", "\n"));
+      setProfileImage(socialPerson.avatarURL, R.mipmap.ic_launcher);
+    }
     // save the user
     User user = new User();
     user.setId(socialPerson.id);
@@ -386,8 +401,79 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
     }
     application.authState.setUser(user);
 
-    // refresh the views
-    refreshViewState();
+    if (isAdded()) {
+      // set profile stats
+      setProfileStats();
+
+      // refresh the views
+      refreshViewState();
+    }
+  }
+
+  private void setProfileImage(String imageUrl, int ic_launcher) {
+
+    final Target loadProfileBitmap = new Target() {
+
+      @Override
+      public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        // set the profile image
+        imageProfile.setImageBitmap(bitmap);
+
+        // generate the profile image Palette
+        // Asynchronous methods
+        // --------------------------------
+        // This is the quick and easy integration path. Internally uses an AsyncTask so
+        // this may not be optimal (since you're dipping in and out of threads)
+
+        // Uses the default palette size (16).
+        Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+
+          @Override
+          public void onGenerated(Palette palette) {
+            // Here's your generated palette
+            holderProfile.setBackgroundColor(palette.getDarkVibrantColor(R.color.primary_dark));
+            textUsername.setTextColor(palette.getLightVibrantColor(R.color.text_icons));
+          }
+        });
+      }
+
+      @Override
+      public void onBitmapFailed(Drawable errorDrawable) {
+
+      }
+
+      @Override
+      public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+      }
+    };
+    // set the image tag
+    imageProfile.setTag(loadProfileBitmap);
+    // show profile image and name
+    Picasso loader = Picasso.with(getActivity());
+    RequestCreator requestCreator;
+    if (imageUrl != null) {
+      requestCreator = loader.load(imageUrl);
+    }
+    else {
+      requestCreator = loader.load(ic_launcher);
+    }
+    requestCreator.resize(application.screenWidth / 2, application.screenWidth / 2)
+            .centerInside()
+            .transform(new CircleTransform())
+            .into(loadProfileBitmap);
+  }
+
+  private void setProfileStats() {
+    // set item and notes count
+    RandomStats.Stat itemCount = RandomStats.with(getActivity()).getItemCount();
+    RandomStats.Stat noteCount = RandomStats.with(getActivity()).getNoteCount();
+    textItemCount.setText("Items: " + itemCount.getValue());
+    textNotesCount.setText("Notes: " + noteCount.getValue());
+
+    // show random stats; always show item count and notes count;
+    RandomStats.Stat randomStat = RandomStats.with(getActivity()).getRandomStat();
+    textRandomStat.setText(randomStat.getName() + " " + randomStat.getValue());
   }
 
   private void showProgress(boolean showProgress) {
