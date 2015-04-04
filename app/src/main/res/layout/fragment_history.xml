@@ -63,7 +63,7 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/empty_fridge" />
+            android:src="@drawable/no_history" />
 
         <com.app.afridge.views.AdvancedTextView
             android:layout_width="match_parent"

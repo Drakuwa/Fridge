@@ -4,7 +4,7 @@
     <string name="facebook_app_id">368710909825016</string>
     <string name="twitter_consumer_key">Cnnj5TZcfybYaevKZzDO3zvbD</string>
     <string name="twitter_consumer_secret">JFLVrcofB3LGEOZQ9q7Vi0slzTpXckLKNcm0xzOPHYMqLx7M2z</string>
-    <string name="empty"/>
+    <string name="empty" />
     <string name="not_set">Not set</string>
     <string name="title_fridge">fridge</string>
     <string name="never">never</string>
@@ -59,8 +59,8 @@
 
     <!--hints-->
     <string name="hint_no_items">Looks like you have no items in the fridge! :D\n\nHit the button bellow to get started&#8230;</string>
-    <string name="hint_no_history">Looks like you had no items in the fridge&#8230;</string>
-    <string name="hint_no_notes">Looks like you had no notes on the fridge&#8230;</string>
+    <string name="hint_no_history">Looks like you had no item modifications at this time period&#8230;</string>
+    <string name="hint_no_notes">Looks like you have no notes on the fridge&#8230;</string>
     <string name="hint_all">All Galleries</string>
     <string name="hint_choose_photo">Choose Photo</string>
     <string name="hint_item_name">item name</string>
