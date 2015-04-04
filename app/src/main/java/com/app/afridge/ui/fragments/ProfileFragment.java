@@ -23,7 +23,7 @@ import com.app.afridge.R;
 import com.app.afridge.dom.RandomStats;
 import com.app.afridge.dom.User;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
-import com.app.afridge.utils.CircleTransform;
+import com.app.afridge.utils.CircleBorderTransform;
 import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
 import com.app.afridge.views.AdvancedTextView;
@@ -460,7 +460,7 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
     }
     requestCreator.resize(application.screenWidth / 2, application.screenWidth / 2)
             .centerInside()
-            .transform(new CircleTransform())
+            .transform(new CircleBorderTransform())
             .into(loadProfileBitmap);
   }
 
