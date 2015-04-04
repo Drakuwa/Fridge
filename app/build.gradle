@@ -70,6 +70,6 @@ dependencies {
     compile 'com.github.asne:asne-twitter:0.3.3'
     compile 'com.github.asne:asne-googleplus:0.3.3'
     compile 'com.afollestad:material-dialogs:0.6.3.5'
-    compile 'com.rengwuxian.materialedittext:library:2.0.0-SNAPSHOT'
+    compile 'com.rengwuxian.materialedittext:library:2.0.3'
     compile 'com.crashlytics.android:crashlytics:1.+'
 }
