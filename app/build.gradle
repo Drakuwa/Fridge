@@ -13,6 +13,7 @@ apply plugin: 'crashlytics'
 repositories {
     maven { url 'http://download.crashlytics.com/maven' }
     maven { url 'https://oss.sonatype.org/content/groups/public' }
+    maven { url "http://cloudant.github.io/cloudant-sync-eap/repository/" }
 }
 
 
@@ -20,12 +21,31 @@ android {
     compileSdkVersion 22
     buildToolsVersion "21.1.2"
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
+
     defaultConfig {
         applicationId "com.app.afridge"
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 22
         versionCode 7
         versionName "2.0"
+
+        // Enabling multidex support.
+        multiDexEnabled true
+        dexOptions {
+            javaMaxHeapSize "4g"
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = outputFile.name.replace(".apk", "${variant.versionName}-${variant.versionCode}.apk")
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -34,24 +54,24 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            zipAlignEnabled false
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
         }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    // compile files('libs/ActiveAndroid.jar')
     // compile 'com.balysv:material-ripple:1.0.1' // still unused
-    // compile 'de.hdodenhof:circleimageview:1.2.1' // replaced with Picasso transformation
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.android.support:support-v4:22.0.0'
-    compile 'com.android.support:cardview-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile 'com.android.support:palette-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.1.0'
+    compile 'com.android.support:support-v4:22.1.0'
+    compile 'com.android.support:cardview-v7:22.1.0'
+    compile 'com.android.support:recyclerview-v7:22.1.0'
+    compile 'com.android.support:palette-v7:22.1.0'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'fr.baloomba:viewpagerindicator:2.4.2'
@@ -71,5 +91,8 @@ dependencies {
     compile 'com.github.asne:asne-googleplus:0.3.3'
     compile 'com.afollestad:material-dialogs:0.6.3.5'
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
+    compile group: 'com.cloudant', name: 'cloudant-sync-datastore-core', version: '0.11.0'
+    compile group: 'com.cloudant', name: 'cloudant-sync-datastore-android', version: '0.11.0'
     compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.android.support:multidex:1.0.0'
 }
