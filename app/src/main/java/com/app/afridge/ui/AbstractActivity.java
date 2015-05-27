@@ -1,13 +1,13 @@
 package com.app.afridge.ui;
 
+import com.app.afridge.FridgeApplication;
+
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.app.afridge.FridgeApplication;
 
 import java.lang.reflect.Field;
 
@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
  * <p/>
  * Created by drakuwa on 11/11/14.
  */
-public abstract class AbstractActivity extends ActionBarActivity {
+public abstract class AbstractActivity extends AppCompatActivity {
 
   // utilities
   protected FridgeApplication application;
