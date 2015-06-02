@@ -1,5 +1,25 @@
 package com.app.afridge.ui.fragments;
 
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.adapters.NotesAdapter;
+import com.app.afridge.dom.NoteItem;
+import com.app.afridge.interfaces.OnFragmentInteractionListener;
+import com.app.afridge.interfaces.OnNoteChangeListener;
+import com.app.afridge.loaders.NotesLoader;
+import com.app.afridge.ui.MainActivity;
+import com.app.afridge.utils.KeyboardUtils;
+import com.app.afridge.utils.Log;
+import com.app.afridge.utils.SharedPrefStore;
+import com.app.afridge.utils.TimeSpans;
+import com.app.afridge.views.AdvancedAutoCompleteTextView;
+import com.app.afridge.views.AdvancedTextView;
+import com.gc.materialdesign.widgets.SnackBar;
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,26 +45,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.activeandroid.query.Delete;
-import com.activeandroid.query.Select;
-import com.afollestad.materialdialogs.AlertDialogWrapper;
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.adapters.NotesAdapter;
-import com.app.afridge.dom.NoteItem;
-import com.app.afridge.interfaces.OnFragmentInteractionListener;
-import com.app.afridge.interfaces.OnNoteChangeListener;
-import com.app.afridge.loaders.NotesLoader;
-import com.app.afridge.ui.MainActivity;
-import com.app.afridge.utils.KeyboardUtils;
-import com.app.afridge.utils.Log;
-import com.app.afridge.utils.SharedPrefStore;
-import com.app.afridge.utils.TimeSpans;
-import com.app.afridge.views.AdvancedAutoCompleteTextView;
-import com.app.afridge.views.AdvancedTextView;
-import com.gc.materialdesign.widgets.SnackBar;
-import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -195,6 +195,7 @@ public class NotesFragment extends Fragment implements LoaderManager.LoaderCallb
             Calendar calendar = Calendar.getInstance();
             NoteItem noteItem = new NoteItem(editListItem.getText().toString().trim(),
                     calendar.getTimeInMillis() / 1000, false);
+            noteItem.setItemId(noteItem.hashCode());
             noteItem.save();
             addItemOrRestartLoader();
             ((NotesAdapter) recyclerView.getAdapter()).addItem(-1, noteItem);
