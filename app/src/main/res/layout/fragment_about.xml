@@ -92,6 +92,14 @@
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_medium"
                 font:customFont="@string/font_light" />
+
+            <com.gc.materialdesign.views.ButtonFlat
+                android:id="@+id/donations_bitcoin_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@color/primary"
+                android:text="@string/donate" />
         </LinearLayout>
 
     </LinearLayout>

@@ -1,14 +1,22 @@
 package com.app.afridge.ui.fragments;
 
+import com.app.afridge.BuildConfig;
 import com.app.afridge.R;
+import com.app.afridge.utils.Constants;
+import com.app.afridge.utils.Log;
 import com.app.afridge.views.AdvancedTextView;
 import com.eftimoff.androidplayer.Player;
 import com.eftimoff.androidplayer.actions.property.PropertyAction;
 
+import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.SpannableString;
@@ -22,10 +30,12 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * Application about dialog
@@ -199,5 +209,45 @@ public class AboutFragment extends DialogFragment {
     @OnClick(R.id.image_close)
     public void closeDialog() {
         this.dismiss();
+    }
+
+    /**
+     * Donate with bitcoin by opening a bitcoin: intent if available.
+     */
+    @OnClick(R.id.donations_bitcoin_button)
+    public void donateBitcoinOnClick(View view) {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("bitcoin:" + Constants.BITCOIN_WALLET_ADDRESS));
+
+        if (BuildConfig.DEBUG) {
+            Log.d(Log.TAG, "Attempting to donate bitcoin using URI: " + i.getDataString());
+        }
+
+        try {
+            startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            view.findViewById(R.id.donations_bitcoin_button).performLongClick();
+        }
+    }
+
+    @OnLongClick(R.id.donations_bitcoin_button)
+    public boolean copyBitCoinAddress() {
+        // http://stackoverflow.com/a/11012443/832776
+        if (Build.VERSION.SDK_INT >= 11) {
+            ClipboardManager clipboard =
+                    (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(Constants.BITCOIN_WALLET_ADDRESS,
+                    Constants.BITCOIN_WALLET_ADDRESS);
+            clipboard.setPrimaryClip(clip);
+        } else {
+            @SuppressWarnings("deprecation")
+            android.text.ClipboardManager clipboard =
+                    (android.text.ClipboardManager) getActivity()
+                            .getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(Constants.BITCOIN_WALLET_ADDRESS);
+        }
+        Toast.makeText(getActivity(), R.string.donations_bitcoin_toast_copy, Toast.LENGTH_SHORT)
+                .show();
+        return true;
     }
 }

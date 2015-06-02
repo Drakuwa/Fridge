@@ -32,4 +32,6 @@ public class Constants {
   public static String SERVER_HOST = "http://fridgecheck.com/fc";
   public static String ACTION_DELETE = "com.app.afridge.DELETE_ITEM";
   public static String ACTION_UNDO = "com.app.afridge.UNDO_DELETE";
+
+  public static String BITCOIN_WALLET_ADDRESS = "1wmbiP5H29Jtiw7iYzRLAUMzU4zJDvabp";
 }
