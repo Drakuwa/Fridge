@@ -1,5 +1,10 @@
 package com.app.afridge.utils;
 
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.dom.FridgeItem;
+import com.app.afridge.dom.HistoryItem;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
@@ -14,24 +19,26 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.dom.FridgeItem;
-import com.app.afridge.dom.HistoryItem;
-
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -81,6 +88,68 @@ public class Common {
   public static float clamp(float v, float lower, float upper) {
 
     return Math.max(lower, Math.min(upper, v));
+  }
+
+  /**
+   * Save the bitmap image on device
+   *
+   * @param image   bitmap we need to save
+   * @param context application context
+   * @return success status of the action
+   */
+  public static File storeImage(Bitmap image, Context context) {
+    // Bitmap bitmap = Bitmap.createScaledBitmap(image, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT, false);
+    File pictureFile = getOutputMediaFile(context);
+    if (pictureFile == null) {
+      Log.d(Log.TAG,
+              "Error creating media file, check storage permissions: ");// e.getMessage());
+      return null;
+    }
+    try {
+      FileOutputStream fos = new FileOutputStream(pictureFile);
+      image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+      fos.close();
+    } catch (FileNotFoundException e) {
+      Log.d(Log.TAG, "File not found: " + e.getMessage());
+      return null;
+    } catch (IOException e) {
+      Log.d(Log.TAG, "Error accessing file: " + e.getMessage());
+      return null;
+    }
+    return pictureFile;
+  }
+
+  /**
+   * Create a File for saving an image in the
+   * "/Android/data/package.name/Files" directory
+   *
+   * @param context application context
+   * @return a new File for saving an image
+   */
+  private static File getOutputMediaFile(Context context) {
+    // To be safe, you should check that the SDCard is mounted
+    // using Environment.getExternalStorageState() before doing this.
+    File mediaStorageDir = new File(
+            Environment.getExternalStorageDirectory() + "/Android/data/"
+                    + context.getPackageName() + "/Files");
+
+    // This location works best if you want the created images to be shared
+    // between applications and persist after your app has been uninstalled.
+
+    // Create the storage directory if it does not exist
+    if (!mediaStorageDir.exists()) {
+      if (!mediaStorageDir.mkdirs()) {
+        return null;
+      }
+    }
+    // Create a media file name
+    String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmssSS",
+            Locale.ENGLISH).format(new Date());
+    File mediaFile;
+    String mImageName = "FRIDGE_" + timeStamp + ".jpg";
+    mediaFile = new File(mediaStorageDir.getPath() + File.separator
+            + mImageName);
+    return mediaFile;
   }
 
   public static void setupMargins(Context context, View view) {
