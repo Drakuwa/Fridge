@@ -1,33 +1,12 @@
 package com.app.afridge.ui;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.widget.LinearLayout;
-
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 import com.app.afridge.R;
 import com.app.afridge.dom.Ingredient;
 import com.app.afridge.dom.IngredientHelper;
-import com.app.afridge.dom.MenuType;
+import com.app.afridge.dom.SyncEvent;
+import com.app.afridge.dom.enums.MenuType;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
 import com.app.afridge.interfaces.OnMeasurementTypeChangeListener;
 import com.app.afridge.interfaces.Screenshotable;
@@ -45,6 +24,7 @@ import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
+import com.app.afridge.utils.SyncUtils;
 import com.app.afridge.utils.animations.SupportAnimator;
 import com.app.afridge.utils.animations.ViewAnimationUtils;
 import com.app.afridge.views.AdvancedTextView;
@@ -52,10 +32,35 @@ import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.LinearLayout;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -74,6 +79,28 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
   ContextMenuDialogFragment mMenuDialogFragment;
   ArrayList<MenuObject> menuObjects = new ArrayList<>();
   OnMeasurementTypeChangeListener listener;
+
+  public static final String ACTION_FINISHED_SYNC = "com.app.afridge.ACTION_FINISHED_SYNC";
+  private static IntentFilter syncIntentFilter = new IntentFilter(ACTION_FINISHED_SYNC);
+  private BroadcastReceiver syncBroadcastReceiver = new BroadcastReceiver() {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      // update your views
+      setDatabaseChanged(true);
+      // update sync timestamp
+      Calendar calendar = Calendar.getInstance();
+      long syncTimestamp = calendar.getTimeInMillis() / 1000;
+      application.prefStore.set(SharedPrefStore.Pref.LAST_SYNC, String.valueOf(syncTimestamp));
+      // update fridge fragment list view
+      for(Fragment fragment : getSupportFragmentManager().getFragments()) {
+        if(fragment instanceof FridgeFragment)
+          fragment.onResume();
+        else if(fragment instanceof ProfileFragment)
+          ((ProfileFragment) fragment).refreshState();
+      }
+    }
+  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -245,7 +272,12 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         Log.d(Log.TAG, "menu fragment is already added");
       }
       else {
-        mMenuDialogFragment.show(getSupportFragmentManager(), getString(R.string.context_menu_dialog_fragment));
+        try {
+          mMenuDialogFragment.show(getSupportFragmentManager(),
+                  getString(R.string.context_menu_dialog_fragment));
+        } catch (Exception ignored) {
+
+        }
       }
     }
     else if (id == R.id.action_notes) {
@@ -451,6 +483,45 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
   public boolean isDatabaseChanged() {
 
     return isDatabaseChanged;
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  public void onStop() {
+    EventBus.getDefault().unregister(this);
+    super.onStop();
+  }
+
+  // This method will be called when a SyncEvent is posted
+  @SuppressWarnings("unused")
+  public void onEvent(SyncEvent event){
+    // publish the broadcast
+    this.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    // register for sync
+    registerReceiver(syncBroadcastReceiver, syncIntentFilter);
+  }
+
+  @Override
+  protected void onPause() {
+    unregisterReceiver(syncBroadcastReceiver);
+    super.onPause();
+  }
+
+  @Override
+  protected void onDestroy() {
+    if(application.authState.isAuthenticated())
+      SyncUtils.TriggerRefresh();
+    super.onDestroy();
   }
 
   public void showContextMenu(final boolean showContextMenu) {
