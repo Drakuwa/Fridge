@@ -1,10 +1,10 @@
 package com.app.afridge.services;
 
+import com.app.afridge.sync.SyncAdapter;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-
-import com.app.afridge.sync.SyncAdapter;
 
 
 /**
@@ -20,6 +20,10 @@ public class SyncService extends Service {
   private static SyncAdapter sSyncAdapter = null;
   // Object to use as a thread-safe lock
   private static final Object sSyncAdapterLock = new Object();
+
+  public SyncService() {
+    super();
+  }
 
   /**
    * Instantiate the sync adapter object.

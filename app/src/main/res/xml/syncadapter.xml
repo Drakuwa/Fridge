@@ -2,7 +2,7 @@
 <sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:contentAuthority="com.app.afridge.sync.provider"
-    android:accountType="com.app.afridge.sync"
+    android:accountType="com.app.afridge"
     android:userVisible="false"
     android:supportsUploading="false"
     android:allowParallelSyncs="false"
