@@ -1,32 +1,27 @@
 package com.app.afridge.ui.fragments;
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.graphics.Palette;
-import android.transitions.everywhere.ChangeBounds;
-import android.transitions.everywhere.TransitionManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
+import com.activeandroid.query.Delete;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
+import com.app.afridge.api.CloudantService;
+import com.app.afridge.dom.FridgeItem;
+import com.app.afridge.dom.HistoryItem;
+import com.app.afridge.dom.NoteItem;
 import com.app.afridge.dom.RandomStats;
+import com.app.afridge.dom.SyncEvent;
 import com.app.afridge.dom.User;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
+import com.app.afridge.ui.MainActivity;
 import com.app.afridge.utils.CircleBorderTransform;
 import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
+import com.app.afridge.utils.Log;
+import com.app.afridge.utils.SharedPrefStore;
+import com.app.afridge.utils.SyncUtils;
+import com.app.afridge.utils.TimeSpans;
 import com.app.afridge.views.AdvancedTextView;
+import com.cloudant.sync.datastore.ConflictException;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
@@ -39,14 +34,39 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.graphics.Palette;
+import android.text.TextUtils;
+import android.transitions.everywhere.ChangeBounds;
+import android.transitions.everywhere.TransitionManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -80,6 +100,10 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   AdvancedTextView textNotesCount;
   @InjectView(R.id.text_random_stat)
   AdvancedTextView textRandomStat;
+  @InjectView(R.id.text_last_synced)
+  AdvancedTextView textLastSync;
+  @InjectView(R.id.pull_to_refresh_sync)
+  SwipeRefreshLayout swipeRefreshLayout;
 
   /**
    * SocialNetwork Ids in ASNE:
@@ -146,7 +170,8 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
     fbScope.addAll(Collections.singletonList("public_profile, email, user_friends"));
 
     //Use manager to manage SocialNetworks
-    socialNetworkManager = (SocialNetworkManager) getFragmentManager().findFragmentByTag(Constants.SOCIAL_NETWORK_TAG);
+    socialNetworkManager = (SocialNetworkManager) getFragmentManager().findFragmentByTag(
+            Constants.SOCIAL_NETWORK_TAG);
 
     //Check if manager exist
     if (socialNetworkManager == null) {
@@ -166,7 +191,8 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
       socialNetworkManager.addSocialNetwork(gPlusNetwork);
 
       //Initiate every network from mSocialNetworkManager
-      getFragmentManager().beginTransaction().add(socialNetworkManager, Constants.SOCIAL_NETWORK_TAG).commit();
+      getFragmentManager().beginTransaction().add(socialNetworkManager,
+              Constants.SOCIAL_NETWORK_TAG).commit();
       socialNetworkManager.setOnInitializationCompleteListener(this);
     }
     else {
@@ -221,6 +247,12 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
 
     // refresh the view state
     refreshViewState();
+
+    // set last sync label
+    setLastSyncTimestamp();
+
+    // set swipe to refresh listener
+    setSwipeListener();
   }
 
   @Override
@@ -263,6 +295,7 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   }
 
   private void refreshViewState() {
+
     TransitionManager.beginDelayedTransition((ViewGroup) containerView, new ChangeBounds());
     if (application.authState.isAuthenticated()) {
       textLoginDescription.setVisibility(View.GONE);
@@ -270,6 +303,7 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
       buttonTwitter.setVisibility(View.GONE);
       buttonGplus.setVisibility(View.GONE);
       buttonLogout.setVisibility(View.VISIBLE);
+      textLastSync.setVisibility(View.VISIBLE);
       textItemCount.setVisibility(View.VISIBLE);
       textNotesCount.setVisibility(View.VISIBLE);
       textRandomStat.setVisibility(View.VISIBLE);
@@ -283,6 +317,7 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
       buttonTwitter.setVisibility(View.VISIBLE);
       buttonGplus.setVisibility(View.VISIBLE);
       buttonLogout.setVisibility(View.GONE);
+      textLastSync.setVisibility(View.GONE);
       textItemCount.setVisibility(View.GONE);
       textNotesCount.setVisibility(View.GONE);
       textRandomStat.setVisibility(View.GONE);
@@ -360,8 +395,32 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
     SocialNetwork gPlusSocialNetwork = socialNetworkManager.getSocialNetwork(GPLUS);
     gPlusSocialNetwork.logout();
 
+    // remove the saved User document
+    try {
+      CloudantService.with(getActivity().getApplicationContext()).deleteDocument(
+              application.authState.getUser());
+      CloudantService.with(getActivity().getApplicationContext()).deleteAllDocuments();
+    } catch (ConflictException e) {
+      Log.d("ConflictException removing User document: " + e.getLocalizedMessage());
+      e.printStackTrace();
+    } catch (Exception e) {
+      Log.d("Uncaught Exception removing User document: " + e.getLocalizedMessage());
+      e.printStackTrace();
+    }
+
     // remove the authState user
     application.authState.clearUser();
+
+    // delete database and Pref contents
+    new Delete().from(HistoryItem.class).execute();
+    new Delete().from(FridgeItem.class).execute();
+    new Delete().from(NoteItem.class).execute();
+    application.prefStore.clear(SharedPrefStore.Pref.LAST_SYNC);
+    application.prefStore.clear(SharedPrefStore.Pref.SHOPPING_LIST_LAST_EDITED);
+    application.prefStore.clear(SharedPrefStore.Pref.SYNC_SETUP_COMPLETE);
+
+    // publish the broadcast
+    getActivity().sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
 
     // refresh the views
     refreshViewState();
@@ -369,6 +428,11 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
 
   @Override
   public void onRequestSocialPersonSuccess(int i, SocialPerson socialPerson) {
+    // now we clear the LAST_SYNC, since it is a new user and we should
+    // remove it if it was left from previous cases
+    application.prefStore.clear(SharedPrefStore.Pref.LAST_SYNC);
+    // set last sync label
+    setLastSyncTimestamp();
 
     showProgress(false);
     if (isAdded()) {
@@ -408,6 +472,10 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
       // refresh the views
       refreshViewState();
     }
+
+    // TODO do initial sync?
+    SyncUtils.CreateSyncAccount(application);
+    // CloudantService.with(getActivity()).startSynchronization();
   }
 
   private void setProfileImage(String imageUrl, int ic_launcher) {
@@ -487,12 +555,109 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
   }
 
   @Override
-  public void onDismiss(final DialogInterface dialog) {
+  public void onStart() {
+    super.onStart();
+    EventBus.getDefault().register(this);
+  }
 
+  @Override
+  public void onStop() {
+    EventBus.getDefault().unregister(this);
+    super.onStop();
+  }
+
+  // This method will be called when a SyncEvent is posted
+  @SuppressWarnings("unused")
+  public void onEventMainThread(SyncEvent event){
+    // Toast.makeText(getActivity(), event.message.name(), Toast.LENGTH_SHORT).show();
+    // publish the broadcast
+    getActivity().sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
+    if (isAdded()) {
+        setLastSyncTimestamp();
+        if (swipeRefreshLayout != null)
+          swipeRefreshLayout.setRefreshing(false);
+    }
+
+    switch (event.message) {
+      case IDLE:
+        break;
+      case SYNCING:
+        break;
+      case SUCCESS:
+        break;
+      case FAILED:
+        break;
+    }
+  }
+
+  private void setLastSyncTimestamp() {
+    if (textLastSync != null && isAdded()) {
+      if (TextUtils.isEmpty(application.prefStore.getString(
+              SharedPrefStore.Pref.LAST_SYNC))) {
+        textLastSync.setText(String.format(application.getString(R.string.last_synced),
+                application.getString(R.string.never)));
+      }
+      else {
+        Calendar calendar = Calendar.getInstance();
+        long currentTimestamp = calendar.getTimeInMillis() / 1000;
+        long listTimestamp = Long.parseLong(application.prefStore.getString(
+                SharedPrefStore.Pref.LAST_SYNC));
+
+        // get today's timestamp
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 1);
+        long todayTimestamp = calendar.getTimeInMillis() / 1000;
+
+        String relativeTimestamp;
+        // check if the list change timestamp is from today
+        if (listTimestamp > todayTimestamp) {
+          DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+          relativeTimestamp = dateFormat.format(new Date(listTimestamp * 1000));
+        }
+        else {
+          relativeTimestamp = TimeSpans
+                  .getRelativeTimeSince(listTimestamp * 1000, currentTimestamp * 1000);
+        }
+        textLastSync.setText(String.format(application.getString(R.string.last_synced),
+                relativeTimestamp));
+      }
+    }
+  }
+
+  public void setSwipeListener() {
+    //    swipeRefreshLayout.setProgressViewOffset(true, 144, 300);
+    //    swipeRefreshLayout.setDistanceToTriggerSync(144);
+
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        if(application.authState.isAuthenticated())
+          SyncUtils.TriggerRefresh();
+          // CloudantService.with(getActivity()).startSynchronization();
+      }
+    });
+  }
+
+  @Override
+  public void onDismiss(final DialogInterface dialog) {
     super.onDismiss(dialog);
     final Activity activity = getActivity();
     if (activity != null && activity instanceof DialogInterface.OnDismissListener) {
       ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
+    }
+  }
+
+  public void refreshState() {
+    if (isAdded()) {
+      // set profile stats
+      setProfileStats();
+
+      // refresh the views
+      refreshViewState();
+
+      // refresh the sync timestamp
+      setLastSyncTimestamp();
     }
   }
 }
