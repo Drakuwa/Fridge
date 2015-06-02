@@ -1,5 +1,18 @@
 package com.app.afridge.receivers;
 
+import com.activeandroid.query.Select;
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.dom.FridgeItem;
+import com.app.afridge.dom.HistoryItem;
+import com.app.afridge.dom.enums.ChangeType;
+import com.app.afridge.dom.enums.ItemType;
+import com.app.afridge.utils.Constants;
+import com.app.afridge.utils.Log;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,19 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-
-import com.activeandroid.query.Select;
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.dom.ChangeType;
-import com.app.afridge.dom.FridgeItem;
-import com.app.afridge.dom.HistoryItem;
-import com.app.afridge.dom.ItemType;
-import com.app.afridge.utils.Constants;
-import com.app.afridge.utils.Log;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.Calendar;

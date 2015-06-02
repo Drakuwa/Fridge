@@ -1,12 +1,12 @@
 package com.app.afridge.services;
 
+import com.app.afridge.sync.Authenticator;
+import com.app.afridge.utils.Log;
+
 import android.accounts.Account;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-
-import com.app.afridge.sync.Authenticator;
-import com.app.afridge.utils.Log;
 
 
 /**
@@ -18,7 +18,7 @@ import com.app.afridge.utils.Log;
 public class AuthenticatorService extends Service {
 
   // An account type, in the form of a domain name
-  private static final String ACCOUNT_TYPE = "fridge.rocks";
+  private static final String ACCOUNT_TYPE = "com.app.afridge";
   // The account name
   public static final String ACCOUNT_NAME = "fridgeSync";
   // Instance field that stores the authenticator object

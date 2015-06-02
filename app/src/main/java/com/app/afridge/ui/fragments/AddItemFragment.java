@@ -1,5 +1,32 @@
 package com.app.afridge.ui.fragments;
 
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.adapters.CircularViewAdapter;
+import com.app.afridge.adapters.IngredientsAutocompleteAdapter;
+import com.app.afridge.dom.enums.ChangeType;
+import com.app.afridge.dom.FridgeItem;
+import com.app.afridge.dom.HistoryItem;
+import com.app.afridge.dom.enums.ItemType;
+import com.app.afridge.interfaces.OnFragmentInteractionListener;
+import com.app.afridge.interfaces.Screenshotable;
+import com.app.afridge.ui.GalleryActivity;
+import com.app.afridge.ui.MainActivity;
+import com.app.afridge.utils.CircleTransform;
+import com.app.afridge.utils.Constants;
+import com.app.afridge.utils.FileUtils;
+import com.app.afridge.utils.KeyboardUtils;
+import com.app.afridge.utils.Log;
+import com.app.afridge.utils.SharedPrefStore;
+import com.app.afridge.views.AdvancedTextView;
+import com.gc.materialdesign.widgets.SnackBar;
+import com.melnykov.fab.FloatingActionButton;
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
+import com.sababado.circularview.CircularView;
+import com.sababado.circularview.Marker;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,33 +48,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.adapters.CircularViewAdapter;
-import com.app.afridge.adapters.IngredientsAutocompleteAdapter;
-import com.app.afridge.dom.ChangeType;
-import com.app.afridge.dom.FridgeItem;
-import com.app.afridge.dom.HistoryItem;
-import com.app.afridge.dom.ItemType;
-import com.app.afridge.interfaces.OnFragmentInteractionListener;
-import com.app.afridge.interfaces.Screenshotable;
-import com.app.afridge.ui.GalleryActivity;
-import com.app.afridge.ui.MainActivity;
-import com.app.afridge.utils.CircleTransform;
-import com.app.afridge.utils.Constants;
-import com.app.afridge.utils.FileUtils;
-import com.app.afridge.utils.KeyboardUtils;
-import com.app.afridge.utils.Log;
-import com.app.afridge.utils.SharedPrefStore;
-import com.app.afridge.views.AdvancedTextView;
-import com.gc.materialdesign.widgets.SnackBar;
-import com.melnykov.fab.FloatingActionButton;
-import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
-import com.sababado.circularview.CircularView;
-import com.sababado.circularview.Marker;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.Calendar;
@@ -337,6 +337,7 @@ public class AddItemFragment extends Fragment implements Screenshotable {
       fridgeItem.setType(type.equals(getString(R.string.type_camera)) ?
               mFileTemp.getAbsolutePath() : String.valueOf(ItemType.valueOf(type).ordinal()));
       fridgeItem.setItemId(fridgeItem.hashCode());
+      fridgeItem.setEditTimestamp(Calendar.getInstance().getTimeInMillis());
       fridgeItem.save();
 
       // remove instance to saved file

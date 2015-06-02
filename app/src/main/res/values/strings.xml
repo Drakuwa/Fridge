@@ -34,6 +34,7 @@
     <string name="label_item_expiration">Expiration date</string>
     <string name="shopping_list">SHOPPING LIST</string>
     <string name="last_edited">Last edited: %s</string>
+    <string name="last_synced">Last synced: %s</string>
     <string name="show_notifications">Show notifications</string>
     <string name="measurement_type">Measurement type</string>
     <string name="time_of_day">Time of day</string>

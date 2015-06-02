@@ -1,16 +1,9 @@
 package com.app.afridge.adapters;
 
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
 import com.app.afridge.dom.HistoryItem;
-import com.app.afridge.dom.ItemType;
+import com.app.afridge.dom.enums.ItemType;
 import com.app.afridge.interfaces.ClickListener;
 import com.app.afridge.utils.CircleTransform;
 import com.app.afridge.utils.Common;
@@ -18,6 +11,13 @@ import com.app.afridge.utils.Log;
 import com.app.afridge.views.AdvancedTextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.util.ArrayList;

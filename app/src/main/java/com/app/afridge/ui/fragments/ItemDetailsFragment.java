@@ -1,5 +1,27 @@
 package com.app.afridge.ui.fragments;
 
+import com.activeandroid.query.Select;
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.dom.enums.ChangeType;
+import com.app.afridge.dom.FridgeItem;
+import com.app.afridge.dom.HistoryItem;
+import com.app.afridge.dom.enums.ItemType;
+import com.app.afridge.interfaces.OnFragmentInteractionListener;
+import com.app.afridge.interfaces.OnMeasurementTypeChangeListener;
+import com.app.afridge.ui.MainActivity;
+import com.app.afridge.utils.AnimationsController;
+import com.app.afridge.utils.CircleTransform;
+import com.app.afridge.utils.Constants;
+import com.app.afridge.utils.KeyboardUtils;
+import com.app.afridge.utils.Log;
+import com.app.afridge.utils.SharedPrefStore;
+import com.app.afridge.views.AdvancedAutoCompleteTextView;
+import com.app.afridge.views.AdvancedTextView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -28,28 +50,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.activeandroid.query.Select;
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.dom.ChangeType;
-import com.app.afridge.dom.FridgeItem;
-import com.app.afridge.dom.HistoryItem;
-import com.app.afridge.dom.ItemType;
-import com.app.afridge.interfaces.OnFragmentInteractionListener;
-import com.app.afridge.interfaces.OnMeasurementTypeChangeListener;
-import com.app.afridge.ui.MainActivity;
-import com.app.afridge.utils.AnimationsController;
-import com.app.afridge.utils.CircleTransform;
-import com.app.afridge.utils.Constants;
-import com.app.afridge.utils.KeyboardUtils;
-import com.app.afridge.utils.Log;
-import com.app.afridge.utils.SharedPrefStore;
-import com.app.afridge.views.AdvancedAutoCompleteTextView;
-import com.app.afridge.views.AdvancedTextView;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.Calendar;
@@ -225,6 +225,7 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
         if (actionId == EditorInfo.IME_ACTION_DONE) {
           // save the change
           item.setQuantity(textQuantity.getText().toString());
+          item.setEditTimestamp(Calendar.getInstance().getTimeInMillis());
           item.save();
           KeyboardUtils.hideSoftKeyboard(textQuantity);
           textQuantity.clearFocus();
@@ -286,6 +287,7 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // set the new type of quantity
         item.setTypeOfQuantity(position);
+        item.setEditTimestamp(Calendar.getInstance().getTimeInMillis());
         item.save();
       }
 
@@ -488,6 +490,7 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
             if (!TextUtils.isEmpty(textEditName.getText())) {
               // save the item and set the new name
               item.setName(textEditName.getText().toString().trim());
+              item.setEditTimestamp(Calendar.getInstance().getTimeInMillis());
               item.save();
 
               TransitionManager.beginDelayedTransition((ViewGroup) containerView, new ChangeBounds());
@@ -540,6 +543,7 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
 
     // save the item and change the date
     item.setExpirationDate(calendar.getTimeInMillis() / 1000);
+    item.setEditTimestamp(Calendar.getInstance().getTimeInMillis());
     item.save();
     TransitionManager.beginDelayedTransition((ViewGroup) containerView, new ChangeText());
     textExpiration.setText(application.dateFormat.format(new Date(item.getExpirationDate() * 1000)));
@@ -581,6 +585,7 @@ public class ItemDetailsFragment extends DialogFragment implements DatePickerDia
     // delete the actual quantity to the item
     item.setTypeOfQuantity(-1);
     item.setQuantity("");
+    item.setEditTimestamp(Calendar.getInstance().getTimeInMillis());
     item.save();
 
     // update the values

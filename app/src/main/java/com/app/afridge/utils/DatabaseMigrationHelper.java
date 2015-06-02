@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.dom.FridgeItem;
-import com.app.afridge.dom.ItemType;
+import com.app.afridge.dom.enums.ItemType;
 import com.app.afridge.dom.NoteItem;
 
 import java.io.File;

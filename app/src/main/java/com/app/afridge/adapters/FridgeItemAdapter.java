@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
 import com.app.afridge.dom.FridgeItem;
-import com.app.afridge.dom.ItemType;
+import com.app.afridge.dom.enums.ItemType;
 import com.app.afridge.utils.CircleTransform;
 import com.app.afridge.views.AdvancedTextView;
 import com.squareup.picasso.Picasso;

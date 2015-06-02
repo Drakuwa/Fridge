@@ -1,7 +1,7 @@
 package com.app.afridge.adapters;
 
 import com.app.afridge.FridgeApplication;
-import com.app.afridge.dom.ItemType;
+import com.app.afridge.dom.enums.ItemType;
 import com.sababado.circularview.Marker;
 import com.sababado.circularview.SimpleCircularViewAdapter;
 
