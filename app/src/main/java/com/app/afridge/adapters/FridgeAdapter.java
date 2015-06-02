@@ -1,5 +1,26 @@
 package com.app.afridge.adapters;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.dom.FridgeItem;
+import com.app.afridge.dom.HistoryItem;
+import com.app.afridge.dom.enums.ChangeType;
+import com.app.afridge.dom.enums.ItemType;
+import com.app.afridge.interfaces.ClickListener;
+import com.app.afridge.ui.MainActivity;
+import com.app.afridge.ui.fragments.ItemDetailsFragment;
+import com.app.afridge.utils.AnimationsController;
+import com.app.afridge.utils.CircleTransform;
+import com.app.afridge.utils.Common;
+import com.app.afridge.utils.Constants;
+import com.app.afridge.utils.Log;
+import com.app.afridge.views.AdvancedTextView;
+import com.balysv.materialripple.MaterialRippleLayout;
+import com.gc.materialdesign.widgets.SnackBar;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,26 +34,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
-import com.afollestad.materialdialogs.AlertDialogWrapper;
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.dom.enums.ChangeType;
-import com.app.afridge.dom.FridgeItem;
-import com.app.afridge.dom.HistoryItem;
-import com.app.afridge.dom.enums.ItemType;
-import com.app.afridge.interfaces.ClickListener;
-import com.app.afridge.ui.MainActivity;
-import com.app.afridge.ui.fragments.ItemDetailsFragment;
-import com.app.afridge.utils.AnimationsController;
-import com.app.afridge.utils.CircleTransform;
-import com.app.afridge.utils.Common;
-import com.app.afridge.utils.Constants;
-import com.app.afridge.utils.Log;
-import com.app.afridge.views.AdvancedTextView;
-import com.gc.materialdesign.widgets.SnackBar;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -97,8 +98,16 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
     // create a new view
     // View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fridge, parent, false);
     // set the view's size, margins, padding and layout parameters
-    return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fridge, parent, false));
-
+    final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+    return new ViewHolder(
+            MaterialRippleLayout.on(inflater.inflate(R.layout.item_fridge, parent, false))
+                    .rippleOverlay(true)
+                    .rippleAlpha(0.2f)
+                    .rippleColor(0xFF585858)
+                    .rippleHover(true)
+                    .create()
+    );
+    // return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fridge, parent, false));
   }
 
   // Replace the contents of a view (invoked by the layout manager)

@@ -141,11 +141,18 @@
         android:id="@+id/divider_three"
         style="@style/DividerStyle" />
 
-    <com.gc.materialdesign.views.ButtonRectangle
+    <com.app.afridge.views.AdvancedTextView
         android:id="@+id/button_done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_margin="@dimen/padding_small"
         android:background="@color/primary"
-        android:text="@string/done" />
+        android:elevation="4dp"
+        android:gravity="center"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/done"
+        android:textColor="@color/text_icons"
+        android:textSize="@dimen/text_button_size"
+        font:customFont="@string/font_light" />
 </LinearLayout>

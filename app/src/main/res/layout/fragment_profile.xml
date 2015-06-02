@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout android:id="@+id/pull_to_refresh_sync"
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/pull_to_refresh_sync"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:font="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -112,11 +113,13 @@
             android:layout_gravity="bottom"
             android:layout_margin="@dimen/padding_small"
             android:background="#3b5998"
+            android:elevation="4dp"
             android:gravity="center"
             android:padding="@dimen/padding_normal"
             android:text="@string/facebook"
             android:textColor="@color/text_icons"
             android:textSize="@dimen/text_button_size"
+            android:visibility="gone"
             font:customFont="@string/font_light" />
 
         <com.app.afridge.views.AdvancedTextView
@@ -126,11 +129,13 @@
             android:layout_gravity="bottom"
             android:layout_margin="@dimen/padding_small"
             android:background="#4099ff"
+            android:elevation="4dp"
             android:gravity="center"
             android:padding="@dimen/padding_normal"
             android:text="@string/twitter"
             android:textColor="@color/text_icons"
             android:textSize="@dimen/text_button_size"
+            android:visibility="gone"
             font:customFont="@string/font_light" />
 
         <com.app.afridge.views.AdvancedTextView
@@ -140,42 +145,42 @@
             android:layout_gravity="bottom"
             android:layout_margin="@dimen/padding_small"
             android:background="#dd4b39"
+            android:elevation="4dp"
             android:gravity="center"
             android:padding="@dimen/padding_normal"
             android:text="@string/gplus"
             android:textColor="@color/text_icons"
             android:textSize="@dimen/text_button_size"
+            android:visibility="gone"
             font:customFont="@string/font_light" />
 
-        <RelativeLayout
+
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/text_last_synced"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button_logout"
+            android:layout_margin="@dimen/padding_small"
+            android:layout_weight="1"
+            android:gravity="end|bottom"
+            android:text="@string/last_synced"
+            android:textColor="@color/text_secondary"
+            font:customFont="@string/font_light" />
 
-            <com.app.afridge.views.AdvancedTextView
-                android:id="@+id/text_last_synced"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/button_logout"
-                android:layout_margin="@dimen/padding_small"
-                android:gravity="end"
-                android:text="@string/last_synced"
-                android:textColor="@color/text_secondary"
-                font:customFont="@string/font_light" />
-
-            <com.app.afridge.views.AdvancedTextView
-                android:id="@+id/button_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="@dimen/padding_small"
-                android:background="@color/primary"
-                android:gravity="center"
-                android:padding="@dimen/padding_normal"
-                android:text="@string/logout"
-                android:textColor="@color/text_icons"
-                android:textSize="@dimen/text_button_size"
-                font:customFont="@string/font_light" />
-        </RelativeLayout>
+        <com.app.afridge.views.AdvancedTextView
+            android:id="@+id/button_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/padding_small"
+            android:background="@color/primary"
+            android:elevation="4dp"
+            android:gravity="center"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/logout"
+            android:textColor="@color/text_icons"
+            android:textSize="@dimen/text_button_size"
+            font:customFont="@string/font_light" />
 
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

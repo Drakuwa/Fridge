@@ -7,6 +7,7 @@ import com.app.afridge.interfaces.OnFragmentInteractionListener;
 import com.app.afridge.ui.MainActivity;
 import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.AdvancedTextView;
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.gc.materialdesign.views.Slider;
 
 import android.app.Activity;
@@ -45,6 +46,8 @@ public class SettingsFragment extends DialogFragment {
   AdvancedTextView textWarningDays;
   @InjectView(R.id.text_measurement_type_value)
   AdvancedTextView textMeasurementTypeValue;
+  @InjectView(R.id.button_done)
+  AdvancedTextView buttonDone;
 
   private FridgeApplication application;
 
@@ -87,7 +90,6 @@ public class SettingsFragment extends DialogFragment {
                            Bundle savedInstanceState) {
     // Inflate the layout for this fragment
     View containerView = inflater.inflate(R.layout.fragment_settings, container, false);
-
     // inject and return the view
     ButterKnife.inject(this, containerView);
     return containerView;
@@ -151,6 +153,12 @@ public class SettingsFragment extends DialogFragment {
 
     textMeasurementTypeValue.setText(application.getResources().getStringArray(R.array.measurement_type_array)[
             application.prefStore.getInt(SharedPrefStore.Pref.SETTINGS_MEASUREMENT_TYPE)]);
+
+    MaterialRippleLayout.on(buttonDone)
+            .rippleOverlay(true)
+            .rippleAlpha(0.2f)
+            .rippleColor(0xFF585858)
+            .create();
   }
 
   @Override

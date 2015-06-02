@@ -21,6 +21,7 @@ import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.utils.SyncUtils;
 import com.app.afridge.utils.TimeSpans;
 import com.app.afridge.views.AdvancedTextView;
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.cloudant.sync.datastore.ConflictException;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
@@ -253,6 +254,9 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
 
     // set swipe to refresh listener
     setSwipeListener();
+
+    // initialize ripple layout
+    initRippleLayout();
   }
 
   @Override
@@ -659,5 +663,35 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
       // refresh the sync timestamp
       setLastSyncTimestamp();
     }
+  }
+
+  /**
+   * Add ripple effect to the buttons
+   */
+  private void initRippleLayout() {
+    MaterialRippleLayout.on(buttonLogout)
+            .rippleOverlay(true)
+            .rippleAlpha(0.2f)
+            .rippleColor(0xFF585858)
+            .rippleHover(true)
+            .create();
+    MaterialRippleLayout.on(buttonFacebook)
+            .rippleOverlay(true)
+            .rippleAlpha(0.2f)
+            .rippleColor(0xFF585858)
+            .rippleHover(true)
+            .create();
+    MaterialRippleLayout.on(buttonTwitter)
+            .rippleOverlay(true)
+            .rippleAlpha(0.2f)
+            .rippleColor(0xFF585858)
+            .rippleHover(true)
+            .create();
+    MaterialRippleLayout.on(buttonGplus)
+            .rippleOverlay(true)
+            .rippleAlpha(0.2f)
+            .rippleColor(0xFF585858)
+            .rippleHover(true)
+            .create();
   }
 }

@@ -1,5 +1,16 @@
 package com.app.afridge.ui.fragments.wizard;
 
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.interfaces.FragmentLifecycle;
+import com.app.afridge.ui.FirstTimeWizardActivity;
+import com.app.afridge.utils.AnimationsController;
+import com.app.afridge.utils.SharedPrefStore;
+import com.app.afridge.views.AdvancedTextView;
+import com.app.afridge.views.SlideSwitch;
+import com.app.afridge.views.Typewriter;
+import com.balysv.materialripple.MaterialRippleLayout;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,15 +21,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
-
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.interfaces.FragmentLifecycle;
-import com.app.afridge.ui.FirstTimeWizardActivity;
-import com.app.afridge.utils.AnimationsController;
-import com.app.afridge.utils.SharedPrefStore;
-import com.app.afridge.views.SlideSwitch;
-import com.app.afridge.views.Typewriter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -53,6 +55,8 @@ public class CustomizeFragment extends Fragment implements FragmentLifecycle {
   View separator2;
   @InjectView(R.id.separator3)
   View separator3;
+  @InjectView(R.id.button_done)
+  AdvancedTextView buttonDone;
 
   private FridgeApplication application;
   private int bottomMargin = 0;
@@ -146,6 +150,7 @@ public class CustomizeFragment extends Fragment implements FragmentLifecycle {
       textShowNotification.setVisibility(View.INVISIBLE);
       textMeasurementTypeValue.setVisibility(View.INVISIBLE);
       checkBoxShowNotifications.setVisibility(View.INVISIBLE);
+      buttonDone.setVisibility(View.INVISIBLE);
       separator1.setAlpha(0f);
       separator2.setAlpha(0f);
       separator3.setAlpha(0f);
@@ -185,6 +190,12 @@ public class CustomizeFragment extends Fragment implements FragmentLifecycle {
         checkBoxShowNotifications.setChecked(application.prefStore.getBoolean(SharedPrefStore.Pref.SETTINGS_SHOW_NOTIFICATION));
       }
     });
+
+    MaterialRippleLayout.on(buttonDone)
+            .rippleOverlay(true)
+            .rippleAlpha(0.2f)
+            .rippleColor(0xFF585858)
+            .create();
   }
 
   @OnClick(R.id.text_measurement_type_metric)
@@ -237,6 +248,7 @@ public class CustomizeFragment extends Fragment implements FragmentLifecycle {
             AnimationsController.fadeIn(textShowNotification);
             AnimationsController.fadeIn(textMeasurementTypeValue);
             AnimationsController.fadeIn(checkBoxShowNotifications);
+            AnimationsController.fadeIn(buttonDone);
             AnimationsController.fadeInAndScale(separator1);
             AnimationsController.fadeInAndScale(separator2);
             AnimationsController.fadeInAndScale(separator3);
