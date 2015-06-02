@@ -32,4 +32,13 @@
         <item name="android:background">@color/divider</item>
     </style>
 
+    <style name="DialogTheme" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/MyAnimation.Window</item>
+    </style>
+
+    <style name="MyAnimation.Window" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/in</item>
+        <item name="android:windowExitAnimation">@anim/out</item>
+    </style>
+
 </resources>
