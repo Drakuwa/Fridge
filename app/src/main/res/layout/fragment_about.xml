@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:font="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/holder_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/material_background"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/padding_normal"
+                android:src="@drawable/ic_clear" />
+
+            <ImageView
+                android:id="@+id/image_logo"
+                android:layout_width="@dimen/profile_image_size"
+                android:layout_height="@dimen/profile_image_size"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/padding_normal"
+                android:layout_marginEnd="@dimen/padding_normal"
+                android:layout_marginStart="@dimen/padding_normal"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/ic_launcher" />
+
+            <com.app.afridge.views.AdvancedTextView
+                android:id="@+id/text_app_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                android:paddingTop="@dimen/padding_normal"
+                android:text="@string/app_name"
+                android:textColor="@color/text_icons"
+                android:textSize="@dimen/text_size_large"
+                font:customFont="@string/font_light" />
+
+            <com.app.afridge.views.AdvancedTextView
+                android:id="@+id/text_app_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/app_version"
+                android:textColor="@color/text_icons"
+                android:textSize="@dimen/text_size_small"
+                font:customFont="@string/font_bold" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <com.app.afridge.views.AdvancedTextView
+                android:id="@+id/text_random_stat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_label"
+                android:drawableStart="@drawable/ic_random"
+                android:gravity="start|center_vertical"
+                android:padding="@dimen/padding_normal"
+                android:text="@string/app_name_motto"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_medium"
+                font:customFont="@string/font_light" />
+
+            <com.app.afridge.views.AdvancedTextView
+                android:id="@+id/text_login_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_small"
+                android:padding="@dimen/padding_normal"
+                android:text="@string/text_about"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_medium"
+                font:customFont="@string/font_light" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

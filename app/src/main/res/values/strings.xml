@@ -92,6 +92,7 @@
     <!--menu-->
     <string name="menu_fridge_notes">Fridge Notes</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_about">About</string>
     <string name="menu_history">History</string>
     <string name="menu_feedback">Feedback</string>
     <string name="menu_profile">Profile</string>
@@ -119,5 +120,10 @@
     <string name="label_expired">expired: </string>
     <string name="title_notification">Expiration date warning</string>
     <string name="title_notification_deleted">Item deleted</string>
+    <string name="text_about">Fridge is a virtual refrigerator organizer that keeps track of all your fridge items. Never again forget what you have in your refrigerator, let an item expire, or what you need to buy, with the help of this handy organizer application.\n\nFridge is an open source project, and the application code can be found at: https://github.com/Drakuwa/aFridge</string>
+    <string name="text_donate">If you like the application and want me to continue with its development, you can donate ..</string>
+    <string name="text_github">https://github.com/Drakuwa/aFridge</string>
+    <string name="app_version">Version: %s</string>
+    <string name="app_name_motto">Fridge - A Virtual Companion</string>
 
 </resources>

@@ -11,6 +11,7 @@ public enum MenuType {
   HISTORY,
   PROFILE,
   SETTINGS,
+  ABOUT,
   FEEDBACK;
 
   public int getItemOrdinal(ItemType item) {

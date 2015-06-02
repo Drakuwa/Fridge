@@ -12,6 +12,7 @@ import com.app.afridge.interfaces.OnMeasurementTypeChangeListener;
 import com.app.afridge.interfaces.Screenshotable;
 import com.app.afridge.receivers.BootReceiver;
 import com.app.afridge.services.ExpirationDateService;
+import com.app.afridge.ui.fragments.AboutFragment;
 import com.app.afridge.ui.fragments.AddItemFallbackFragment;
 import com.app.afridge.ui.fragments.AddItemFragment;
 import com.app.afridge.ui.fragments.FridgeFragment;
@@ -141,6 +142,7 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         menuObjects.add(MenuType.PROFILE.ordinal(), new MenuObject(R.drawable.ic_user, getString(R.string.menu_login)));
       }
       menuObjects.add(MenuType.SETTINGS.ordinal(), new MenuObject(R.drawable.ic_settings, getString(R.string.menu_settings)));
+      menuObjects.add(MenuType.ABOUT.ordinal(), new MenuObject(R.drawable.ic_about, getString(R.string.menu_about)));
       menuObjects.add(MenuType.FEEDBACK.ordinal(), new MenuObject(R.drawable.ic_mail, getString(R.string.menu_feedback)));
 
       // status bar height margin hack
@@ -404,6 +406,13 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
               .replace(R.id.container, HistoryFragment.getInstance(bottomMargin))
               .setTransition(FragmentTransaction.TRANSIT_NONE)
               .commit();
+    }
+    else if (i == MenuType.ABOUT.ordinal()) {
+      // About
+      FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+      fragmentTransaction.addToBackStack(null);
+      DialogFragment fragment = AboutFragment.getInstance();
+      fragment.show(fragmentTransaction, "about");
     }
     else if (i == MenuType.FEEDBACK.ordinal()) {
       // Feedback
