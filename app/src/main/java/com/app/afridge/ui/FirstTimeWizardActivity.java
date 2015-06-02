@@ -1,14 +1,5 @@
 package com.app.afridge.ui;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
 import com.app.afridge.interfaces.FragmentLifecycle;
@@ -22,6 +13,15 @@ import com.app.afridge.views.NonSwipableViewPager;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
 // import android.os.PersistableBundle;
 
 
@@ -32,145 +32,147 @@ import com.viewpagerindicator.PageIndicator;
  */
 public class FirstTimeWizardActivity extends AbstractActivity {
 
-  private NonSwipableViewPager pager;
-  private static final int[] TAB_TITLES = new int[] {1, 2, 3, 4};
+    private static final int[] TAB_TITLES = new int[]{1, 2, 3, 4};
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+    private NonSwipableViewPager pager;
 
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_first_time_wizard);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
-    // initialize the application
-    FridgeApplication application = (FridgeApplication) getApplication();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_first_time_wizard);
 
-    // set the PREF to true
-    application.prefStore.setBoolean(SharedPrefStore.Pref.FIRST_TIME_WIZARD_COMPLETE, true);
+        // initialize the application
+        FridgeApplication application = (FridgeApplication) getApplication();
 
-    // set up a FragmentTitleAdapter from the support library
-    FragmentPagerAdapter adapter = new FragmentTitleAdapter(getSupportFragmentManager());
+        // set the PREF to true
+        application.prefStore.setBoolean(SharedPrefStore.Pref.FIRST_TIME_WIZARD_COMPLETE, true);
 
-    // initialize the ViewPager with the FragmentTitleAdapter adapter
-    pager = (NonSwipableViewPager) findViewById(R.id.viewpager);
-    pager.setTransitionEffect(JazzyViewPager.TransitionEffect.ZoomOutAndIn);
-    pager.setAdapter(adapter);
+        // set up a FragmentTitleAdapter from the support library
+        FragmentPagerAdapter adapter = new FragmentTitleAdapter(getSupportFragmentManager());
 
-    // set the page indicator
-    PageIndicator mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-    mIndicator.setViewPager(pager);
+        // initialize the ViewPager with the FragmentTitleAdapter adapter
+        pager = (NonSwipableViewPager) findViewById(R.id.viewpager);
+        pager.setTransitionEffect(JazzyViewPager.TransitionEffect.ZoomOutAndIn);
+        pager.setAdapter(adapter);
 
-    mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        // set the page indicator
+        PageIndicator mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        mIndicator.setViewPager(pager);
 
-      int currentPosition = 0;
+        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-      @Override
-      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            int currentPosition = 0;
 
-      }
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                    int positionOffsetPixels) {
 
-      @Override
-      public void onPageSelected(int position) {
+            }
 
-        setPagingEnabled(false);
+            @Override
+            public void onPageSelected(int position) {
 
-        FragmentLifecycle fragmentToShow = (FragmentLifecycle) ((FragmentTitleAdapter) pager.getAdapter()).getItem(position);
-        fragmentToShow.onResumeFragment();
+                setPagingEnabled(false);
 
-        FragmentLifecycle fragmentToHide = (FragmentLifecycle) ((FragmentTitleAdapter) pager.getAdapter()).getItem(currentPosition);
-        fragmentToHide.onPauseFragment();
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle) ((FragmentTitleAdapter) pager
+                        .getAdapter()).getItem(position);
+                fragmentToShow.onResumeFragment();
 
-        currentPosition = position;
-      }
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle) ((FragmentTitleAdapter) pager
+                        .getAdapter()).getItem(currentPosition);
+                fragmentToHide.onPauseFragment();
 
-      @Override
-      public void onPageScrollStateChanged(int state) {
+                currentPosition = position;
+            }
 
-      }
-    });
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
-    // status and navigation bar height margin hack
-    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) findViewById(R.id.height_hack).getLayoutParams();
-    params.height = bottomMargin;
-    findViewById(R.id.height_hack).setLayoutParams(params);
-    LinearLayout.LayoutParams paramsStatus = (LinearLayout.LayoutParams) findViewById(R.id.status_height_hack).getLayoutParams();
-    paramsStatus.height = statusBarHeight;
-    findViewById(R.id.status_height_hack).setLayoutParams(paramsStatus);
-  }
+            }
+        });
 
-  @Override
-  public void onBackPressed() {
-
-    if (pager.getCurrentItem() == 0) {
-      // If the user is currently looking at the first step, allow the system to handle the
-      // Back button. This calls finish() on this activity and pops the back stack.
-      startMainActivity();
-      // super.onBackPressed();
-    }
-    else {
-      // Otherwise, select the previous step.
-      pager.setCurrentItem(pager.getCurrentItem() - 1);
-    }
-  }
-
-  public void startMainActivity() {
-
-    Intent mainIntent = new Intent(FirstTimeWizardActivity.this, MainActivity.class);
-    startActivity(mainIntent);
-    finish();
-    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-  }
-
-  public void setPagingEnabled(boolean isPagingEnabled) {
-
-    pager.setPagingEnabled(isPagingEnabled);
-  }
-
-  /**
-   * Titles provider class for the ViewPager
-   */
-  class FragmentTitleAdapter extends FragmentPagerAdapter {
-
-    public FragmentTitleAdapter(FragmentManager fm) {
-
-      super(fm);
+        // status and navigation bar height margin hack
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) findViewById(
+                R.id.height_hack).getLayoutParams();
+        params.height = bottomMargin;
+        findViewById(R.id.height_hack).setLayoutParams(params);
+        LinearLayout.LayoutParams paramsStatus = (LinearLayout.LayoutParams) findViewById(
+                R.id.status_height_hack).getLayoutParams();
+        paramsStatus.height = statusBarHeight;
+        findViewById(R.id.status_height_hack).setLayoutParams(paramsStatus);
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public void onBackPressed() {
 
-      if (position == 0) {
-        return WelcomeFragment.newInstance(bottomMargin);
-      }
-      else if (position == 1) {
-        return SocialLoginFragment.newInstance(bottomMargin);
-      }
-      else if (position == 2) {
-        return ShoppingListFragment.newInstance(bottomMargin);
-      }
-      else if (position == 3) {
-        return CustomizeFragment.newInstance(bottomMargin);
-      }
-      return WelcomeFragment.newInstance(bottomMargin);
+        if (pager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            startMainActivity();
+            // super.onBackPressed();
+        } else {
+            // Otherwise, select the previous step.
+            pager.setCurrentItem(pager.getCurrentItem() - 1);
+        }
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
+    public void startMainActivity() {
 
-      return getString(TAB_TITLES[position % TAB_TITLES.length]);
+        Intent mainIntent = new Intent(FirstTimeWizardActivity.this, MainActivity.class);
+        startActivity(mainIntent);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    @Override
-    public int getCount() {
+    public void setPagingEnabled(boolean isPagingEnabled) {
 
-      return TAB_TITLES.length;
+        pager.setPagingEnabled(isPagingEnabled);
     }
 
-    @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
+    /**
+     * Titles provider class for the ViewPager
+     */
+    class FragmentTitleAdapter extends FragmentPagerAdapter {
 
-      Object obj = super.instantiateItem(container, position);
-      pager.setObjectForPosition(obj, position);
-      return obj;
+        public FragmentTitleAdapter(FragmentManager fm) {
+
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            if (position == 0) {
+                return WelcomeFragment.newInstance(bottomMargin);
+            } else if (position == 1) {
+                return SocialLoginFragment.newInstance(bottomMargin);
+            } else if (position == 2) {
+                return ShoppingListFragment.newInstance(bottomMargin);
+            } else if (position == 3) {
+                return CustomizeFragment.newInstance(bottomMargin);
+            }
+            return WelcomeFragment.newInstance(bottomMargin);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+
+            return getString(TAB_TITLES[position % TAB_TITLES.length]);
+        }
+
+        @Override
+        public int getCount() {
+
+            return TAB_TITLES.length;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+
+            Object obj = super.instantiateItem(container, position);
+            pager.setObjectForPosition(obj, position);
+            return obj;
+        }
     }
-  }
 }

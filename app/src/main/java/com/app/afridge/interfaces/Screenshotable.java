@@ -10,7 +10,7 @@ import android.graphics.Bitmap;
  */
 public interface Screenshotable {
 
-  public void takeScreenShot();
+    public void takeScreenShot();
 
-  public Bitmap getBitmap();
+    public Bitmap getBitmap();
 }

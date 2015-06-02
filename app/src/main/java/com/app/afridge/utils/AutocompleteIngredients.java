@@ -14,27 +14,26 @@ import java.util.List;
  */
 public class AutocompleteIngredients {
 
-  private List<Ingredient> ingredients = new ArrayList<>();
+    private List<Ingredient> ingredients = new ArrayList<>();
 
-  public AutocompleteIngredients() {
+    public AutocompleteIngredients() {
 
-    try {
-      ingredients = new Select().from(Ingredient.class).execute();
+        try {
+            ingredients = new Select().from(Ingredient.class).execute();
+        } catch (Exception e) {
+            Log.e(Log.TAG, "Exception: " + e.getLocalizedMessage());
+        }
     }
-    catch (Exception e) {
-      Log.e(Log.TAG, "Exception: " + e.getLocalizedMessage());
-    }
-  }
 
-  public ArrayList<String> autocomplete(String input) {
+    public ArrayList<String> autocomplete(String input) {
 
-    input = input.toLowerCase();
-    ArrayList<String> resultList = new ArrayList<String>();
-    for (Ingredient ingredient : ingredients) {
-      if (ingredient.getName().contains(input)) {
-        resultList.add(ingredient.getName());
-      }
+        input = input.toLowerCase();
+        ArrayList<String> resultList = new ArrayList<String>();
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getName().contains(input)) {
+                resultList.add(ingredient.getName());
+            }
+        }
+        return resultList;
     }
-    return resultList;
-  }
 }

@@ -19,84 +19,90 @@ import java.lang.reflect.Field;
  */
 public abstract class AbstractActivity extends AppCompatActivity {
 
-  // utilities
-  protected FridgeApplication application;
-  protected int bottomMargin = 0;
-  protected int statusBarHeight = 0;
-  private boolean isTablet;
+    // utilities
+    protected FridgeApplication application;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+    protected int bottomMargin = 0;
 
-    super.onCreate(savedInstanceState);
+    protected int statusBarHeight = 0;
 
-    // get the application instance
-    application = ((FridgeApplication) getApplication());
+    private boolean isTablet;
 
-    // action bar indeterminate progress bar feature
-    if (savedInstanceState == null) {
-      supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        // get the application instance
+        application = ((FridgeApplication) getApplication());
+
+        // action bar indeterminate progress bar feature
+        if (savedInstanceState == null) {
+            supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        }
+
+        // set the margin hack for translucent versions of the app
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            bottomMargin = getResources()
+                    .getDimensionPixelSize(getResources()
+                            .getIdentifier("navigation_bar_height", "dimen", "android"));
+            statusBarHeight = getResources()
+                    .getDimensionPixelSize(
+                            getResources().getIdentifier("status_bar_height", "dimen", "android"));
+
+        }
+
+        // allow transitions for Lollipop devices
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        }
+
+        // hack for devices with physical menu key to have action bar overflow menu
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception ignored) {
+
+        }
     }
 
-    // set the margin hack for translucent versions of the app
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      Window w = getWindow();
-      w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-      w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    @Override
+    protected void onResume() {
 
-      bottomMargin = getResources()
-              .getDimensionPixelSize(getResources().getIdentifier("navigation_bar_height", "dimen", "android"));
-      statusBarHeight = getResources()
-              .getDimensionPixelSize(getResources().getIdentifier("status_bar_height", "dimen", "android"));
-
+        super.onResume();
+        FridgeApplication.activityResumed();
     }
 
-    // allow transitions for Lollipop devices
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-      getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+        FridgeApplication.activityPaused();
     }
 
-    // hack for devices with physical menu key to have action bar overflow menu
-    try {
-      ViewConfiguration config = ViewConfiguration.get(this);
-      Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-      if (menuKeyField != null) {
-        menuKeyField.setAccessible(true);
-        menuKeyField.setBoolean(config, false);
-      }
+    public void showProgress(boolean visible) {
+
+        setSupportProgressBarIndeterminateVisibility(visible);
     }
-    catch (Exception ignored) {
 
+    public boolean isTablet() {
+
+        return isTablet;
     }
-  }
 
-  @Override
-  protected void onResume() {
+    public void setIsTablet(boolean isPhone) {
 
-    super.onResume();
-    FridgeApplication.activityResumed();
-  }
-
-  @Override
-  protected void onPause() {
-
-    super.onPause();
-    FridgeApplication.activityPaused();
-  }
-
-  public void showProgress(boolean visible) {
-
-    setSupportProgressBarIndeterminateVisibility(visible);
-  }
-
-  public boolean isTablet() {
-
-    return isTablet;
-  }
-
-  public void setIsTablet(boolean isPhone) {
-
-    this.isTablet = isPhone;
-  }
+        this.isTablet = isPhone;
+    }
 }

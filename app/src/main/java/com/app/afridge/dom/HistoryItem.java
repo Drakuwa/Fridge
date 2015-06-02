@@ -14,64 +14,66 @@ import com.app.afridge.dom.enums.ChangeType;
 @Table(name = "HistoryItems")
 public class HistoryItem extends Model {
 
-  @Column(name = "item")
-  private FridgeItem fridgeItem;
-  @Column(name = "timestamp", index = true)
-  private long timestamp;
-  @Column(name = "change_type")
-  private ChangeType changeType; // ADD, MODIFY, DELETE
+    @Column(name = "item")
+    private FridgeItem fridgeItem;
 
-  public HistoryItem() {
-    // empty constructor
-    super();
-  }
+    @Column(name = "timestamp", index = true)
+    private long timestamp;
 
-  public HistoryItem(FridgeItem fridgeItem, long timestamp, ChangeType changeType) {
+    @Column(name = "change_type")
+    private ChangeType changeType; // ADD, MODIFY, DELETE
 
-    super();
-    this.fridgeItem = fridgeItem;
-    this.timestamp = timestamp;
-    this.changeType = changeType;
-  }
+    public HistoryItem() {
+        // empty constructor
+        super();
+    }
 
-  public FridgeItem getFridgeItem() {
+    public HistoryItem(FridgeItem fridgeItem, long timestamp, ChangeType changeType) {
 
-    return fridgeItem;
-  }
+        super();
+        this.fridgeItem = fridgeItem;
+        this.timestamp = timestamp;
+        this.changeType = changeType;
+    }
 
-  public void setFridgeItem(FridgeItem fridgeItem) {
+    public FridgeItem getFridgeItem() {
 
-    this.fridgeItem = fridgeItem;
-  }
+        return fridgeItem;
+    }
 
-  public long getTimestamp() {
+    public void setFridgeItem(FridgeItem fridgeItem) {
 
-    return timestamp;
-  }
+        this.fridgeItem = fridgeItem;
+    }
 
-  public void setTimestamp(long timestamp) {
+    public long getTimestamp() {
 
-    this.timestamp = timestamp;
-  }
+        return timestamp;
+    }
 
-  public ChangeType getChangeType() {
+    public void setTimestamp(long timestamp) {
 
-    return changeType;
-  }
+        this.timestamp = timestamp;
+    }
 
-  public void setChangeType(ChangeType changeType) {
+    public ChangeType getChangeType() {
 
-    this.changeType = changeType;
-  }
+        return changeType;
+    }
 
-  @Override
-  public String toString() {
+    public void setChangeType(ChangeType changeType) {
 
-    String details = "";
-    details += "id: " + getId() + "\n";
-    details += "fridge item: " + getFridgeItem().toString() + "\n";
-    details += "timestamp: " + getTimestamp() + "\n";
-    details += "change type: " + getChangeType() + "\n";
-    return details;
-  }
+        this.changeType = changeType;
+    }
+
+    @Override
+    public String toString() {
+
+        String details = "";
+        details += "id: " + getId() + "\n";
+        details += "fridge item: " + getFridgeItem().toString() + "\n";
+        details += "timestamp: " + getTimestamp() + "\n";
+        details += "change type: " + getChangeType() + "\n";
+        return details;
+    }
 }

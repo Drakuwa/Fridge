@@ -13,50 +13,51 @@ import com.activeandroid.annotation.Table;
 @Table(name = "Ingredients")
 public class Ingredient extends Model {
 
-  @Column(name = "ingredient_id", index = true)
-  private int id;
-  @Column(name = "name")
-  private String name;
+    @Column(name = "ingredient_id", index = true)
+    private int id;
 
-  public Ingredient() {
-    // empty constructor
-    super();
-  }
+    @Column(name = "name")
+    private String name;
 
-  public Ingredient(int id, String name) {
+    public Ingredient() {
+        // empty constructor
+        super();
+    }
 
-    super();
-    this.id = id;
-    this.name = name;
-  }
+    public Ingredient(int id, String name) {
 
-  public int getIngredientId() {
+        super();
+        this.id = id;
+        this.name = name;
+    }
 
-    return id;
-  }
+    public int getIngredientId() {
 
-  public void setIngredientId(int id) {
+        return id;
+    }
 
-    this.id = id;
-  }
+    public void setIngredientId(int id) {
 
-  public String getName() {
+        this.id = id;
+    }
 
-    return name;
-  }
+    public String getName() {
 
-  public void setName(String name) {
+        return name;
+    }
 
-    this.name = name;
-  }
+    public void setName(String name) {
 
-  @Override
-  public String toString() {
+        this.name = name;
+    }
 
-    String ingredient = "";
-    ingredient += "id: " + getId() + "\n";
-    ingredient += "ingredient_id: " + getIngredientId() + "\n";
-    ingredient += "name: " + getName() + "\n";
-    return ingredient;
-  }
+    @Override
+    public String toString() {
+
+        String ingredient = "";
+        ingredient += "id: " + getId() + "\n";
+        ingredient += "ingredient_id: " + getIngredientId() + "\n";
+        ingredient += "name: " + getName() + "\n";
+        return ingredient;
+    }
 }

@@ -35,106 +35,107 @@ import retrofit.converter.GsonConverter;
  */
 public class FridgeApplication extends Application {
 
-  // storage
-  public SharedPrefStore prefStore;
+    private static boolean activityVisible;
 
-  // utils
-  public SimpleDateFormat dateFormat;
+    // storage
+    public SharedPrefStore prefStore;
 
-  // api
-  public RestService api;
-  public Gson gson;
-  public AuthState authState;
+    // utils
+    public SimpleDateFormat dateFormat;
 
-  public HashMap<Integer, ItemType> types = new HashMap<>(ItemType.DRAWABLES.length);
+    // api
+    public RestService api;
 
-  public int screenWidth, screenHeight;
+    public Gson gson;
 
-  public static boolean isActivityVisible() {
+    public AuthState authState;
 
-    return activityVisible;
-  }
+    public HashMap<Integer, ItemType> types = new HashMap<>(ItemType.DRAWABLES.length);
 
-  public static void activityResumed() {
+    public int screenWidth, screenHeight;
 
-    activityVisible = true;
-  }
+    public static boolean isActivityVisible() {
 
-  public static void activityPaused() {
-
-    activityVisible = false;
-  }
-
-  private static boolean activityVisible;
-
-  @Override
-  public void onCreate() {
-
-    super.onCreate();
-
-    // initialize the crash reporting system
-    if (BuildConfig.DEBUG) {
-      Crashlytics.start(this);
+        return activityVisible;
     }
 
-    // initialize the ActiveAndroid library
-    ActiveAndroid.initialize(this);
+    public static void activityResumed() {
 
-    // initialize the API
-    gson = new GsonBuilder().create();
-    RestAdapter loginAdapter = new RestAdapter.Builder()
-            .setEndpoint(Constants.SERVER_HOST)
-            .setConverter(new GsonConverter(gson))
-            .setLogLevel(RestAdapter.LogLevel.FULL)
-            .setLog(new RestAdapter.Log() {
-
-              @Override
-              public void log(String msg) {
-
-                Log.d(Log.TAG, "RETROFIT: " + msg);
-              }
-            })
-            .build();
-    api = new RestService(loginAdapter);
-
-    // initialize the shared preferences manager
-    prefStore = SharedPrefStore.load(this);
-
-    // initialize the user authentication state
-    authState = AuthState.load(gson, prefStore);
-
-    // initialize the custom date formatter
-    dateFormat = CustomDateFormatter.getInstance().getDateFormat();
-
-    // initialize the HashMap
-    for (ItemType item : ItemType.values()) {
-      types.put(ItemType.DRAWABLES[item.ordinal()], item);
+        activityVisible = true;
     }
 
-    // get screen size
-    WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-    Display display = wm.getDefaultDisplay();
+    public static void activityPaused() {
 
-    if (Common.versionAtLeast(13)) {
-      Point size = new Point();
-      display.getSize(size);
-      screenWidth = size.x;
-      screenHeight = size.y;
-    }
-    else {
-      screenWidth = display.getWidth();  // deprecated
-      screenHeight = display.getHeight(); // deprecated
+        activityVisible = false;
     }
 
-    // try to migrate old database users
-    if (!prefStore.getBoolean(SharedPrefStore.Pref.HAS_MIGRATED)) {
-      new DatabaseMigrationAsyncTask(this).execute();
-    }
-  }
+    @Override
+    public void onCreate() {
 
-  @Override
-  protected void attachBaseContext(Context base) {
-    super.attachBaseContext(base);
-    MultiDex.install(this);
-  }
+        super.onCreate();
+
+        // initialize the crash reporting system
+        if (BuildConfig.DEBUG) {
+            Crashlytics.start(this);
+        }
+
+        // initialize the ActiveAndroid library
+        ActiveAndroid.initialize(this);
+
+        // initialize the API
+        gson = new GsonBuilder().create();
+        RestAdapter loginAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constants.SERVER_HOST)
+                .setConverter(new GsonConverter(gson))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLog(new RestAdapter.Log() {
+
+                    @Override
+                    public void log(String msg) {
+
+                        Log.d(Log.TAG, "RETROFIT: " + msg);
+                    }
+                })
+                .build();
+        api = new RestService(loginAdapter);
+
+        // initialize the shared preferences manager
+        prefStore = SharedPrefStore.load(this);
+
+        // initialize the user authentication state
+        authState = AuthState.load(gson, prefStore);
+
+        // initialize the custom date formatter
+        dateFormat = CustomDateFormatter.getInstance().getDateFormat();
+
+        // initialize the HashMap
+        for (ItemType item : ItemType.values()) {
+            types.put(ItemType.DRAWABLES[item.ordinal()], item);
+        }
+
+        // get screen size
+        WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+
+        if (Common.versionAtLeast(13)) {
+            Point size = new Point();
+            display.getSize(size);
+            screenWidth = size.x;
+            screenHeight = size.y;
+        } else {
+            screenWidth = display.getWidth();  // deprecated
+            screenHeight = display.getHeight(); // deprecated
+        }
+
+        // try to migrate old database users
+        if (!prefStore.getBoolean(SharedPrefStore.Pref.HAS_MIGRATED)) {
+            new DatabaseMigrationAsyncTask(this).execute();
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

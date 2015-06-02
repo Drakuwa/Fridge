@@ -16,21 +16,21 @@ import retrofit.http.GET;
  */
 public class RestService {
 
-  // create service objects from the interfaces
-  public FCService fcService;
+    // create service objects from the interfaces
+    public FCService fcService;
 
-  public RestService(RestAdapter restAdapter) {
+    public RestService(RestAdapter restAdapter) {
 
-    fcService = restAdapter.create(FCService.class);
-  }
+        fcService = restAdapter.create(FCService.class);
+    }
 
-  /**
-   * FridgeCheck service
-   */
-  public interface FCService {
+    /**
+     * FridgeCheck service
+     */
+    public interface FCService {
 
-    // GET /ing.php - get an ingredients list
-    @GET("/ing.php")
-    void getIngredients(Callback<List<IngredientHelper>> callback);
-  }
+        // GET /ing.php - get an ingredients list
+        @GET("/ing.php")
+        void getIngredients(Callback<List<IngredientHelper>> callback);
+    }
 }

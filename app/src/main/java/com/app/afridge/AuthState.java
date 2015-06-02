@@ -16,62 +16,63 @@ import android.support.annotation.Nullable;
  */
 public class AuthState {
 
-  private final Gson gson;
-  private final SharedPrefStore prefStore;
-  private User authenticatedUser;
+    private final Gson gson;
 
-  public static AuthState load(Gson gson, SharedPrefStore store) {
+    private final SharedPrefStore prefStore;
 
-    String userJson = store.getString(SharedPrefStore.Pref.USER);
-    User user = null;
-    if (userJson != null) {
-      user = gson.fromJson(userJson, User.class);
+    private User authenticatedUser;
+
+    private AuthState(Gson gson, SharedPrefStore prefStore,
+            @Nullable
+            User authenticatedUser) {
+
+        this.gson = gson;
+        this.prefStore = prefStore;
+        this.authenticatedUser = authenticatedUser;
     }
-    return new AuthState(gson, store, user);
-  }
 
-  private AuthState(Gson gson, SharedPrefStore prefStore,
-                    @Nullable
-                    User authenticatedUser) {
+    public static AuthState load(Gson gson, SharedPrefStore store) {
 
-    this.gson = gson;
-    this.prefStore = prefStore;
-    this.authenticatedUser = authenticatedUser;
-  }
-
-  synchronized public void setUser(User user) {
-    // Preconditions.checkNotNull(user);
-    if (user != null) {
-      if (authenticatedUser != user) {
-        prefStore.set(SharedPrefStore.Pref.USER, gson.toJson(user));
-      }
-      authenticatedUser = user;
-
-      Log.d("Login", user.toString());
+        String userJson = store.getString(SharedPrefStore.Pref.USER);
+        User user = null;
+        if (userJson != null) {
+            user = gson.fromJson(userJson, User.class);
+        }
+        return new AuthState(gson, store, user);
     }
-  }
 
-  synchronized public void clearUser() {
+    synchronized public void clearUser() {
 
-    if (authenticatedUser != null) {
-      prefStore.clear(SharedPrefStore.Pref.USER);
+        if (authenticatedUser != null) {
+            prefStore.clear(SharedPrefStore.Pref.USER);
+        }
+        authenticatedUser = null;
     }
-    authenticatedUser = null;
-  }
 
-  // @Nullable
-  public User getUser() {
+    // @Nullable
+    public User getUser() {
 
-    if (null != authenticatedUser) {
-      return authenticatedUser;
+        if (null != authenticatedUser) {
+            return authenticatedUser;
+        } else {
+            return new User();
+        }
     }
-    else {
-      return new User();
+
+    synchronized public void setUser(User user) {
+        // Preconditions.checkNotNull(user);
+        if (user != null) {
+            if (authenticatedUser != user) {
+                prefStore.set(SharedPrefStore.Pref.USER, gson.toJson(user));
+            }
+            authenticatedUser = user;
+
+            Log.d("Login", user.toString());
+        }
     }
-  }
 
-  public boolean isAuthenticated() {
+    public boolean isAuthenticated() {
 
-    return authenticatedUser != null;
-  }
+        return authenticatedUser != null;
+    }
 }

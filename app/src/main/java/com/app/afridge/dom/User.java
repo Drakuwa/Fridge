@@ -20,128 +20,132 @@ import java.util.Map;
 @SuppressWarnings("UnusedDeclaration")
 public class User {
 
-  private String id;
-  private String fullName;
-  private String imageUrl;
-  private String email;
+    private String id;
 
-  private String fridgeItemsJson;
-  private String noteItemsJson;
+    private String fullName;
 
-  public String getFullName() {
+    private String imageUrl;
 
-    return fullName;
-  }
+    private String email;
 
-  public void setFullName(String fullName) {
+    private String fridgeItemsJson;
 
-    this.fullName = fullName;
-  }
+    private String noteItemsJson;
 
-  public String getImageUrl() {
+    // this is the revision in the database representing this task
+    private BasicDocumentRevision rev;
 
-    return imageUrl;
-  }
+    public static User fromRevision(BasicDocumentRevision rev) {
 
-  public void setImageUrl(String imageUrl) {
+        User user = new User();
+        user.rev = rev;
+        // this could also be done by a fancy object mapper
+        Map<String, Object> map = rev.asMap();
+        user.setId((String) map.get("id"));
+        user.setFullName((String) map.get("fullName"));
+        user.setImageUrl((String) map.get("imageUrl"));
+        user.setEmail((String) map.get("email"));
+        user.setFridgeItemsJson((String) map.get("items"));
+        user.setNoteItemsJson((String) map.get("notes"));
+        return user;
+    }
 
-    this.imageUrl = imageUrl;
-  }
+    public String getFullName() {
 
-  public String getId() {
+        return fullName;
+    }
 
-    return id;
-  }
+    public void setFullName(String fullName) {
 
-  public void setId(String id) {
+        this.fullName = fullName;
+    }
 
-    this.id = id;
-  }
+    public String getImageUrl() {
 
-  public String getEmail() {
+        return imageUrl;
+    }
 
-    return email;
-  }
+    public void setImageUrl(String imageUrl) {
 
-  public void setEmail(String email) {
+        this.imageUrl = imageUrl;
+    }
 
-    this.email = email;
-  }
+    public String getId() {
 
-  public String getFridgeItemsJson() {
+        return id;
+    }
 
-    return fridgeItemsJson;
-  }
+    public void setId(String id) {
 
-  public void setFridgeItemsJson(String fridgeItemsJson) {
+        this.id = id;
+    }
 
-    this.fridgeItemsJson = fridgeItemsJson;
-  }
+    public String getEmail() {
 
-  public String getNoteItemsJson() {
+        return email;
+    }
 
-    return noteItemsJson;
-  }
+    public void setEmail(String email) {
 
-  public void setNoteItemsJson(String noteItemsJson) {
+        this.email = email;
+    }
 
-    this.noteItemsJson = noteItemsJson;
-  }
+    public String getFridgeItemsJson() {
 
-  // this is the revision in the database representing this task
-  private BasicDocumentRevision rev;
+        return fridgeItemsJson;
+    }
 
-  public BasicDocumentRevision getDocumentRevision() {
+    public void setFridgeItemsJson(String fridgeItemsJson) {
 
-    return rev;
-  }
+        this.fridgeItemsJson = fridgeItemsJson;
+    }
 
-  public static User fromRevision(BasicDocumentRevision rev) {
+    public String getNoteItemsJson() {
 
-    User user = new User();
-    user.rev = rev;
-    // this could also be done by a fancy object mapper
-    Map<String, Object> map = rev.asMap();
-    user.setId((String) map.get("id"));
-    user.setFullName((String) map.get("fullName"));
-    user.setImageUrl((String) map.get("imageUrl"));
-    user.setEmail((String) map.get("email"));
-    user.setFridgeItemsJson((String) map.get("items"));
-    user.setNoteItemsJson((String) map.get("notes"));
-    return user;
-  }
+        return noteItemsJson;
+    }
 
-  public Map<String, Object> asMap() {
+    public void setNoteItemsJson(String noteItemsJson) {
 
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(NoteItem.class, new NoteItemTypeAdapter())
-            .create();
-    setFridgeItemsJson(ItemList.getItemList());
-    List<FridgeItem> noteItems = new Select()
-            .from(NoteItem.class).execute();
-    setNoteItemsJson(gson.toJson(noteItems));
+        this.noteItemsJson = noteItemsJson;
+    }
 
-    // this could also be done by a fancy object mapper
-    HashMap<String, Object> map = new HashMap<>();
-    map.put("id", getId());
-    map.put("fullName", getFullName());
-    map.put("imageUrl", getImageUrl());
-    map.put("email", getEmail());
-    map.put("items", getFridgeItemsJson());
-    map.put("notes", getNoteItemsJson());
-    return map;
-  }
+    public BasicDocumentRevision getDocumentRevision() {
 
-  @Override
-  public String toString() {
+        return rev;
+    }
 
-    String details = "";
-    details += "id: " + getId() + "\n";
-    details += "fullName: " + getFullName() + "\n";
-    details += "imageUrl: " + getImageUrl() + "\n";
-    details += "email: " + getEmail() + "\n";
-    details += "items: " + getFridgeItemsJson() + "\n";
-    details += "notes: " + getNoteItemsJson() + "\n";
-    return details;
-  }
+    public Map<String, Object> asMap() {
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(NoteItem.class, new NoteItemTypeAdapter())
+                .create();
+        setFridgeItemsJson(ItemList.getItemList());
+        List<FridgeItem> noteItems = new Select()
+                .from(NoteItem.class).execute();
+        setNoteItemsJson(gson.toJson(noteItems));
+
+        // this could also be done by a fancy object mapper
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id", getId());
+        map.put("fullName", getFullName());
+        map.put("imageUrl", getImageUrl());
+        map.put("email", getEmail());
+        map.put("items", getFridgeItemsJson());
+        map.put("notes", getNoteItemsJson());
+        return map;
+    }
+
+    @Override
+    public String toString() {
+
+        String details = "";
+        details += "id: " + getId() + "\n";
+        details += "fullName: " + getFullName() + "\n";
+        details += "imageUrl: " + getImageUrl() + "\n";
+        details += "email: " + getEmail() + "\n";
+        details += "items: " + getFridgeItemsJson() + "\n";
+        details += "notes: " + getNoteItemsJson() + "\n";
+        return details;
+    }
 }

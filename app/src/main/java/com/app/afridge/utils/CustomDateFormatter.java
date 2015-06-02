@@ -6,21 +6,23 @@ import java.util.Locale;
 
 public class CustomDateFormatter {
 
-  private static final CustomDateFormatter instance = new CustomDateFormatter();
-  private SimpleDateFormat sdf;
+    private static final CustomDateFormatter instance = new CustomDateFormatter();
 
-  private CustomDateFormatter() {
-    // sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH); "2014-11-20T14:35:37Z"
-    sdf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.ENGLISH); // "yyyy-MM-ddThh:mm:ssZ"
-  }
+    private SimpleDateFormat sdf;
 
-  public SimpleDateFormat getDateFormat() {
+    private CustomDateFormatter() {
+        // sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH); "2014-11-20T14:35:37Z"
+        sdf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss",
+                Locale.ENGLISH); // "yyyy-MM-ddThh:mm:ssZ"
+    }
 
-    return sdf;
-  }
+    public static CustomDateFormatter getInstance() {
 
-  public static CustomDateFormatter getInstance() {
+        return instance;
+    }
 
-    return instance;
-  }
+    public SimpleDateFormat getDateFormat() {
+
+        return sdf;
+    }
 }

@@ -44,6 +44,9 @@ import butterknife.OnLongClick;
  */
 public class AboutFragment extends DialogFragment {
 
+    // Singleton
+    private static volatile AboutFragment instance = null;
+
     // add ButterKnife injects
     @InjectView(R.id.text_app_version)
     AdvancedTextView textAppVersion;
@@ -60,8 +63,9 @@ public class AboutFragment extends DialogFragment {
     @InjectView(R.id.image_logo)
     ImageView imageLogo;
 
-    // Singleton
-    private static volatile AboutFragment instance = null;
+    public AboutFragment() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -79,10 +83,6 @@ public class AboutFragment extends DialogFragment {
             }
         }
         return instance;
-    }
-
-    public AboutFragment() {
-        // Required empty public constructor
     }
 
     @Override

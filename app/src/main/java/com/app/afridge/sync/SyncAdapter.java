@@ -32,6 +32,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     // Global variables
     private final AuthState authState;
+
     private final SharedPrefStore prefStore;
 
     /**

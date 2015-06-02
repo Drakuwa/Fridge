@@ -1,10 +1,10 @@
 package com.app.afridge.loaders;
 
-import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
-
 import com.activeandroid.query.Select;
 import com.app.afridge.dom.NoteItem;
+
+import android.content.Context;
+import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,66 +17,66 @@ import java.util.List;
  */
 public class NotesLoader extends AsyncTaskLoader<List<NoteItem>> {
 
-  private List<NoteItem> adapterList;
+    private List<NoteItem> adapterList;
 
-  public NotesLoader(Context context) {
+    public NotesLoader(Context context) {
 
-    super(context);
-  }
-
-  @Override
-  protected void onStartLoading() {
-    // use cached results
-    if (adapterList != null) {
-      deliverResult(adapterList);
-    }
-    // reload data
-    else {
-      forceLoad();
+        super(context);
     }
 
-  }
+    @Override
+    protected void onStartLoading() {
+        // use cached results
+        if (adapterList != null) {
+            deliverResult(adapterList);
+        }
+        // reload data
+        else {
+            forceLoad();
+        }
 
-  @Override
-  protected void onStopLoading() {
-    // cancel the ongoing load if any
-    cancelLoad();
-  }
+    }
 
-  @Override
-  public List<NoteItem> loadInBackground() {
+    @Override
+    protected void onStopLoading() {
+        // cancel the ongoing load if any
+        cancelLoad();
+    }
 
-    adapterList = new ArrayList<>();
-    adapterList = new Select()
-            .from(NoteItem.class)
-                    // .where("receiver_id = ?", myId)
-                    // .or("sender_id = ?", myId)
-            .execute();
+    @Override
+    public List<NoteItem> loadInBackground() {
 
-    return adapterList;
-  }
+        adapterList = new ArrayList<>();
+        adapterList = new Select()
+                .from(NoteItem.class)
+                        // .where("receiver_id = ?", myId)
+                        // .or("sender_id = ?", myId)
+                .execute();
 
-  @Override
-  public void deliverResult(List<NoteItem> data) {
-    // cache data
-    adapterList = data;
-    super.deliverResult(data);
-  }
+        return adapterList;
+    }
 
-  @Override
-  protected void onReset() {
+    @Override
+    public void deliverResult(List<NoteItem> data) {
+        // cache data
+        adapterList = data;
+        super.deliverResult(data);
+    }
 
-    super.onReset();
-    // stop loader if running
-    onStopLoading();
-    // invalidate cache
-    adapterList = null;
-  }
+    @Override
+    protected void onReset() {
 
-  @Override
-  public void onCanceled(List<NoteItem> data) {
-    // try to cancel the current load and invalidate cache
-    super.onCanceled(data);
-    adapterList = null;
-  }
+        super.onReset();
+        // stop loader if running
+        onStopLoading();
+        // invalidate cache
+        adapterList = null;
+    }
+
+    @Override
+    public void onCanceled(List<NoteItem> data) {
+        // try to cancel the current load and invalidate cache
+        super.onCanceled(data);
+        adapterList = null;
+    }
 }

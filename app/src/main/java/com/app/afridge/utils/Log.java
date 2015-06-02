@@ -11,55 +11,56 @@ import com.app.afridge.BuildConfig;
  */
 public class Log {
 
-  public static String TAG = Constants.DEBUG_TAG;
-  private static boolean isEnabled = BuildConfig.DEBUG;
+    public static String TAG = Constants.DEBUG_TAG;
 
-  public static void d(String tag, String message) {
+    private static boolean isEnabled = BuildConfig.DEBUG;
 
-    if (isEnabled) {
-      android.util.Log.d(tag, message);
+    public static void d(String tag, String message) {
+
+        if (isEnabled) {
+            android.util.Log.d(tag, message);
+        }
     }
-  }
 
-  public static void d(String message) {
+    public static void d(String message) {
 
-    if (isEnabled) {
-      android.util.Log.d(TAG, message);
+        if (isEnabled) {
+            android.util.Log.d(TAG, message);
+        }
     }
-  }
 
-  public static void i(String tag, String message) {
+    public static void i(String tag, String message) {
 
-    if (isEnabled) {
-      android.util.Log.i(tag, message);
+        if (isEnabled) {
+            android.util.Log.i(tag, message);
+        }
     }
-  }
 
-  public static void i(String message) {
+    public static void i(String message) {
 
-    if (isEnabled) {
-      android.util.Log.i(TAG, message);
+        if (isEnabled) {
+            android.util.Log.i(TAG, message);
+        }
     }
-  }
 
-  public static void e(String tag, String message) {
+    public static void e(String tag, String message) {
 
-    if (isEnabled) {
-      android.util.Log.e(tag, message);
+        if (isEnabled) {
+            android.util.Log.e(tag, message);
+        }
     }
-  }
 
-  public static void v(String tag, String message) {
+    public static void v(String tag, String message) {
 
-    if (isEnabled) {
-      android.util.Log.v(tag, message);
+        if (isEnabled) {
+            android.util.Log.v(tag, message);
+        }
     }
-  }
 
-  public static void w(String tag, String message) {
+    public static void w(String tag, String message) {
 
-    if (isEnabled) {
-      android.util.Log.w(tag, message);
+        if (isEnabled) {
+            android.util.Log.w(tag, message);
+        }
     }
-  }
 }

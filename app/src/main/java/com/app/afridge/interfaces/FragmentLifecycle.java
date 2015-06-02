@@ -7,7 +7,7 @@ package com.app.afridge.interfaces;
  */
 public interface FragmentLifecycle {
 
-  void onPauseFragment();
+    void onPauseFragment();
 
-  void onResumeFragment();
+    void onResumeFragment();
 }

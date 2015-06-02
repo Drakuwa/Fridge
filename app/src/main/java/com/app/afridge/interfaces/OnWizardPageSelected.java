@@ -7,5 +7,5 @@ package com.app.afridge.interfaces;
  */
 public interface OnWizardPageSelected {
 
-  void onPageSelect();
+    void onPageSelect();
 }

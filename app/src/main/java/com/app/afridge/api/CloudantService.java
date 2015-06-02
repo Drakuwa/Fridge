@@ -78,38 +78,20 @@ public class CloudantService {
 
     private static final String CLOUDANT_API_SECRET = "iWVUbOhCj1bBjHWnE2RjK4cC";
 
-    private Datastore dataStore;
-
-    private Replicator pushReplicator;
-
-    private Replicator pullReplicator;
-
     // Singleton
     public static CloudantService instance = null;
+
+    public static SyncState STATE = SyncState.IDLE;
 
     private final Context context;
 
     private final AuthState authState;
 
-    public static SyncState STATE = SyncState.IDLE;
+    private Datastore dataStore;
 
-    /**
-     * Get instance of CloudantService
-     *
-     * @param context Context object
-     * @return an instance of CloudantService
-     */
-    public static CloudantService with(Context context) {
+    private Replicator pushReplicator;
 
-        if (instance == null) {
-            synchronized (CloudantService.class) {
-                if (instance == null) {
-                    instance = new CloudantService(context);
-                }
-            }
-        }
-        return instance;
-    }
+    private Replicator pullReplicator;
 
     /**
      * CloudantService constructor
@@ -129,6 +111,24 @@ public class CloudantService {
 
         // initialize the DataStore
         initDataStore();
+    }
+
+    /**
+     * Get instance of CloudantService
+     *
+     * @param context Context object
+     * @return an instance of CloudantService
+     */
+    public static CloudantService with(Context context) {
+
+        if (instance == null) {
+            synchronized (CloudantService.class) {
+                if (instance == null) {
+                    instance = new CloudantService(context);
+                }
+            }
+        }
+        return instance;
     }
 
     private void initDataStore() {

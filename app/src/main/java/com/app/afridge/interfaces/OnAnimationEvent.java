@@ -7,5 +7,5 @@ package com.app.afridge.interfaces;
  */
 public interface OnAnimationEvent {
 
-  void onEnd();
+    void onEnd();
 }

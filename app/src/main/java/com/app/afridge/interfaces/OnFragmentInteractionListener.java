@@ -15,5 +15,5 @@ import android.graphics.Point;
  */
 public interface OnFragmentInteractionListener {
 
-  void onFragmentInteraction(boolean addToBackstack, Point buttonCenter, Object obj);
+    void onFragmentInteraction(boolean addToBackstack, Point buttonCenter, Object obj);
 }

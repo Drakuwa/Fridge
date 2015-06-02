@@ -1,5 +1,7 @@
 package com.app.afridge.views;
 
+import com.app.afridge.utils.animations.RevealAnimator;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Path;
@@ -7,114 +9,113 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.app.afridge.utils.animations.RevealAnimator;
-
 
 public class RevealFrameLayout extends FrameLayout implements RevealAnimator {
 
-  Path mRevealPath;
+    Path mRevealPath;
 
-  boolean mClipOutlines;
+    boolean mClipOutlines;
 
-  float mCenterX;
-  float mCenterY;
-  float mRadius;
+    float mCenterX;
 
-  View mTarget;
+    float mCenterY;
 
-  public RevealFrameLayout(Context context) {
+    float mRadius;
 
-    this(context, null);
-  }
+    View mTarget;
 
-  public RevealFrameLayout(Context context, AttributeSet attrs) {
+    public RevealFrameLayout(Context context) {
 
-    this(context, attrs, 0);
-  }
-
-  public RevealFrameLayout(Context context, AttributeSet attrs, int defStyle) {
-
-    super(context, attrs, defStyle);
-    mRevealPath = new Path();
-  }
-
-  /**
-   * Animation target
-   *
-   * @hide
-   */
-  @Override
-  public void setTarget(View view) {
-
-    mTarget = view;
-  }
-
-  /**
-   * Epicenter of animation circle reveal
-   *
-   * @hide
-   */
-  @Override
-  public void setCenter(float centerX, float centerY) {
-
-    mCenterX = centerX;
-    mCenterY = centerY;
-  }
-
-  /**
-   * Flag that animation is enabled
-   *
-   * @hide
-   */
-  @Override
-  public void setClipOutlines(boolean clip) {
-
-    mClipOutlines = clip;
-  }
-
-  /**
-   * Circle radius size
-   *
-   * @hide
-   */
-  @Override
-  public void setRevealRadius(float radius) {
-
-    mRadius = radius;
-    invalidate();
-  }
-
-  /**
-   * Circle radius size
-   *
-   * @hide
-   */
-  @Override
-  public float getRevealRadius() {
-
-    return mRadius;
-  }
-
-
-  @Override
-  protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-
-    if (!mClipOutlines && child != mTarget) {
-      return super.drawChild(canvas, child, drawingTime);
+        this(context, null);
     }
 
-    final int state = canvas.save();
+    public RevealFrameLayout(Context context, AttributeSet attrs) {
 
-    mRevealPath.reset();
-    mRevealPath.addCircle(mCenterX, mCenterY, mRadius, Path.Direction.CW);
+        this(context, attrs, 0);
+    }
 
-    canvas.clipPath(mRevealPath);
+    public RevealFrameLayout(Context context, AttributeSet attrs, int defStyle) {
 
-    boolean isInvalided = super.drawChild(canvas, child, drawingTime);
+        super(context, attrs, defStyle);
+        mRevealPath = new Path();
+    }
 
-    canvas.restoreToCount(state);
+    /**
+     * Animation target
+     *
+     * @hide
+     */
+    @Override
+    public void setTarget(View view) {
 
-    return isInvalided;
-  }
+        mTarget = view;
+    }
+
+    /**
+     * Epicenter of animation circle reveal
+     *
+     * @hide
+     */
+    @Override
+    public void setCenter(float centerX, float centerY) {
+
+        mCenterX = centerX;
+        mCenterY = centerY;
+    }
+
+    /**
+     * Flag that animation is enabled
+     *
+     * @hide
+     */
+    @Override
+    public void setClipOutlines(boolean clip) {
+
+        mClipOutlines = clip;
+    }
+
+    /**
+     * Circle radius size
+     *
+     * @hide
+     */
+    @Override
+    public float getRevealRadius() {
+
+        return mRadius;
+    }
+
+    /**
+     * Circle radius size
+     *
+     * @hide
+     */
+    @Override
+    public void setRevealRadius(float radius) {
+
+        mRadius = radius;
+        invalidate();
+    }
+
+    @Override
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+
+        if (!mClipOutlines && child != mTarget) {
+            return super.drawChild(canvas, child, drawingTime);
+        }
+
+        final int state = canvas.save();
+
+        mRevealPath.reset();
+        mRevealPath.addCircle(mCenterX, mCenterY, mRadius, Path.Direction.CW);
+
+        canvas.clipPath(mRevealPath);
+
+        boolean isInvalided = super.drawChild(canvas, child, drawingTime);
+
+        canvas.restoreToCount(state);
+
+        return isInvalided;
+    }
 
 }

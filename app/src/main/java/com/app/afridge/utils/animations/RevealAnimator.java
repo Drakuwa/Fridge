@@ -1,11 +1,11 @@
 package com.app.afridge.utils.animations;
 
+import com.nineoldandroids.animation.Animator;
+
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
 import android.view.View;
-
-import com.nineoldandroids.animation.Animator;
 
 import java.lang.ref.WeakReference;
 
@@ -15,134 +15,137 @@ import java.lang.ref.WeakReference;
  */
 public interface RevealAnimator {
 
-  public void setClipOutlines(boolean clip);
+    public void setClipOutlines(boolean clip);
 
-  public void setCenter(float cx, float cy);
+    public void setCenter(float cx, float cy);
 
-  public void setTarget(View target);
+    public void setTarget(View target);
 
-  public void setRevealRadius(float value);
+    public float getRevealRadius();
 
-  public float getRevealRadius();
+    public void setRevealRadius(float value);
 
-  public void invalidate(Rect bounds);
+    public void invalidate(Rect bounds);
 
-  static class RevealFinishedGingerbread extends ViewAnimationUtils.SimpleAnimationListener {
+    static class RevealFinishedGingerbread extends ViewAnimationUtils.SimpleAnimationListener {
 
-    WeakReference<RevealAnimator> mReference;
-    volatile Rect mInvalidateBounds;
+        WeakReference<RevealAnimator> mReference;
 
-    RevealFinishedGingerbread(RevealAnimator target, Rect bounds) {
+        volatile Rect mInvalidateBounds;
 
-      mReference = new WeakReference<>(target);
-      mInvalidateBounds = bounds;
+        RevealFinishedGingerbread(RevealAnimator target, Rect bounds) {
+
+            mReference = new WeakReference<>(target);
+            mInvalidateBounds = bounds;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+
+            super.onAnimationEnd(animation);
+
+            RevealAnimator target = mReference.get();
+
+            if (target == null) {
+                return;
+            }
+
+            target.setClipOutlines(false);
+            target.setCenter(0, 0);
+            target.setTarget(null);
+            target.invalidate(mInvalidateBounds);
+        }
     }
 
-    @Override
-    public void onAnimationEnd(Animator animation) {
 
-      super.onAnimationEnd(animation);
+    static class RevealFinishedIceCreamSandwich extends ViewAnimationUtils.SimpleAnimationListener {
 
-      RevealAnimator target = mReference.get();
+        WeakReference<RevealAnimator> mReference;
 
-      if (target == null) {
-        return;
-      }
+        volatile Rect mInvalidateBounds;
 
-      target.setClipOutlines(false);
-      target.setCenter(0, 0);
-      target.setTarget(null);
-      target.invalidate(mInvalidateBounds);
-    }
-  }
+        int mLayerType;
 
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        RevealFinishedIceCreamSandwich(RevealAnimator target, Rect bounds) {
 
-  static class RevealFinishedIceCreamSandwich extends ViewAnimationUtils.SimpleAnimationListener {
+            mReference = new WeakReference<>(target);
+            mInvalidateBounds = bounds;
 
-    WeakReference<RevealAnimator> mReference;
-    volatile Rect mInvalidateBounds;
+            mLayerType = ((View) target).getLayerType();
+        }
 
-    int mLayerType;
+        @Override
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        public void onAnimationStart(Animator animation) {
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    RevealFinishedIceCreamSandwich(RevealAnimator target, Rect bounds) {
+            super.onAnimationStart(animation);
+            ((View) mReference.get()).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
-      mReference = new WeakReference<>(target);
-      mInvalidateBounds = bounds;
+        @Override
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        public void onAnimationEnd(Animator animation) {
 
-      mLayerType = ((View) target).getLayerType();
-    }
+            super.onAnimationEnd(animation);
+            ((View) mReference.get()).setLayerType(mLayerType, null);
 
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onAnimationStart(Animator animation) {
+            RevealAnimator target = mReference.get();
 
-      super.onAnimationStart(animation);
-      ((View) mReference.get()).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-    }
+            if (target == null) {
+                return;
+            }
 
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onAnimationEnd(Animator animation) {
-
-      super.onAnimationEnd(animation);
-      ((View) mReference.get()).setLayerType(mLayerType, null);
-
-      RevealAnimator target = mReference.get();
-
-      if (target == null) {
-        return;
-      }
-
-      target.setClipOutlines(false);
-      target.setCenter(0, 0);
-      target.setTarget(null);
-      target.invalidate(mInvalidateBounds);
-    }
-  }
-
-
-  static class RevealFinishedJellyBeanMr1 extends ViewAnimationUtils.SimpleAnimationListener {
-
-    WeakReference<RevealAnimator> mReference;
-    volatile Rect mInvalidateBounds;
-
-    int mLayerType;
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    RevealFinishedJellyBeanMr1(RevealAnimator target, Rect bounds) {
-
-      mReference = new WeakReference<>(target);
-      mInvalidateBounds = bounds;
-
-      mLayerType = ((View) target).getLayerType();
+            target.setClipOutlines(false);
+            target.setCenter(0, 0);
+            target.setTarget(null);
+            target.invalidate(mInvalidateBounds);
+        }
     }
 
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onAnimationStart(Animator animation) {
 
-      super.onAnimationStart(animation);
-      ((View) mReference.get()).setLayerType(View.LAYER_TYPE_HARDWARE, null);
+    static class RevealFinishedJellyBeanMr1 extends ViewAnimationUtils.SimpleAnimationListener {
+
+        WeakReference<RevealAnimator> mReference;
+
+        volatile Rect mInvalidateBounds;
+
+        int mLayerType;
+
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        RevealFinishedJellyBeanMr1(RevealAnimator target, Rect bounds) {
+
+            mReference = new WeakReference<>(target);
+            mInvalidateBounds = bounds;
+
+            mLayerType = ((View) target).getLayerType();
+        }
+
+        @Override
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        public void onAnimationStart(Animator animation) {
+
+            super.onAnimationStart(animation);
+            ((View) mReference.get()).setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+
+        @Override
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        public void onAnimationEnd(Animator animation) {
+
+            super.onAnimationEnd(animation);
+            ((View) mReference.get()).setLayerType(mLayerType, null);
+
+            RevealAnimator target = mReference.get();
+
+            if (target == null) {
+                return;
+            }
+
+            target.setClipOutlines(false);
+            target.setCenter(0, 0);
+            target.setTarget(null);
+            target.invalidate(mInvalidateBounds);
+        }
     }
-
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onAnimationEnd(Animator animation) {
-
-      super.onAnimationEnd(animation);
-      ((View) mReference.get()).setLayerType(mLayerType, null);
-
-      RevealAnimator target = mReference.get();
-
-      if (target == null) {
-        return;
-      }
-
-      target.setClipOutlines(false);
-      target.setCenter(0, 0);
-      target.setTarget(null);
-      target.invalidate(mInvalidateBounds);
-    }
-  }
 }

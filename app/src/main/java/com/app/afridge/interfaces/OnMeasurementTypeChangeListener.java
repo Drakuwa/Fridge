@@ -7,5 +7,5 @@ package com.app.afridge.interfaces;
  */
 public interface OnMeasurementTypeChangeListener {
 
-  public void onMeasurementTypeChange();
+    public void onMeasurementTypeChange();
 }

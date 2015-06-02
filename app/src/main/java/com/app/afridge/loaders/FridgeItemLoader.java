@@ -1,10 +1,10 @@
 package com.app.afridge.loaders;
 
-import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
-
 import com.activeandroid.query.Select;
 import com.app.afridge.dom.FridgeItem;
+
+import android.content.Context;
+import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,66 +17,66 @@ import java.util.List;
  */
 public class FridgeItemLoader extends AsyncTaskLoader<List<FridgeItem>> {
 
-  private List<FridgeItem> adapterList;
+    private List<FridgeItem> adapterList;
 
-  public FridgeItemLoader(Context context) {
+    public FridgeItemLoader(Context context) {
 
-    super(context);
-  }
-
-  @Override
-  protected void onStartLoading() {
-    // use cached results
-    if (adapterList != null) {
-      deliverResult(adapterList);
-    }
-    // reload data
-    else {
-      forceLoad();
+        super(context);
     }
 
-  }
+    @Override
+    protected void onStartLoading() {
+        // use cached results
+        if (adapterList != null) {
+            deliverResult(adapterList);
+        }
+        // reload data
+        else {
+            forceLoad();
+        }
 
-  @Override
-  protected void onStopLoading() {
-    // cancel the ongoing load if any
-    cancelLoad();
-  }
+    }
 
-  @Override
-  public List<FridgeItem> loadInBackground() {
+    @Override
+    protected void onStopLoading() {
+        // cancel the ongoing load if any
+        cancelLoad();
+    }
 
-    adapterList = new ArrayList<>();
-    adapterList = new Select()
-            .from(FridgeItem.class)
-            .where("status != ?", true)
-                    // .or("sender_id = ?", myId)
-            .execute();
+    @Override
+    public List<FridgeItem> loadInBackground() {
 
-    return adapterList;
-  }
+        adapterList = new ArrayList<>();
+        adapterList = new Select()
+                .from(FridgeItem.class)
+                .where("status != ?", true)
+                        // .or("sender_id = ?", myId)
+                .execute();
 
-  @Override
-  public void deliverResult(List<FridgeItem> data) {
-    // cache data
-    adapterList = data;
-    super.deliverResult(data);
-  }
+        return adapterList;
+    }
 
-  @Override
-  protected void onReset() {
+    @Override
+    public void deliverResult(List<FridgeItem> data) {
+        // cache data
+        adapterList = data;
+        super.deliverResult(data);
+    }
 
-    super.onReset();
-    // stop loader if running
-    onStopLoading();
-    // invalidate cache
-    adapterList = null;
-  }
+    @Override
+    protected void onReset() {
 
-  @Override
-  public void onCanceled(List<FridgeItem> data) {
-    // try to cancel the current load and invalidate cache
-    super.onCanceled(data);
-    adapterList = null;
-  }
+        super.onReset();
+        // stop loader if running
+        onStopLoading();
+        // invalidate cache
+        adapterList = null;
+    }
+
+    @Override
+    public void onCanceled(List<FridgeItem> data) {
+        // try to cancel the current load and invalidate cache
+        super.onCanceled(data);
+        adapterList = null;
+    }
 }

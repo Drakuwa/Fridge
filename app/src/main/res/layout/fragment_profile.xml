@@ -158,8 +158,7 @@
         <com.app.afridge.views.AdvancedTextView
             android:id="@+id/text_last_synced"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/button_logout"
+            android:layout_height="0dp"
             android:layout_margin="@dimen/padding_small"
             android:layout_weight="1"
             android:gravity="end|bottom"
@@ -171,7 +170,6 @@
             android:id="@+id/button_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/padding_small"
             android:background="@color/primary"
             android:elevation="4dp"

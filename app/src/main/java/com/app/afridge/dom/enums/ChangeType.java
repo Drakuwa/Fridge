@@ -6,12 +6,12 @@ package com.app.afridge.dom.enums;
  * Created by drakuwa on 2/6/15.
  */
 public enum ChangeType {
-  ADD,
-  MODIFY,
-  DELETE;
+    ADD,
+    MODIFY,
+    DELETE;
 
-  public int getItemOrdinal(ItemType item) {
+    public int getItemOrdinal(ItemType item) {
 
-    return item.getItemOrdinal(item);
-  }
+        return item.getItemOrdinal(item);
+    }
 }

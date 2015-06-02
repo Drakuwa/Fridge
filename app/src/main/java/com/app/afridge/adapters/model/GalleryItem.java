@@ -10,48 +10,51 @@ import android.net.Uri;
  */
 public class GalleryItem {
 
-  private long id;
-  private String bucketId;
-  private String bucketName;
-  private Uri imageUri;
+    private long id;
 
-  public long getId() {
+    private String bucketId;
 
-    return id;
-  }
+    private String bucketName;
 
-  public void setId(long id) {
+    private Uri imageUri;
 
-    this.id = id;
-  }
+    public long getId() {
 
-  public String getBucketId() {
+        return id;
+    }
 
-    return bucketId;
-  }
+    public void setId(long id) {
 
-  public void setBucketId(String bucketId) {
+        this.id = id;
+    }
 
-    this.bucketId = bucketId;
-  }
+    public String getBucketId() {
 
-  public String getBucketName() {
+        return bucketId;
+    }
 
-    return bucketName;
-  }
+    public void setBucketId(String bucketId) {
 
-  public void setBucketName(String bucketName) {
+        this.bucketId = bucketId;
+    }
 
-    this.bucketName = bucketName;
-  }
+    public String getBucketName() {
 
-  public Uri getImageUri() {
+        return bucketName;
+    }
 
-    return imageUri;
-  }
+    public void setBucketName(String bucketName) {
 
-  public void setImageUri(Uri imageUri) {
+        this.bucketName = bucketName;
+    }
 
-    this.imageUri = imageUri;
-  }
+    public Uri getImageUri() {
+
+        return imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+
+        this.imageUri = imageUri;
+    }
 }

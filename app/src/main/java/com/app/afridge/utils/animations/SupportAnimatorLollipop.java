@@ -9,47 +9,47 @@ import android.view.animation.Interpolator;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 final class SupportAnimatorLollipop extends SupportAnimator {
 
-  Animator mNativeAnimator;
+    Animator mNativeAnimator;
 
-  SupportAnimatorLollipop(Animator animator) {
+    SupportAnimatorLollipop(Animator animator) {
 
-    mNativeAnimator = animator;
-  }
+        mNativeAnimator = animator;
+    }
 
-  @Override
-  public boolean isNativeAnimator() {
+    @Override
+    public boolean isNativeAnimator() {
 
-    return true;
-  }
+        return true;
+    }
 
-  @Override
-  public Object get() {
+    @Override
+    public Object get() {
 
-    return mNativeAnimator;
-  }
+        return mNativeAnimator;
+    }
 
 
-  @Override
-  public void start() {
+    @Override
+    public void start() {
 
-    mNativeAnimator.start();
-  }
+        mNativeAnimator.start();
+    }
 
-  @Override
-  public void setDuration(int duration) {
+    @Override
+    public void setDuration(int duration) {
 
-    mNativeAnimator.setDuration(duration);
-  }
+        mNativeAnimator.setDuration(duration);
+    }
 
-  @Override
-  public void setInterpolator(Interpolator value) {
+    @Override
+    public void setInterpolator(Interpolator value) {
 
-    mNativeAnimator.setInterpolator(value);
-  }
+        mNativeAnimator.setInterpolator(value);
+    }
 
-  @Override
-  public boolean isRunning() {
+    @Override
+    public boolean isRunning() {
 
-    return mNativeAnimator.isRunning();
-  }
+        return mNativeAnimator.isRunning();
+    }
 }

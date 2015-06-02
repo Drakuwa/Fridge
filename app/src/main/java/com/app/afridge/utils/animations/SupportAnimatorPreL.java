@@ -1,52 +1,52 @@
 package com.app.afridge.utils.animations;
 
-import android.view.animation.Interpolator;
-
 import com.nineoldandroids.animation.Animator;
+
+import android.view.animation.Interpolator;
 
 
 final class SupportAnimatorPreL extends SupportAnimator {
 
-  Animator mSupportFramework;
+    Animator mSupportFramework;
 
-  SupportAnimatorPreL(Animator animator) {
+    SupportAnimatorPreL(Animator animator) {
 
-    mSupportFramework = animator;
-  }
+        mSupportFramework = animator;
+    }
 
-  @Override
-  public boolean isNativeAnimator() {
+    @Override
+    public boolean isNativeAnimator() {
 
-    return false;
-  }
+        return false;
+    }
 
-  @Override
-  public Object get() {
+    @Override
+    public Object get() {
 
-    return mSupportFramework;
-  }
+        return mSupportFramework;
+    }
 
-  @Override
-  public void start() {
+    @Override
+    public void start() {
 
-    mSupportFramework.start();
-  }
+        mSupportFramework.start();
+    }
 
-  @Override
-  public void setDuration(int duration) {
+    @Override
+    public void setDuration(int duration) {
 
-    mSupportFramework.setDuration(duration);
-  }
+        mSupportFramework.setDuration(duration);
+    }
 
-  @Override
-  public void setInterpolator(Interpolator value) {
+    @Override
+    public void setInterpolator(Interpolator value) {
 
-    mSupportFramework.setInterpolator(value);
-  }
+        mSupportFramework.setInterpolator(value);
+    }
 
-  @Override
-  public boolean isRunning() {
+    @Override
+    public boolean isRunning() {
 
-    return mSupportFramework.isRunning();
-  }
+        return mSupportFramework.isRunning();
+    }
 }

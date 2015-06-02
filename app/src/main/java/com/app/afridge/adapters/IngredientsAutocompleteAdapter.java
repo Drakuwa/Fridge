@@ -1,11 +1,11 @@
 package com.app.afridge.adapters;
 
+import com.app.afridge.utils.AutocompleteIngredients;
+
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-
-import com.app.afridge.utils.AutocompleteIngredients;
 
 import java.util.ArrayList;
 
@@ -17,58 +17,57 @@ import java.util.ArrayList;
  */
 public class IngredientsAutocompleteAdapter extends ArrayAdapter<String> implements Filterable {
 
-  private ArrayList<String> resultList;
+    private ArrayList<String> resultList;
 
-  public IngredientsAutocompleteAdapter(Context context, int textViewResourceId) {
+    public IngredientsAutocompleteAdapter(Context context, int textViewResourceId) {
 
-    super(context, textViewResourceId);
-  }
+        super(context, textViewResourceId);
+    }
 
-  @Override
-  public int getCount() {
+    @Override
+    public int getCount() {
 
-    return resultList.size();
-  }
+        return resultList.size();
+    }
 
-  @Override
-  public String getItem(int index) {
+    @Override
+    public String getItem(int index) {
 
-    return resultList.get(index);
-  }
+        return resultList.get(index);
+    }
 
-  @Override
-  public Filter getFilter() {
+    @Override
+    public Filter getFilter() {
 
-    return new Filter() {
+        return new Filter() {
 
-      @Override
-      protected FilterResults performFiltering(CharSequence constraint) {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
 
-        FilterResults filterResults = new FilterResults();
-        if (constraint != null) {
-          // Retrieve the autocomplete results.
-          AutocompleteIngredients autocompleteIngredients = new AutocompleteIngredients();
-          resultList = autocompleteIngredients.autocomplete(constraint
-                  .toString());
+                FilterResults filterResults = new FilterResults();
+                if (constraint != null) {
+                    // Retrieve the autocomplete results.
+                    AutocompleteIngredients autocompleteIngredients = new AutocompleteIngredients();
+                    resultList = autocompleteIngredients.autocomplete(constraint
+                            .toString());
 
-          // Assign the data to the FilterResults
-          filterResults.values = resultList;
-          filterResults.count = resultList.size();
-        }
-        return filterResults;
-      }
+                    // Assign the data to the FilterResults
+                    filterResults.values = resultList;
+                    filterResults.count = resultList.size();
+                }
+                return filterResults;
+            }
 
-      @Override
-      protected void publishResults(CharSequence constraint,
-                                    FilterResults results) {
+            @Override
+            protected void publishResults(CharSequence constraint,
+                    FilterResults results) {
 
-        if (results != null && results.count > 0) {
-          notifyDataSetChanged();
-        }
-        else {
-          notifyDataSetInvalidated();
-        }
-      }
-    };
-  }
+                if (results != null && results.count > 0) {
+                    notifyDataSetChanged();
+                } else {
+                    notifyDataSetInvalidated();
+                }
+            }
+        };
+    }
 }

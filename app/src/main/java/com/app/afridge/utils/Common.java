@@ -48,274 +48,269 @@ import java.util.Locale;
  */
 public class Common {
 
-  public static boolean versionAtLeast(int version) {
+    public static boolean versionAtLeast(int version) {
 
-    return Build.VERSION.SDK_INT >= version;
-  }
-
-  public static List<String> getUserEmailAccounts(Context context) {
-    // get all accounts listed in the phone
-    List<String> accountSet = new ArrayList<>();
-    // match with email address pattern and add to set to avoid duplicates
-    Account[] accounts = AccountManager.get(context).getAccounts();
-    for (Account account : accounts) {
-      if (Patterns.EMAIL_ADDRESS.matcher(account.name).matches()) {
-        accountSet.add(account.name);
-      }
-    }
-    return accountSet;
-  }
-
-  public static int dpToPx(Resources res, int dp) {
-
-    return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, res.getDisplayMetrics());
-  }
-
-  public static float parametric(float t, float min, float max) {
-
-    return t * (max - min) + min;
-  }
-
-  /**
-   * Clamps a value between lower and upper bounds. Formally, given value v,
-   * and an interval [lower, upper], lower <= clamp(v, lower, upper) <= upper holds true
-   *
-   * @param v     the value to clamp
-   * @param lower the lower bound of the interval
-   * @param upper the upper bound of the interval
-   * @return the clamped value of v in the [lower, upper] interval
-   */
-  public static float clamp(float v, float lower, float upper) {
-
-    return Math.max(lower, Math.min(upper, v));
-  }
-
-  /**
-   * Save the bitmap image on device
-   *
-   * @param image   bitmap we need to save
-   * @param context application context
-   * @return success status of the action
-   */
-  public static File storeImage(Bitmap image, Context context) {
-    // Bitmap bitmap = Bitmap.createScaledBitmap(image, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT, false);
-    File pictureFile = getOutputMediaFile(context);
-    if (pictureFile == null) {
-      Log.d(Log.TAG,
-              "Error creating media file, check storage permissions: ");// e.getMessage());
-      return null;
-    }
-    try {
-      FileOutputStream fos = new FileOutputStream(pictureFile);
-      image.compress(Bitmap.CompressFormat.PNG, 90, fos);
-      fos.close();
-    } catch (FileNotFoundException e) {
-      Log.d(Log.TAG, "File not found: " + e.getMessage());
-      return null;
-    } catch (IOException e) {
-      Log.d(Log.TAG, "Error accessing file: " + e.getMessage());
-      return null;
-    }
-    return pictureFile;
-  }
-
-  /**
-   * Create a File for saving an image in the
-   * "/Android/data/package.name/Files" directory
-   *
-   * @param context application context
-   * @return a new File for saving an image
-   */
-  private static File getOutputMediaFile(Context context) {
-    // To be safe, you should check that the SDCard is mounted
-    // using Environment.getExternalStorageState() before doing this.
-    File mediaStorageDir = new File(
-            Environment.getExternalStorageDirectory() + "/Android/data/"
-                    + context.getPackageName() + "/Files");
-
-    // This location works best if you want the created images to be shared
-    // between applications and persist after your app has been uninstalled.
-
-    // Create the storage directory if it does not exist
-    if (!mediaStorageDir.exists()) {
-      if (!mediaStorageDir.mkdirs()) {
-        return null;
-      }
-    }
-    // Create a media file name
-    String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmssSS",
-            Locale.ENGLISH).format(new Date());
-    File mediaFile;
-    String mImageName = "FRIDGE_" + timeStamp + ".jpg";
-    mediaFile = new File(mediaStorageDir.getPath() + File.separator
-            + mImageName);
-    return mediaFile;
-  }
-
-  public static void setupMargins(Context context, View view) {
-
-    Point point = SystemUtils.getScreenSize(context);
-    // offset the settings icon so it appears above the navigation bar
-    // for version that support translucent decor
-    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-    int navigationBarHeight = SystemUtils.getNavigationBarHeight(context);
-    if (SystemUtils.versionAtLeast(Build.VERSION_CODES.KITKAT)
-            && !ViewConfiguration.get(context).hasPermanentMenuKey()) {
-
-      // the offset should be different for landscape orientation
-      float offset = point.x < point.y ? 1.3f * navigationBarHeight : 0.8f * navigationBarHeight;
-      Log.d(Log.TAG, "Margin set for translucent decor: " + (int) offset);
-      // layoutParams.setMargins(left, top, right, bottom);
-      layoutParams.setMargins(0, (int) offset - navigationBarHeight, 0, (int) offset);
-    }
-    else {
-      Log.d(Log.TAG, "Margin set for normal decor: " + (int) (0.3f * navigationBarHeight));
-      layoutParams.setMargins(0, (int) (0.3f * navigationBarHeight), 0, (int) (0.3f * navigationBarHeight));
-    }
-  }
-
-  public static Bitmap getBitmapFromView(View view) {
-
-    Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-    Canvas canvas = new Canvas(returnedBitmap);
-    Drawable bgDrawable = view.getBackground();
-    if (bgDrawable != null) {
-      bgDrawable.draw(canvas);
-    }
-    else {
-      canvas.drawColor(Color.WHITE);
-    }
-    view.draw(canvas);
-    return returnedBitmap;
-  }
-
-  public static Point getLocationInView(View src, View target) {
-
-    final int[] l0 = new int[2];
-    src.getLocationOnScreen(l0);
-
-    final int[] l1 = new int[2];
-    target.getLocationOnScreen(l1);
-
-    l1[0] = l1[0] - l0[0] + target.getWidth() / 2;
-    l1[1] = l1[1] - l0[1] + target.getHeight() / 2;
-
-    return new Point(l1[0], l1[1]);
-  }
-
-  public static String getTimestamp(Object item, FridgeApplication application) {
-    // "2014-11-20T17:33:38Z"
-
-    String prefix = "";
-    Calendar calendar = Calendar.getInstance();
-    long currentTimesamp = calendar.getTime().getTime() / 1000; // seconds
-    long itemTimestamp = 0;
-    try {
-      if (item instanceof FridgeItem)
-      // itemTimestamp = application.dateFormat.parse(((FridgeItem) item).getExpirationDate()).getTime();
-      // itemTimestamp = application.dateFormat.parse(((FridgeItem) item).getExpirationDate()).getTime();
-      {
-        itemTimestamp = ((FridgeItem) item).getExpirationDate();
-      }
-      else if (item instanceof HistoryItem) {
-        itemTimestamp = ((HistoryItem) item).getTimestamp();
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-    String relativeTimeSince;
-    long delta = currentTimesamp - itemTimestamp;
-
-    if (item instanceof FridgeItem) {
-      if (itemTimestamp > currentTimesamp) {
-        prefix = application.getString(R.string.label_expires);
-      }
-      else {
-        prefix = application.getString(R.string.label_expired);
-      }
-      return prefix + " " + TimeSpans.getRelativeTimeSince(itemTimestamp * 1000, currentTimesamp * 1000);
+        return Build.VERSION.SDK_INT >= version;
     }
 
-    if (currentTimesamp - itemTimestamp < 60) {
-      relativeTimeSince = application.getString(R.string.just_now);
-    }
-    else if (delta < 3600) {
-      long minutes = delta / 60;
-      if (minutes == 1) {
-        relativeTimeSince = application.getString(R.string.one_minute_ago);
-      }
-      else {
-        relativeTimeSince = minutes + " " + application.getString(R.string.minutes_ago);
-      }
-    }
-    else {
-      relativeTimeSince = TimeSpans.getRelativeTimeSince(itemTimestamp * 1000, currentTimesamp * 1000);
-    }
-
-    return prefix + relativeTimeSince;
-  }
-
-  /**
-   * convert the given input stream into a string
-   */
-  public static String convertStreamToString(InputStream is) {
-
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-    StringBuilder sb = new StringBuilder();
-
-    String line;
-    try {
-      while ((line = reader.readLine()) != null) {
-        sb.append(line).append("\n");
-      }
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-    finally {
-      try {
-        is.close();
-      }
-      catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return sb.toString();
-  }
-
-  public static int getAppVersion(Context context) {
-
-    try {
-      PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-      return packageInfo.versionCode;
-    }
-    catch (PackageManager.NameNotFoundException e) {
-      // should never happen
-      throw new RuntimeException("Could not get package name: " + e);
-    }
-  }
-
-  public static boolean HaveNetworkConnection(Context ctx) {
-
-    boolean HaveConnectedWifi = false;
-    boolean HaveConnectedMobile = false;
-
-    ConnectivityManager cm = (ConnectivityManager) ctx
-            .getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-    for (NetworkInfo ni : netInfo) {
-      if (ni.getTypeName().equalsIgnoreCase("WIFI")) {
-        if (ni.isConnected()) {
-          HaveConnectedWifi = true;
+    public static List<String> getUserEmailAccounts(Context context) {
+        // get all accounts listed in the phone
+        List<String> accountSet = new ArrayList<>();
+        // match with email address pattern and add to set to avoid duplicates
+        Account[] accounts = AccountManager.get(context).getAccounts();
+        for (Account account : accounts) {
+            if (Patterns.EMAIL_ADDRESS.matcher(account.name).matches()) {
+                accountSet.add(account.name);
+            }
         }
-      }
-      if (ni.getTypeName().equalsIgnoreCase("MOBILE")) {
-        if (ni.isConnected()) {
-          HaveConnectedMobile = true;
-        }
-      }
+        return accountSet;
     }
-    return HaveConnectedWifi || HaveConnectedMobile;
-  }
+
+    public static int dpToPx(Resources res, int dp) {
+
+        return (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, res.getDisplayMetrics());
+    }
+
+    public static float parametric(float t, float min, float max) {
+
+        return t * (max - min) + min;
+    }
+
+    /**
+     * Clamps a value between lower and upper bounds. Formally, given value v,
+     * and an interval [lower, upper], lower <= clamp(v, lower, upper) <= upper holds true
+     *
+     * @param v     the value to clamp
+     * @param lower the lower bound of the interval
+     * @param upper the upper bound of the interval
+     * @return the clamped value of v in the [lower, upper] interval
+     */
+    public static float clamp(float v, float lower, float upper) {
+
+        return Math.max(lower, Math.min(upper, v));
+    }
+
+    /**
+     * Save the bitmap image on device
+     *
+     * @param image   bitmap we need to save
+     * @param context application context
+     * @return success status of the action
+     */
+    public static File storeImage(Bitmap image, Context context) {
+        // Bitmap bitmap = Bitmap.createScaledBitmap(image, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT, false);
+        File pictureFile = getOutputMediaFile(context);
+        if (pictureFile == null) {
+            Log.d(Log.TAG,
+                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            return null;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(Log.TAG, "File not found: " + e.getMessage());
+            return null;
+        } catch (IOException e) {
+            Log.d(Log.TAG, "Error accessing file: " + e.getMessage());
+            return null;
+        }
+        return pictureFile;
+    }
+
+    /**
+     * Create a File for saving an image in the
+     * "/Android/data/package.name/Files" directory
+     *
+     * @param context application context
+     * @return a new File for saving an image
+     */
+    private static File getOutputMediaFile(Context context) {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(
+                Environment.getExternalStorageDirectory() + "/Android/data/"
+                        + context.getPackageName() + "/Files");
+
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmssSS",
+                Locale.ENGLISH).format(new Date());
+        File mediaFile;
+        String mImageName = "FRIDGE_" + timeStamp + ".jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                + mImageName);
+        return mediaFile;
+    }
+
+    public static void setupMargins(Context context, View view) {
+
+        Point point = SystemUtils.getScreenSize(context);
+        // offset the settings icon so it appears above the navigation bar
+        // for version that support translucent decor
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
+        int navigationBarHeight = SystemUtils.getNavigationBarHeight(context);
+        if (SystemUtils.versionAtLeast(Build.VERSION_CODES.KITKAT)
+                && !ViewConfiguration.get(context).hasPermanentMenuKey()) {
+
+            // the offset should be different for landscape orientation
+            float offset = point.x < point.y ? 1.3f * navigationBarHeight
+                    : 0.8f * navigationBarHeight;
+            Log.d(Log.TAG, "Margin set for translucent decor: " + (int) offset);
+            // layoutParams.setMargins(left, top, right, bottom);
+            layoutParams.setMargins(0, (int) offset - navigationBarHeight, 0, (int) offset);
+        } else {
+            Log.d(Log.TAG, "Margin set for normal decor: " + (int) (0.3f * navigationBarHeight));
+            layoutParams.setMargins(0, (int) (0.3f * navigationBarHeight), 0,
+                    (int) (0.3f * navigationBarHeight));
+        }
+    }
+
+    public static Bitmap getBitmapFromView(View view) {
+
+        Bitmap returnedBitmap = Bitmap
+                .createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null) {
+            bgDrawable.draw(canvas);
+        } else {
+            canvas.drawColor(Color.WHITE);
+        }
+        view.draw(canvas);
+        return returnedBitmap;
+    }
+
+    public static Point getLocationInView(View src, View target) {
+
+        final int[] l0 = new int[2];
+        src.getLocationOnScreen(l0);
+
+        final int[] l1 = new int[2];
+        target.getLocationOnScreen(l1);
+
+        l1[0] = l1[0] - l0[0] + target.getWidth() / 2;
+        l1[1] = l1[1] - l0[1] + target.getHeight() / 2;
+
+        return new Point(l1[0], l1[1]);
+    }
+
+    public static String getTimestamp(Object item, FridgeApplication application) {
+        // "2014-11-20T17:33:38Z"
+
+        String prefix = "";
+        Calendar calendar = Calendar.getInstance();
+        long currentTimesamp = calendar.getTime().getTime() / 1000; // seconds
+        long itemTimestamp = 0;
+        try {
+            if (item instanceof FridgeItem)
+            // itemTimestamp = application.dateFormat.parse(((FridgeItem) item).getExpirationDate()).getTime();
+            // itemTimestamp = application.dateFormat.parse(((FridgeItem) item).getExpirationDate()).getTime();
+            {
+                itemTimestamp = ((FridgeItem) item).getExpirationDate();
+            } else if (item instanceof HistoryItem) {
+                itemTimestamp = ((HistoryItem) item).getTimestamp();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String relativeTimeSince;
+        long delta = currentTimesamp - itemTimestamp;
+
+        if (item instanceof FridgeItem) {
+            if (itemTimestamp > currentTimesamp) {
+                prefix = application.getString(R.string.label_expires);
+            } else {
+                prefix = application.getString(R.string.label_expired);
+            }
+            return prefix + " " + TimeSpans
+                    .getRelativeTimeSince(itemTimestamp * 1000, currentTimesamp * 1000);
+        }
+
+        if (currentTimesamp - itemTimestamp < 60) {
+            relativeTimeSince = application.getString(R.string.just_now);
+        } else if (delta < 3600) {
+            long minutes = delta / 60;
+            if (minutes == 1) {
+                relativeTimeSince = application.getString(R.string.one_minute_ago);
+            } else {
+                relativeTimeSince = minutes + " " + application.getString(R.string.minutes_ago);
+            }
+        } else {
+            relativeTimeSince = TimeSpans
+                    .getRelativeTimeSince(itemTimestamp * 1000, currentTimesamp * 1000);
+        }
+
+        return prefix + relativeTimeSince;
+    }
+
+    /**
+     * convert the given input stream into a string
+     */
+    public static String convertStreamToString(InputStream is) {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
+
+    public static int getAppVersion(Context context) {
+
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    public static boolean HaveNetworkConnection(Context ctx) {
+
+        boolean HaveConnectedWifi = false;
+        boolean HaveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) ctx
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI")) {
+                if (ni.isConnected()) {
+                    HaveConnectedWifi = true;
+                }
+            }
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE")) {
+                if (ni.isConnected()) {
+                    HaveConnectedMobile = true;
+                }
+            }
+        }
+        return HaveConnectedWifi || HaveConnectedMobile;
+    }
 }

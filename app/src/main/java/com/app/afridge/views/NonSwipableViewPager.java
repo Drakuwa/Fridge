@@ -12,30 +12,30 @@ import android.view.MotionEvent;
  */
 public class NonSwipableViewPager extends JazzyViewPager {
 
-  private boolean isEnabled;
+    private boolean isEnabled;
 
-  public NonSwipableViewPager(Context context, AttributeSet attrs) {
+    public NonSwipableViewPager(Context context, AttributeSet attrs) {
 
-    super(context, attrs);
-    this.isEnabled = true;
-  }
+        super(context, attrs);
+        this.isEnabled = true;
+    }
 
-  @Override
-  public boolean onTouchEvent(MotionEvent event) {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
 
-    return this.isEnabled && super.onTouchEvent(event);
+        return this.isEnabled && super.onTouchEvent(event);
 
-  }
+    }
 
-  @Override
-  public boolean onInterceptTouchEvent(MotionEvent event) {
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
 
-    return this.isEnabled && super.onInterceptTouchEvent(event);
+        return this.isEnabled && super.onInterceptTouchEvent(event);
 
-  }
+    }
 
-  public void setPagingEnabled(boolean enabled) {
+    public void setPagingEnabled(boolean enabled) {
 
-    this.isEnabled = enabled;
-  }
+        this.isEnabled = enabled;
+    }
 }

@@ -7,5 +7,5 @@ package com.app.afridge.interfaces;
  */
 public interface OnNoteChangeListener {
 
-  void onNoteChange();
+    void onNoteChange();
 }
