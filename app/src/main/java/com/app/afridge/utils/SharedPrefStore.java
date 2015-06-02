@@ -15,7 +15,7 @@ public class SharedPrefStore {
 
   public static SharedPrefStore load(Context context) {
 
-    return new SharedPrefStore(context.getSharedPreferences(Constants.SHARED_PREFS_FILE, Context.MODE_PRIVATE));
+    return new SharedPrefStore(context.getSharedPreferences(Constants.SHARED_PREFS_FILE, Context.MODE_MULTI_PROCESS));
   }
 
   public void set(Pref pref, String value) {
@@ -42,6 +42,7 @@ public class SharedPrefStore {
             .apply();
   }
 
+  @SuppressWarnings("unused")
   public void clearAll() {
 
     sharedPrefs.edit()
@@ -111,8 +112,10 @@ public class SharedPrefStore {
     HAS_MIGRATED,
     USER,
     SYNC_SETUP_COMPLETE,
+    LAST_SYNC,
     FIRST_TIME_WIZARD_COMPLETE,
-    STAT_RANDOM_SPIN, STAT_FRIDGE_OPEN;
+    STAT_RANDOM_SPIN,
+    STAT_FRIDGE_OPEN;
 
     private String getKey() {
 
