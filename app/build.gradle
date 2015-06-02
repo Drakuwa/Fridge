@@ -92,6 +92,7 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.6.3.5'
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
     compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'com.eftimoff:androidplayer:1.0.2@aar'
     compile group: 'com.cloudant', name: 'cloudant-sync-datastore-core', version: '0.11.0'
     compile group: 'com.cloudant', name: 'cloudant-sync-datastore-android', version: '0.11.0'
     compile 'com.crashlytics.android:crashlytics:1.+'

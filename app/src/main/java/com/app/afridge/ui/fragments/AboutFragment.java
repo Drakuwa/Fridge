@@ -2,6 +2,8 @@ package com.app.afridge.ui.fragments;
 
 import com.app.afridge.R;
 import com.app.afridge.views.AdvancedTextView;
+import com.eftimoff.androidplayer.Player;
+import com.eftimoff.androidplayer.actions.property.PropertyAction;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,6 +18,9 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,8 +37,14 @@ public class AboutFragment extends DialogFragment {
     @InjectView(R.id.text_app_version)
     AdvancedTextView textAppVersion;
 
-    @InjectView(R.id.text_login_description)
+    @InjectView(R.id.text_about)
     AdvancedTextView textAbout;
+
+    @InjectView(R.id.holder_profile)
+    LinearLayout headerLayout;
+
+    @InjectView(R.id.text_random_stat)
+    AdvancedTextView textRandom;
 
     // Singleton
     private static volatile AboutFragment instance = null;
@@ -96,6 +107,37 @@ public class AboutFragment extends DialogFragment {
 
         // set the version string
         initApplicationVersion();
+
+        // initialize intro animation
+        initTransactions();
+    }
+
+    private void initTransactions() {
+        final PropertyAction fabAction = PropertyAction.newPropertyAction(textRandom).
+                scaleX(0).
+                scaleY(0).
+                duration(750).
+                interpolator(new AccelerateDecelerateInterpolator()).
+                build();
+        final PropertyAction headerAction = PropertyAction.newPropertyAction(headerLayout).
+                interpolator(new DecelerateInterpolator()).
+                translationY(-200).
+                duration(550).
+                alpha(0.4f).
+                build();
+        final PropertyAction bottomAction = PropertyAction.newPropertyAction(textAbout).
+                translationY(500).
+                duration(550).
+                alpha(0f).
+                build();
+
+        Player.init().
+                animate(headerAction).
+                then().
+                animate(fabAction).
+                then().
+                animate(bottomAction).
+                play();
     }
 
     public void initApplicationVersion() {

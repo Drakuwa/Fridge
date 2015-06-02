@@ -156,7 +156,7 @@ public class ProfileFragment extends DialogFragment implements SocialNetworkMana
 
     super.onCreate(savedInstanceState);
     setRetainInstance(true); // try to fix orientation change
-    setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme); // 0 is the default theme for the selected style
+    setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogTheme); // 0 is the default theme for the selected style
     RandomStats.with(getActivity()).generateList(true); // generate random stats
   }
 

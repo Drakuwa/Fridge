@@ -80,10 +80,10 @@
                 android:text="@string/app_name_motto"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_medium"
-                font:customFont="@string/font_light" />
+                font:customFont="@string/font_medium" />
 
             <com.app.afridge.views.AdvancedTextView
-                android:id="@+id/text_login_description"
+                android:id="@+id/text_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_small"

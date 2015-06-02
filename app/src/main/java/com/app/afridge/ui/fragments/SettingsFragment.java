@@ -1,5 +1,14 @@
 package com.app.afridge.ui.fragments;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
+import com.app.afridge.interfaces.OnFragmentInteractionListener;
+import com.app.afridge.ui.MainActivity;
+import com.app.afridge.utils.SharedPrefStore;
+import com.app.afridge.views.AdvancedTextView;
+import com.gc.materialdesign.views.Slider;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,15 +22,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
-
-import com.afollestad.materialdialogs.AlertDialogWrapper;
-import com.app.afridge.FridgeApplication;
-import com.app.afridge.R;
-import com.app.afridge.interfaces.OnFragmentInteractionListener;
-import com.app.afridge.ui.MainActivity;
-import com.app.afridge.utils.SharedPrefStore;
-import com.app.afridge.views.AdvancedTextView;
-import com.gc.materialdesign.views.Slider;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -79,7 +79,7 @@ public class SettingsFragment extends DialogFragment {
   public void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
-    setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme); // 0 is the default theme for the selected style
+    setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogTheme); // 0 is the default theme for the selected style
   }
 
   @Override
