@@ -33,9 +33,4 @@ public class RestService {
     @GET("/ing.php")
     void getIngredients(Callback<List<IngredientHelper>> callback);
   }
-
-  /**
-   * Synchronization service: TODO
-   * curl -H "Authorization: Basic ZnJpZGdlOkxlbW9uY2hhaXI3NDg="  https://fridge.cloudant.com/fridge
-   */
 }
