@@ -1,14 +1,12 @@
 package com.app.afridge;
 
-import android.content.Context;
-import android.graphics.Point;
-import android.view.Display;
-import android.view.WindowManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
 import com.app.afridge.api.RestService;
-import com.app.afridge.dom.ItemType;
+import com.app.afridge.dom.enums.ItemType;
 import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.CustomDateFormatter;
@@ -16,8 +14,12 @@ import com.app.afridge.utils.DatabaseMigrationAsyncTask;
 import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
 import com.crashlytics.android.Crashlytics;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
+import android.content.Context;
+import android.graphics.Point;
+import android.support.multidex.MultiDex;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -128,5 +130,11 @@ public class FridgeApplication extends Application {
     if (!prefStore.getBoolean(SharedPrefStore.Pref.HAS_MIGRATED)) {
       new DatabaseMigrationAsyncTask(this).execute();
     }
+  }
+
+  @Override
+  protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    MultiDex.install(this);
   }
 }
