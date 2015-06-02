@@ -13,64 +13,79 @@ import com.activeandroid.annotation.Table;
 @Table(name = "NoteItems")
 public class NoteItem extends Model {
 
-  @Column(name = "note")
-  private String note;
-  @Column(name = "timestamp")
-  private long timestamp;
-  @Column(name = "is_checked")
-  private boolean isChecked;
+    @Column(name = "item_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE, index = true)
+    private int id;
 
-  public NoteItem() {
-    // empty constructor
-    super();
-  }
+    @Column(name = "note")
+    private String note;
 
-  public NoteItem(String note, long timestamp, boolean isChecked) {
+    @Column(name = "timestamp")
+    private long timestamp;
 
-    super();
-    this.note = note;
-    this.timestamp = timestamp;
-    this.isChecked = isChecked;
-  }
+    @Column(name = "is_checked")
+    private boolean isChecked;
 
-  public String getNote() {
+    public NoteItem() {
+        // empty constructor
+        super();
+    }
 
-    return note;
-  }
+    public NoteItem(String note, long timestamp, boolean isChecked) {
 
-  public void setNote(String note) {
+        super();
+        this.note = note;
+        this.timestamp = timestamp;
+        this.isChecked = isChecked;
+    }
 
-    this.note = note;
-  }
+    public String getNote() {
 
-  public long getTimestamp() {
+        return note;
+    }
 
-    return timestamp;
-  }
+    public void setNote(String note) {
 
-  public void setTimestamp(long timestamp) {
+        this.note = note;
+    }
 
-    this.timestamp = timestamp;
-  }
+    public long getTimestamp() {
 
-  public boolean isChecked() {
+        return timestamp;
+    }
 
-    return isChecked;
-  }
+    public void setTimestamp(long timestamp) {
 
-  public void setChecked(boolean isChecked) {
+        this.timestamp = timestamp;
+    }
 
-    this.isChecked = isChecked;
-  }
+    public int getItemId() {
 
-  @Override
-  public String toString() {
+        return id;
+    }
 
-    String noteStr = "";
-    noteStr += "id: " + getId() + "\n";
-    noteStr += "note: " + getNote() + "\n";
-    noteStr += "timestamp: " + getTimestamp() + "\n";
-    noteStr += "is_checked: " + isChecked() + "\n";
-    return noteStr;
-  }
+    public void setItemId(int id) {
+
+        this.id = id;
+    }
+
+    public boolean isChecked() {
+
+        return isChecked;
+    }
+
+    public void setChecked(boolean isChecked) {
+
+        this.isChecked = isChecked;
+    }
+
+    @Override
+    public String toString() {
+
+        String noteStr = "";
+        noteStr += "id: " + getId() + "\n";
+        noteStr += "note: " + getNote() + "\n";
+        noteStr += "timestamp: " + getTimestamp() + "\n";
+        noteStr += "is_checked: " + isChecked() + "\n";
+        return noteStr;
+    }
 }

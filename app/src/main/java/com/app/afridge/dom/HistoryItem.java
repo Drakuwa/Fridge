@@ -3,6 +3,7 @@ package com.app.afridge.dom;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.app.afridge.dom.enums.ChangeType;
 
 
 /**
