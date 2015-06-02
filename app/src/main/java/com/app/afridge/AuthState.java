@@ -1,11 +1,12 @@
 package com.app.afridge;
 
-import android.support.annotation.Nullable;
+import com.google.gson.Gson;
 
 import com.app.afridge.dom.User;
 import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
-import com.google.gson.Gson;
+
+import android.support.annotation.Nullable;
 
 
 /**
@@ -19,7 +20,7 @@ public class AuthState {
   private final SharedPrefStore prefStore;
   private User authenticatedUser;
 
-  static AuthState load(Gson gson, SharedPrefStore store) {
+  public static AuthState load(Gson gson, SharedPrefStore store) {
 
     String userJson = store.getString(SharedPrefStore.Pref.USER);
     User user = null;
