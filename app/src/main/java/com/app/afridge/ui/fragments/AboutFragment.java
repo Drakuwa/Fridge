@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import butterknife.ButterKnife;
@@ -45,6 +46,9 @@ public class AboutFragment extends DialogFragment {
 
     @InjectView(R.id.text_random_stat)
     AdvancedTextView textRandom;
+
+    @InjectView(R.id.image_logo)
+    ImageView imageLogo;
 
     // Singleton
     private static volatile AboutFragment instance = null;
@@ -116,23 +120,31 @@ public class AboutFragment extends DialogFragment {
         final PropertyAction fabAction = PropertyAction.newPropertyAction(textRandom).
                 scaleX(0).
                 scaleY(0).
-                duration(750).
+                duration(350).
                 interpolator(new AccelerateDecelerateInterpolator()).
                 build();
         final PropertyAction headerAction = PropertyAction.newPropertyAction(headerLayout).
                 interpolator(new DecelerateInterpolator()).
                 translationY(-200).
-                duration(550).
+                duration(350).
                 alpha(0.4f).
+                build();
+        final PropertyAction logoAction = PropertyAction.newPropertyAction(imageLogo).
+                scaleX(0).
+                scaleY(0).
+                duration(350).
+                interpolator(new AccelerateDecelerateInterpolator()).
                 build();
         final PropertyAction bottomAction = PropertyAction.newPropertyAction(textAbout).
                 translationY(500).
-                duration(550).
+                duration(350).
                 alpha(0f).
                 build();
 
         Player.init().
                 animate(headerAction).
+                then().
+                animate(logoAction).
                 then().
                 animate(fabAction).
                 then().
