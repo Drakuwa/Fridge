@@ -31,6 +31,7 @@ import com.app.afridge.utils.animations.ViewAnimationUtils;
 import com.app.afridge.views.AdvancedTextView;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
+import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
 import android.app.AlarmManager;
@@ -132,26 +133,7 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
       application.prefStore.setInt(SharedPrefStore.Pref.STAT_FRIDGE_OPEN, ++fridgeOpenCount);
 
       // setup context menu
-      menuObjects.add(MenuType.CLOSE.ordinal(), new MenuObject(R.drawable.ic_close));
-      menuObjects.add(MenuType.NOTES.ordinal(), new MenuObject(R.drawable.ic_note, getString(R.string.menu_fridge_notes)));
-      menuObjects.add(MenuType.HISTORY.ordinal(), new MenuObject(R.drawable.ic_history, getString(R.string.menu_history)));
-      if (application.authState.isAuthenticated()) {
-        menuObjects.add(MenuType.PROFILE.ordinal(), new MenuObject(R.drawable.ic_user, getString(R.string.menu_profile)));
-      }
-      else {
-        menuObjects.add(MenuType.PROFILE.ordinal(), new MenuObject(R.drawable.ic_user, getString(R.string.menu_login)));
-      }
-      menuObjects.add(MenuType.SETTINGS.ordinal(), new MenuObject(R.drawable.ic_settings, getString(R.string.menu_settings)));
-      menuObjects.add(MenuType.ABOUT.ordinal(), new MenuObject(R.drawable.ic_about, getString(R.string.menu_about)));
-      menuObjects.add(MenuType.FEEDBACK.ordinal(), new MenuObject(R.drawable.ic_mail, getString(R.string.menu_feedback)));
-
-      // status bar height margin hack
-      LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) findViewById(R.id.height_hack).getLayoutParams();
-      params.height = statusBarHeight;
-      findViewById(R.id.height_hack).setLayoutParams(params);
-
-      mMenuDialogFragment = ContextMenuDialogFragment.newInstance(
-              (int) getResources().getDimension(R.dimen.toolbar_height), menuObjects, 0, 50);
+      setupContextMenu();
 
       // get or initialize the ingredients
       if (new Select().from(Ingredient.class).execute().size() == 0) {
@@ -230,6 +212,47 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
   public void setActionBarTitle(String title) {
 
     ((AdvancedTextView) toolbar.findViewById(R.id.toolbar_title)).setText(title);
+  }
+
+  public void setupContextMenu() {
+    MenuObject close = new MenuObject(); close.setResource(R.drawable.ic_close);
+    menuObjects.add(MenuType.CLOSE.ordinal(), close);
+    MenuObject notes = new MenuObject(getString(R.string.menu_fridge_notes)); notes.setResource(R.drawable.ic_note);
+    menuObjects.add(MenuType.NOTES.ordinal(), notes);
+    MenuObject history = new MenuObject(getString(R.string.menu_history)); history.setResource(R.drawable.ic_history);
+    menuObjects.add(MenuType.HISTORY.ordinal(), history);
+    if (application.authState.isAuthenticated()) {
+      MenuObject profile = new MenuObject(getString(R.string.menu_profile)); profile.setResource(R.drawable.ic_user);
+      menuObjects.add(MenuType.PROFILE.ordinal(), profile);
+    }
+    else {
+      MenuObject profile = new MenuObject(getString(R.string.menu_login)); profile.setResource(R.drawable.ic_user);
+      menuObjects.add(MenuType.PROFILE.ordinal(), profile);
+    }
+    MenuObject settings = new MenuObject(getString(R.string.menu_settings)); settings.setResource(R.drawable.ic_settings);
+    menuObjects.add(MenuType.SETTINGS.ordinal(), settings);
+    MenuObject about = new MenuObject(getString(R.string.menu_about)); about.setResource(R.drawable.ic_about);
+    menuObjects.add(MenuType.ABOUT.ordinal(), about);
+    MenuObject feedback = new MenuObject(getString(R.string.menu_feedback)); feedback.setResource(R.drawable.ic_mail);
+    menuObjects.add(MenuType.FEEDBACK.ordinal(), feedback);
+
+    // status bar height margin hack
+    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) findViewById(R.id.height_hack).getLayoutParams();
+    params.height = statusBarHeight;
+    findViewById(R.id.height_hack).setLayoutParams(params);
+
+    MenuParams menuParams = new MenuParams();
+    menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.toolbar_height));
+    menuParams.setMenuObjects(menuObjects);
+    menuParams.setAnimationDuration(50);
+    menuParams.setClosableOutside(false);
+    menuParams.setClipToPadding(true);
+    menuParams.setFitsSystemWindow(true);
+    // set other settings to meet your needs
+    mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
+
+    //    mMenuDialogFragment = ContextMenuDialogFragment.newInstance(
+    //            (int) getResources().getDimension(R.dimen.toolbar_height), menuObjects, 0, 50);
   }
 
   @Override
