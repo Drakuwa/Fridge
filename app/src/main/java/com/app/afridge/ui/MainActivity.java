@@ -5,6 +5,7 @@ import com.activeandroid.query.Select;
 import com.app.afridge.R;
 import com.app.afridge.dom.Ingredient;
 import com.app.afridge.dom.IngredientHelper;
+import com.app.afridge.dom.RandomStats;
 import com.app.afridge.dom.SyncEvent;
 import com.app.afridge.dom.enums.MenuType;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
@@ -98,6 +99,8 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         public void onReceive(Context context, Intent intent) {
             // update your views
             setDatabaseChanged(true);
+            // re-generate random stats
+            RandomStats.with(MainActivity.this).generateList(true);
             // update sync timestamp
             Calendar calendar = Calendar.getInstance();
             long syncTimestamp = calendar.getTimeInMillis() / 1000;
