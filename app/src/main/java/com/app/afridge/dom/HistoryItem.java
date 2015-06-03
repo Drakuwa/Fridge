@@ -14,7 +14,7 @@ import com.app.afridge.dom.enums.ChangeType;
 @Table(name = "HistoryItems")
 public class HistoryItem extends Model {
 
-    @Column(name = "item")
+    @Column(name = "item", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private FridgeItem fridgeItem;
 
     @Column(name = "timestamp", index = true)
