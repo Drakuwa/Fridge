@@ -195,6 +195,7 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                                                                                     .getTimeInMillis());
                                                                     item.save();
                                                                     items.remove(item);
+                                                                    filteredItems.remove(item);
                                                                     notifyDataSetChanged();
                                                                 }
                                                             }
