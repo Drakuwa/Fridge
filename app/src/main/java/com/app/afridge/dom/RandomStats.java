@@ -108,13 +108,15 @@ public class RandomStats {
 
         int fridgeItemsCount = new Select().from(FridgeItem.class).where("status = ?", false)
                 .count();
-        return new Stat("Total item count:", fridgeItemsCount);
+        return new Stat("Total item count:",
+                fridgeItemsCount >= 100 ? " :D" : String.valueOf(fridgeItemsCount));
     }
 
     public Stat getNoteCount() {
 
         int noteItemsCount = new Select().from(NoteItem.class).count();
-        return new Stat("Sticky notes on your fridge door:", noteItemsCount);
+        return new Stat("Sticky notes on your fridge door:",
+                noteItemsCount >= 100 ? " :D" : String.valueOf(noteItemsCount));
     }
 
     private String getTotalWeight() {
