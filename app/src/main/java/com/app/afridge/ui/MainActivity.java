@@ -398,8 +398,11 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         Fragment fragment = getSupportFragmentManager()
                 .findFragmentByTag(Constants.SOCIAL_NETWORK_TAG);
         if (fragment != null) {
+            try {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            } catch (Exception ignored) {
 
-            fragment.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 

@@ -128,5 +128,8 @@
     <string name="donate">DONATE</string>
     <string name="sync_please_wait">Please wait while the sync is complete.</string>
     <string name="action_search">Search</string>
+    <string name="loading">Loading…</string>
+    <string name="get_picture">Get Picture</string>
+    <string name="take_photo">take photo</string>
 
 </resources>

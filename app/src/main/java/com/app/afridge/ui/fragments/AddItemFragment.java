@@ -1,5 +1,6 @@
 package com.app.afridge.ui.fragments;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
 import com.app.afridge.adapters.CircularViewAdapter;
@@ -10,16 +11,18 @@ import com.app.afridge.dom.enums.ChangeType;
 import com.app.afridge.dom.enums.ItemType;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
 import com.app.afridge.interfaces.Screenshotable;
-import com.app.afridge.ui.GalleryActivity;
 import com.app.afridge.ui.MainActivity;
 import com.app.afridge.utils.CircleTransform;
-import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.FileUtils;
 import com.app.afridge.utils.KeyboardUtils;
 import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.AdvancedTextView;
 import com.gc.materialdesign.widgets.SnackBar;
+import com.kbeanie.imagechooser.api.ChooserType;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.kbeanie.imagechooser.api.ImageChooserListener;
+import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.melnykov.fab.FloatingActionButton;
 import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 import com.sababado.circularview.CircularView;
@@ -28,6 +31,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -48,6 +53,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.Calendar;
@@ -63,9 +69,11 @@ import butterknife.OnClick;
  * <p/>
  * Created by drakuwa on 1/29/15.
  */
-public class AddItemFragment extends Fragment implements Screenshotable {
+public class AddItemFragment extends Fragment implements Screenshotable, ImageChooserListener {
 
     private static final String KEY_CONTENT = "AddItemFragment:Content";
+
+    private static String PACKAGE_NAME = "MMSDemo";
 
     // Singleton
     private static volatile AddItemFragment instance = null;
@@ -90,18 +98,23 @@ public class AddItemFragment extends Fragment implements Screenshotable {
 
     private View containerView;
 
-    private File mFileTemp = null;
+    // private File mFileTemp = null;
 
     private CircularViewAdapter adapter;
-
-    // make sure to set Target as strong reference
-    private Target loadTarget;
 
     private OnFragmentInteractionListener mListener;
 
     private boolean isPhotoSelected = false;
 
     private Menu menu;
+
+    private ImageChooserManager imageChooserManager;
+
+    private String filePath;
+
+    private int chooserType;
+
+    private ProgressDialog dialog;
 
     public AddItemFragment() {
         // Required empty public constructor
@@ -143,6 +156,9 @@ public class AddItemFragment extends Fragment implements Screenshotable {
 
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        // set the package name for naming the folder
+        PACKAGE_NAME = getActivity().getApplicationContext().getPackageName();
 
         if ((savedInstanceState != null) && savedInstanceState.containsKey(KEY_CONTENT)) {
             bottomMargin = savedInstanceState.getInt(KEY_CONTENT);
@@ -260,67 +276,85 @@ public class AddItemFragment extends Fragment implements Screenshotable {
             return;
         }
 
-        if (requestCode == Constants.REQUEST_IMAGE_CAPTURE) {
-            if (data.getData() != null) {
-                // create the image file either from the uri or the path
-                try {
-                    mFileTemp = FileUtils.getFileFromUri(data.getData(), getActivity());
-                } catch (NullPointerException e) {
-                    mFileTemp = new File(data.getData().getPath());
-                }
-                if (mFileTemp != null) {
-
-                    Log.d(Log.TAG, "mFileTemp: " + mFileTemp.getAbsolutePath());
-                    Log.d(Log.TAG, "data.getDataString(): " + data.getDataString());
-                    Log.d(Log.TAG, "data.getData: " + data.getData().getPath());
-                    Log.d(Log.TAG, "data.getEncodedData: " + data.getData().getEncodedPath());
-
-                    // set the image to the circle view center
-                    try {
-                        if (loadTarget == null) {
-                            loadTarget = new Target() {
-
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
-                                    circularView.getCenterCircle().setSrc(bitmap);
-                                    textType.setText(application.getString(R.string.type_camera));
-                                }
-
-                                @Override
-                                public void onBitmapFailed(Drawable errorDrawable) {
-
-                                    circularView.getCenterCircle().setSrc(errorDrawable);
-                                    textType.setText(application.getString(R.string.type_error));
-                                }
-
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                                }
-                            };
-                        }
-
-                        Picasso.with(getActivity())
-                                .load(mFileTemp)
-                                .resize(circularView.getWidth(), circularView.getHeight())
-                                .centerInside()
-                                .transform(new CircleTransform())
-                                .error(R.mipmap.ic_launcher)
-                                .into(loadTarget);
-                        // circularView.getCenterCircle().setSrc(FileUtils.getCroppedBitmapFromFile(circularView, mFileTemp));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    // change the state of the FAB
-                    menu.findItem(R.id.action_add).setIcon(R.drawable.ic_clear);
-                    // buttonCamera.setImageResource(R.drawable.ic_action_content_clear_white);
-
-                    isPhotoSelected = true;
-                    circularView.setEnabled(false);
-                }
+        if (requestCode == ChooserType.REQUEST_PICK_PICTURE
+                || requestCode == ChooserType.REQUEST_CAPTURE_PICTURE) {
+            showProgressDialog();
+            if (imageChooserManager == null) {
+                reinitializeImageChooser();
             }
+            imageChooserManager.submit(requestCode, data);
         }
+//        else if (requestCode == CROP_PHOTO) {
+//            hideProgressDialog();
+//            String path = data.getStringExtra(CropImage.IMAGE_PATH);
+//            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager()
+//                    .beginTransaction();
+//            DialogFragment fragment = EditImageFragment.newInstance(path);
+//            fragment.setTargetFragment(this, FILTER_PHOTO);
+//            fragment.show(fragmentTransaction, "filters");
+//        }
+
+//        if (requestCode == Constants.REQUEST_IMAGE_CAPTURE) {
+//            if (data.getData() != null) {
+//                // create the image file either from the uri or the path
+//                try {
+//                    mFileTemp = FileUtils.getFileFromUri(data.getData(), getActivity());
+//                } catch (NullPointerException e) {
+//                    mFileTemp = new File(data.getData().getPath());
+//                }
+//                if (mFileTemp != null) {
+//
+//                    Log.d(Log.TAG, "mFileTemp: " + mFileTemp.getAbsolutePath());
+//                    Log.d(Log.TAG, "data.getDataString(): " + data.getDataString());
+//                    Log.d(Log.TAG, "data.getData: " + data.getData().getPath());
+//                    Log.d(Log.TAG, "data.getEncodedData: " + data.getData().getEncodedPath());
+//
+//                    // set the image to the circle view center
+//                    try {
+//                        if (loadTarget == null) {
+//                            loadTarget = new Target() {
+//
+//                                @Override
+//                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//
+//                                    circularView.getCenterCircle().setSrc(bitmap);
+//                                    textType.setText(application.getString(R.string.type_camera));
+//                                }
+//
+//                                @Override
+//                                public void onBitmapFailed(Drawable errorDrawable) {
+//
+//                                    circularView.getCenterCircle().setSrc(errorDrawable);
+//                                    textType.setText(application.getString(R.string.type_error));
+//                                }
+//
+//                                @Override
+//                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//                                }
+//                            };
+//                        }
+//
+//                        Picasso.with(getActivity())
+//                                .load(mFileTemp)
+//                                .resize(circularView.getWidth(), circularView.getHeight())
+//                                .centerInside()
+//                                .transform(new CircleTransform())
+//                                .error(R.mipmap.ic_launcher)
+//                                .into(loadTarget);
+//                        // circularView.getCenterCircle().setSrc(FileUtils.getCroppedBitmapFromFile(circularView, mFileTemp));
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    // change the state of the FAB
+//                    menu.findItem(R.id.action_add).setIcon(R.drawable.ic_clear);
+//                    // buttonCamera.setImageResource(R.drawable.ic_action_content_clear_white);
+//
+//                    isPhotoSelected = true;
+//                    circularView.setEnabled(false);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -359,13 +393,13 @@ public class AddItemFragment extends Fragment implements Screenshotable {
             String type = textType.getText().toString().trim();
             fridgeItem.setName(name.length() > 0 ? name : type);
             fridgeItem.setType(type.equals(getString(R.string.type_camera)) ?
-                    mFileTemp.getAbsolutePath() : String.valueOf(ItemType.valueOf(type).ordinal()));
+                    filePath : String.valueOf(ItemType.valueOf(type).ordinal()));
             fridgeItem.setItemId(fridgeItem.hashCode());
             fridgeItem.setEditTimestamp(Calendar.getInstance().getTimeInMillis());
             fridgeItem.save();
 
             // remove instance to saved file
-            mFileTemp = null;
+            filePath = null;
 
             // add the saved item to history
             HistoryItem historyItem = new HistoryItem(fridgeItem,
@@ -410,13 +444,13 @@ public class AddItemFragment extends Fragment implements Screenshotable {
         circularView.animateHighlightedDegree(start, end, duration);
     }
 
-    public void takePicture() {
+    public void getPicture() {
 
         if (isPhotoSelected) {
             isPhotoSelected = false;
             circularView.setEnabled(true);
-            FileUtils.deleteFile(mFileTemp);
-            mFileTemp = null;
+            FileUtils.deleteFile(new File(filePath));
+            filePath = null;
             menu.findItem(R.id.action_add).setIcon(R.drawable.ic_photo_camera);
             // ((FloatingActionButton) view).setImageResource(R.drawable.ic_photo_camera);
 
@@ -425,10 +459,26 @@ public class AddItemFragment extends Fragment implements Screenshotable {
             circularView.getCenterCircle().setSrc(marker.getDrawable());
             textType.setText(adapter.getMarkerName(marker.getId()));
         } else {
-            Intent choosePhotoIntent = new Intent(getActivity(), GalleryActivity.class);
-            startActivityForResult(choosePhotoIntent, Constants.REQUEST_IMAGE_CAPTURE);
-            getActivity()
-                    .overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            // Show image chooser dialog
+            String[] options = {application.getString(R.string.take_photo),
+                    application.getString(R.string.choose_image)};
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
+            builder.setTitle(R.string.get_picture)
+                    .setItems(options, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // The 'which' argument contains the index position
+                            // of the selected item
+                            switch (which) {
+                                case 0:
+                                    takePhoto();
+                                    break;
+                                case 1:
+                                    chooseImage();
+                                    break;
+                            }
+                        }
+                    });
+            builder.create().show();
         }
     }
 
@@ -499,10 +549,172 @@ public class AddItemFragment extends Fragment implements Screenshotable {
             // Toast.makeText(getActivity(), "Back", Toast.LENGTH_SHORT).show();
             Log.d(Log.TAG, "Back");
         } else if (id == R.id.action_add) {
-            takePicture();
+            getPicture();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Choose an image from the file system
+     */
+    public void chooseImage() {
+
+        chooserType = ChooserType.REQUEST_PICK_PICTURE;
+        imageChooserManager = new ImageChooserManager(this,
+                ChooserType.REQUEST_PICK_PICTURE, PACKAGE_NAME, true);
+        imageChooserManager.setImageChooserListener(this);
+        try {
+            filePath = imageChooserManager.choose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Take a picture with a camera application
+     */
+    public void takePhoto() {
+
+        chooserType = ChooserType.REQUEST_CAPTURE_PICTURE;
+        imageChooserManager = new ImageChooserManager(this,
+                ChooserType.REQUEST_CAPTURE_PICTURE, PACKAGE_NAME, true);
+        imageChooserManager.setImageChooserListener(this);
+        try {
+            filePath = imageChooserManager.choose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Call the crop intent when the user chooses an image
+     *
+     * @param image image that the user has chosen
+     */
+    @Override
+    public void onImageChosen(final ChosenImage image) {
+
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (image != null) {
+                    // set the image to the circle view center
+                    try {
+                        Log.d("filePath: " + filePath);
+                        filePath = image.getFilePathOriginal();
+                        Log.d("filePath image.getFilePathOriginal(): " + filePath);
+                        final Target loadTarget = new Target() {
+
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                                circularView.getCenterCircle().setSrc(bitmap);
+                                textType.setText(application.getString(R.string.type_camera));
+                                hideProgressDialog();
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable errorDrawable) {
+
+                                circularView.getCenterCircle().setSrc(errorDrawable);
+                                textType.setText(application.getString(R.string.type_error));
+                                hideProgressDialog();
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        };
+
+                        // set the image tag
+                        circularView.setTag(loadTarget);
+                        Picasso.with(getActivity())
+                                .load(new File(filePath))
+                                .resize(circularView.getWidth(), circularView.getHeight())
+                                .centerInside()
+                                .transform(new CircleTransform())
+                                .error(R.mipmap.ic_launcher)
+                                .into(loadTarget);
+                        // circularView.getCenterCircle().setSrc(FileUtils.getCroppedBitmapFromFile(circularView, mFileTemp));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // change the state of the FAB
+                    menu.findItem(R.id.action_add).setIcon(R.drawable.ic_clear);
+                    // buttonCamera.setImageResource(R.drawable.ic_action_content_clear_white);
+
+                    isPhotoSelected = true;
+                    circularView.setEnabled(false);
+                }
+            }
+        });
+    }
+
+    /**
+     * Show the error reason when the image chooser fails
+     *
+     * @param reason reason for failing
+     */
+    @Override
+    public void onError(final String reason) {
+
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                hideProgressDialog();
+                Toast.makeText(getActivity(), reason, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Re-initialize the {@link ImageChooserManager}.
+     * <p>Should be called if for some reason the Image Chooser Manager is null
+     * (Due to destroying of activity for low memory situations)</p>
+     */
+    private void reinitializeImageChooser() {
+
+        imageChooserManager = new ImageChooserManager(this, chooserType, PACKAGE_NAME, true);
+        imageChooserManager.setImageChooserListener(this);
+        imageChooserManager.reinitialize(filePath);
+    }
+
+    /**
+     * Create and show a progress dialog
+     * <p>Create an indeterminate {@link ProgressDialog} and show it</p>
+     */
+    private void showProgressDialog() {
+        // create the indeterminate progress dialog
+        dialog = new ProgressDialog(getActivity());
+        dialog.setMessage(getString(R.string.loading));
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        try {
+            dialog.show();
+        } catch (Exception e) {
+            Log.e(Log.TAG, "Exception=" + e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Hide the progress dialog
+     * <p>hide {@link AddItemFragment#dialog} if it is initialized
+     * and showing</p>
+     */
+    private void hideProgressDialog() {
+        // Remove the progress dialog.
+        try {
+            dialog.dismiss();
+            dialog = null;
+        } catch (Exception e) {
+            Log.e(Log.TAG, "Exception=" + e.getLocalizedMessage());
+        }
     }
 
     /**

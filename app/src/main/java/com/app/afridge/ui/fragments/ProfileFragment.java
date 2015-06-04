@@ -669,6 +669,7 @@ public class ProfileFragment extends DialogFragment
         super.onDismiss(dialog);
         final Activity activity = getActivity();
         if (activity != null && activity instanceof DialogInterface.OnDismissListener) {
+            getFragmentManager().beginTransaction().remove(socialNetworkManager).commit();
             ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
         }
     }
