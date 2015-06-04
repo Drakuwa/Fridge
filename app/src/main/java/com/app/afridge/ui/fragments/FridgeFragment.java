@@ -22,10 +22,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -72,6 +77,8 @@ public class FridgeFragment extends Fragment
 
     private OnFragmentInteractionListener mListener;
 
+    private FridgeAdapter adapter;
+
     public FridgeFragment() {
         // Required empty public constructor
     }
@@ -101,11 +108,11 @@ public class FridgeFragment extends Fragment
         // You can't use Fragment.setRetainInstance because he's meant only to fragments that aren't on the back stack.
         // setRetainInstance(true);
         getLoaderManager().initLoader(0, null, this);
+        // add options menu
+        setHasOptionsMenu(true);
 
         // check if we have arguments
         if (savedInstanceState == null && getArguments() != null) {
-            // add options menu
-            setHasOptionsMenu(true);
             // get the extras
             // Bundle args = getArguments();
             // isDatabaseChanged = args.getBoolean(Constants.EXTRA_RESTART_LOADER);
@@ -159,6 +166,41 @@ public class FridgeFragment extends Fragment
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2,
                 GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_fridge, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if (adapter != null)
+                    adapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // do s.th.
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @OnClick(R.id.button_new)
@@ -241,7 +283,7 @@ public class FridgeFragment extends Fragment
             emptyText.setVisibility(View.GONE);
 
             // set the adapter
-            FridgeAdapter adapter = new FridgeAdapter((ArrayList<FridgeItem>) data, application,
+            adapter = new FridgeAdapter((ArrayList<FridgeItem>) data, application,
                     (MainActivity) getActivity(), bottomMargin);
             recyclerView.setAdapter(adapter);
 
@@ -260,7 +302,7 @@ public class FridgeFragment extends Fragment
         } else {
             // the list view cannot take a null pointer as an adapter
             // use an empty list instead
-            FridgeAdapter adapter = new FridgeAdapter(new ArrayList<FridgeItem>(), application,
+            adapter = new FridgeAdapter(new ArrayList<FridgeItem>(), application,
                     (MainActivity) getActivity(), bottomMargin);
             recyclerView.setAdapter(adapter);
             // show the empty view
@@ -272,7 +314,7 @@ public class FridgeFragment extends Fragment
     public void onLoaderReset(Loader<List<FridgeItem>> loader) {
         // remove the references to the previous adapter
         try {
-            FridgeAdapter adapter = new FridgeAdapter(new ArrayList<FridgeItem>(), application,
+            adapter = new FridgeAdapter(new ArrayList<FridgeItem>(), application,
                     (MainActivity) getActivity(), bottomMargin);
             recyclerView.setAdapter(adapter);
         } catch (Exception ignored) {

@@ -14,6 +14,7 @@ import com.app.afridge.utils.AnimationsController;
 import com.app.afridge.utils.CircleTransform;
 import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
+import com.app.afridge.utils.FridgeItemComparator;
 import com.app.afridge.utils.Log;
 import com.app.afridge.views.AdvancedTextView;
 import com.balysv.materialripple.MaterialRippleLayout;
@@ -32,6 +33,8 @@ import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -39,7 +42,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -50,9 +52,14 @@ import butterknife.InjectView;
  * <p/>
  * Created by drakuwa on 2/12/15.
  */
-public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder> {
+public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder> implements
+        Filterable {
 
     private ArrayList<FridgeItem> items;
+
+    private ArrayList<FridgeItem> filteredItems = new ArrayList<>();
+
+    private ItemFilter filter = new ItemFilter();
 
     private FridgeApplication application;
 
@@ -64,35 +71,14 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
             MainActivity activity, int bottomMargin) {
 
         this.items = items;
+        this.filteredItems.addAll(items);
         this.application = application;
         this.activity = activity;
         this.bottomMargin = bottomMargin;
 
         // sort the items by expiration date
-        Collections.sort(this.items, new Comparator<FridgeItem>() {
-
-            @Override
-            public int compare(FridgeItem lhs, FridgeItem rhs) {
-
-                long lhsMillis = 0;
-                long rhsMillis = 0;
-                try {
-                    //                    if (lhs.getExpirationDate() != null)
-                    //                        lhsMillis = application.dateFormat.parse(lhs.getExpirationDate()).getTime();
-                    //                    if (rhs.getExpirationDate() != null)
-                    //                        rhsMillis = application.dateFormat.parse(rhs.getExpirationDate()).getTime();
-                    if (lhs.getExpirationDate() != 0) {
-                        lhsMillis = lhs.getExpirationDate();
-                    }
-                    if (rhs.getExpirationDate() != 0) {
-                        rhsMillis = rhs.getExpirationDate();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return lhsMillis < rhsMillis ? -1 : (lhsMillis == rhsMillis ? 0 : 1);
-            }
-        });
+        Collections.sort(this.items, new FridgeItemComparator());
+        Collections.sort(this.filteredItems, new FridgeItemComparator());
     }
 
     // Create new views (invoked by the layout manager)
@@ -118,7 +104,7 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
     public void onBindViewHolder(final FridgeAdapter.ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        final FridgeItem item = items.get(position);
+        final FridgeItem item = filteredItems.get(position);
 
         // bind item to view holder
         // holder.bindItem(item);
@@ -176,7 +162,8 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
 
                                                 SnackBar snackBar = new SnackBar(activity,
                                                         String.format(application
-                                                                .getString(R.string.item_deleted),
+                                                                        .getString(
+                                                                                R.string.item_deleted),
                                                                 item.getName()),
                                                         application.getString(R.string.undo),
                                                         new View.OnClickListener() {
@@ -295,18 +282,18 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
     @Override
     public int getItemCount() {
 
-        return items.size();
+        return filteredItems.size();
     }
 
     public void addItem(int position, FridgeItem item) {
 
-        items.add(position, item);
+        filteredItems.add(position, item);
         notifyItemInserted(position);
     }
 
     public void removeItem(int position) {
 
-        items.remove(position);
+        filteredItems.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -370,5 +357,49 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
             clickListener.onClick(v, getPosition(), true);
             return true;
         }
+    }
+
+    private class ItemFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            String filterString = constraint.toString().toLowerCase().trim();
+            FilterResults results = new FilterResults();
+            final ArrayList<FridgeItem> list = items;
+
+            int count = list.size();
+            final ArrayList<FridgeItem> nlist = new ArrayList<>(count);
+
+            FridgeItem filterableItem;
+            for (FridgeItem aList : list) {
+                filterableItem = aList;
+                if ((filterableItem.getName().toLowerCase() + " "
+                        + filterableItem.getName().toLowerCase()).contains(filterString)) {
+                    nlist.add(filterableItem);
+                } else if (filterableItem.getDetails() != null && (
+                        filterableItem.getDetails().toLowerCase() + " "
+                                + filterableItem.getDetails().toLowerCase())
+                        .contains(filterString)) {
+                    nlist.add(filterableItem);
+                }
+            }
+            results.values = nlist;
+            results.count = nlist.size();
+
+            return results;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            filteredItems = (ArrayList<FridgeItem>) results.values;
+            notifyDataSetChanged();
+        }
+
+    }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
     }
 }

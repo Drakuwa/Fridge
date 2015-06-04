@@ -127,5 +127,6 @@
     <string name="donations_bitcoin_toast_copy">Bitcoin address has been copied to the clipboard!</string>
     <string name="donate">DONATE</string>
     <string name="sync_please_wait">Please wait while the sync is complete.</string>
+    <string name="action_search">Search</string>
 
 </resources>
