@@ -194,6 +194,8 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                                                                             Calendar.getInstance()
                                                                                     .getTimeInMillis());
                                                                     item.save();
+                                                                    items.remove(item);
+                                                                    notifyDataSetChanged();
                                                                 }
                                                             }
                                                         });
