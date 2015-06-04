@@ -445,12 +445,21 @@ public class CloudantService {
                                 dbItem.save();
 
                                 // add the saved item to history
-                                HistoryItem historyItem = new HistoryItem(dbItem,
-                                        dbItem.getEditTimestamp() == 0 ? Calendar
-                                                .getInstance().getTimeInMillis() / 1000
-                                                : dbItem.getEditTimestamp() / 1000,
-                                        ChangeType.ADD);
-                                historyItem.save();
+                                if (dbItem.isRemoved()) {
+                                    HistoryItem historyItem = new HistoryItem(dbItem,
+                                            dbItem.getEditTimestamp() == 0 ? Calendar
+                                                    .getInstance().getTimeInMillis() / 1000
+                                                    : dbItem.getEditTimestamp() / 1000,
+                                            ChangeType.DELETE);
+                                    historyItem.save();
+                                } else {
+                                    HistoryItem historyItem = new HistoryItem(dbItem,
+                                            dbItem.getEditTimestamp() == 0 ? Calendar
+                                                    .getInstance().getTimeInMillis() / 1000
+                                                    : dbItem.getEditTimestamp() / 1000,
+                                            ChangeType.ADD);
+                                    historyItem.save();
+                                }
                             }
                         }
 
