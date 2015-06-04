@@ -3,11 +3,12 @@ package com.app.afridge.ui;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 import com.app.afridge.R;
+import com.app.afridge.api.CloudantService;
 import com.app.afridge.dom.Ingredient;
 import com.app.afridge.dom.IngredientHelper;
 import com.app.afridge.dom.RandomStats;
-import com.app.afridge.dom.SyncEvent;
 import com.app.afridge.dom.enums.MenuType;
+import com.app.afridge.dom.enums.SyncState;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
 import com.app.afridge.interfaces.OnMeasurementTypeChangeListener;
 import com.app.afridge.interfaces.Screenshotable;
@@ -63,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -72,12 +72,16 @@ import retrofit.client.Response;
 public class MainActivity extends AbstractActivity implements OnMenuItemClickListener,
         OnFragmentInteractionListener, DialogInterface.OnDismissListener {
 
+    public static final String ACTION_STARTED_SYNC = "com.app.afridge.ACTION_STARTED_SYNC";
+
     public static final String ACTION_FINISHED_SYNC = "com.app.afridge.ACTION_FINISHED_SYNC";
 
     @SuppressWarnings("UnusedDeclaration")
     private static final long ONE_DAY = 24 * 60 * 60 * 1000;
 
     private static IntentFilter syncIntentFilter = new IntentFilter(ACTION_FINISHED_SYNC);
+
+    private static IntentFilter syncIntentFilterStarted = new IntentFilter(ACTION_STARTED_SYNC);
 
     boolean isDatabaseChanged = false;
 
@@ -97,22 +101,27 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            // update your views
-            setDatabaseChanged(true);
-            // re-generate random stats
-            RandomStats.with(MainActivity.this).generateList(true);
-            // update sync timestamp
-            Calendar calendar = Calendar.getInstance();
-            long syncTimestamp = calendar.getTimeInMillis() / 1000;
-            application.prefStore
-                    .set(SharedPrefStore.Pref.LAST_SYNC, String.valueOf(syncTimestamp));
-            // update fridge fragment list view
-            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-                if (fragment instanceof FridgeFragment) {
-                    fragment.onResume();
-                } else if (fragment instanceof ProfileFragment) {
-                    ((ProfileFragment) fragment).refreshState();
+            if (intent.getAction().equalsIgnoreCase(ACTION_FINISHED_SYNC)) {
+                CloudantService.STATE = SyncState.IDLE;
+                // update your views
+                setDatabaseChanged(true);
+                // re-generate random stats
+                RandomStats.with(MainActivity.this).generateList(true);
+                // update sync timestamp
+                Calendar calendar = Calendar.getInstance();
+                long syncTimestamp = calendar.getTimeInMillis() / 1000;
+                application.prefStore
+                        .set(SharedPrefStore.Pref.LAST_SYNC, String.valueOf(syncTimestamp));
+                // update fridge fragment list view
+                for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                    if (fragment instanceof FridgeFragment) {
+                        fragment.onResume();
+                    } else if (fragment instanceof ProfileFragment) {
+                        ((ProfileFragment) fragment).refreshState();
+                    }
                 }
+            } else if (intent.getAction().equalsIgnoreCase(ACTION_STARTED_SYNC)) {
+                CloudantService.STATE = SyncState.SYNCING;
             }
         }
     };
@@ -536,29 +545,11 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
-    // This method will be called when a SyncEvent is posted
-    @SuppressWarnings("unused")
-    public void onEvent(SyncEvent event) {
-        // publish the broadcast
-        this.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         // register for sync
         registerReceiver(syncBroadcastReceiver, syncIntentFilter);
+        registerReceiver(syncBroadcastReceiver, syncIntentFilterStarted);
     }
 
     @Override

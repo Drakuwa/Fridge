@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 
 import com.app.afridge.AuthState;
 import com.app.afridge.api.CloudantService;
-import com.app.afridge.ui.MainActivity;
 import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
 
@@ -14,11 +13,11 @@ import android.annotation.TargetApi;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Build;
 import android.os.Bundle;
 
+import java.net.URISyntaxException;
 import java.util.Calendar;
 
 
@@ -31,9 +30,11 @@ import java.util.Calendar;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     // Global variables
-    private final AuthState authState;
-
-    private final SharedPrefStore prefStore;
+//    private final AuthState authState;
+//
+//    private final SharedPrefStore prefStore;
+//
+    private final Context context;
 
     /**
      * Set up the sync adapter
@@ -41,10 +42,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public SyncAdapter(Context context, boolean autoInitialize) {
 
         super(context, autoInitialize);
+        this.context = context;
         // application = (FridgeApplication) context.getApplicationContext();
-        Gson gson = new GsonBuilder().create();
-        this.prefStore = SharedPrefStore.load(context);
-        this.authState = AuthState.load(gson, prefStore);
+//        Gson gson = new GsonBuilder().create();
+//        this.prefStore = SharedPrefStore.load(context);
+//        this.authState = AuthState.load(gson, prefStore);
         /**
          * If your app uses a content resolver, get an instance of it
          * from the incoming Context
@@ -61,10 +63,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
 
         super(context, autoInitialize, allowParallelSyncs);
+        this.context = context;
         // application = (FridgeApplication) context.getApplicationContext();
-        Gson gson = new GsonBuilder().create();
-        this.prefStore = SharedPrefStore.load(context);
-        this.authState = AuthState.load(gson, prefStore);
+//        Gson gson = new GsonBuilder().create();
+//        this.prefStore = SharedPrefStore.load(context);
+//        this.authState = AuthState.load(gson, prefStore);
     /*
      * If your app uses a content resolver, get an instance of it
      * from the incoming Context
@@ -80,20 +83,28 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
             ContentProviderClient provider, SyncResult syncResult) {
+        // get the latest AuthState
+        Gson gson = new GsonBuilder().create();
+        SharedPrefStore prefStore = SharedPrefStore.load(context);
+        AuthState authState = AuthState.load(gson, prefStore);
         /*
          * Put the data transfer code here.
          */
         Log.d(Log.TAG, "onPerformSync called");
         if (authState.isAuthenticated()) {
-            Log.d(Log.TAG, "user is authenticated");
+            Log.d(Log.TAG, "user is authenticated: " + authState.getUser().getId());
+            try {
+                CloudantService.with(getContext()).reloadReplicationSettings(authState.getUser());
+            } catch (URISyntaxException e) {
+                Log.d(Log.TAG, "URISyntaxException: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
             // start the sync
-            CloudantService.with(getContext()).startSynchronization();
+            CloudantService.with(getContext()).startSynchronization(authState);
             // update sync timestamp
             Calendar calendar = Calendar.getInstance();
             long syncTimestamp = calendar.getTimeInMillis() / 1000;
             prefStore.set(SharedPrefStore.Pref.LAST_SYNC, String.valueOf(syncTimestamp));
-            // publish the broadcast
-            getContext().sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
         } else {
             Log.d(Log.TAG, "user is NOT authenticated");
         }

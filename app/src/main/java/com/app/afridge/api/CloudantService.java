@@ -19,6 +19,7 @@ import com.app.afridge.dom.json.FridgeItemTypeAdapter;
 import com.app.afridge.dom.json.NoteItemDeserializer;
 import com.app.afridge.dom.json.NoteItemTypeAdapter;
 import com.app.afridge.interfaces.ReplicationListener;
+import com.app.afridge.ui.MainActivity;
 import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
@@ -38,6 +39,7 @@ import com.cloudant.sync.replication.Replicator;
 import com.cloudant.sync.replication.ReplicatorFactory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
@@ -80,7 +82,7 @@ public class CloudantService {
     private static final String CLOUDANT_API_SECRET = "iWVUbOhCj1bBjHWnE2RjK4cC";
 
     // Singleton
-    public static CloudantService instance = null;
+    public static volatile CloudantService instance = null;
 
     public static SyncState STATE = SyncState.IDLE;
 
@@ -134,7 +136,7 @@ public class CloudantService {
 
     private void initDataStore() {
         // Create a DataStoreManager using application internal storage path
-        File path = context.getDir(DATASTORE_MANGER_DIR, Context.MODE_PRIVATE);
+        File path = context.getDir(DATASTORE_MANGER_DIR, Context.MODE_MULTI_PROCESS);
         DatastoreManager manager = new DatastoreManager(path.getAbsolutePath());
 
         // Set up our tasks dataStore within its own folder in the applications
@@ -149,7 +151,7 @@ public class CloudantService {
 
         // Set up the replicator objects from the app's settings.
         try {
-            reloadReplicationSettings();
+            reloadReplicationSettings(authState.getUser());
         } catch (URISyntaxException e) {
             Log.e(Log.TAG, "Unable to construct remote URI from configuration: " + e
                     .getLocalizedMessage());
@@ -277,14 +279,18 @@ public class CloudantService {
             if (pushReplicator.getState() != Replicator.State.COMPLETE) {
                 STATE = SyncState.FAILED;
                 Log.d("Error replicating TO remote");
-                Log.d(listener.error.toString());
+                System.out.println(listener.error);
                 // post sync event
                 EventBus.getDefault().post(new SyncEvent(STATE));
+                // publish the broadcast
+                context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
             } else {
                 STATE = SyncState.SUCCESS;
                 Log.d("Success replicating TO remote");
                 // post sync event
                 EventBus.getDefault().post(new SyncEvent(STATE));
+                // publish the broadcast
+                context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
 
                 // Maybe delete the local document, since we only need it for syncing,
                 // and with removing it, we may avoid conflicts? Or because we only
@@ -294,6 +300,8 @@ public class CloudantService {
         } else {
             STATE = SyncState.FAILED;
             EventBus.getDefault().post(new SyncEvent(STATE));
+            // publish the broadcast
+            context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
             throw new RuntimeException("Push replication not set up correctly");
         }
     }
@@ -301,7 +309,7 @@ public class CloudantService {
     /**
      * <p>Starts the configured pull replication.</p>
      */
-    public void startPullReplication() {
+    public void startPullReplication(AuthState authState) {
 
         if (pullReplicator != null) {
             // Use a CountDownLatch to provide a lightweight way to wait for completion
@@ -319,16 +327,21 @@ public class CloudantService {
             if (pullReplicator.getState() != Replicator.State.COMPLETE) {
                 STATE = SyncState.FAILED;
                 Log.d("Error replicating FROM remote");
-                Log.d(listener.error.toString());
+                System.out.println(listener.error);
                 // post sync event
                 EventBus.getDefault().post(new SyncEvent(STATE));
+                // publish the broadcast
+                context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
             } else {
                 Log.d("Success replicating FROM remote");
                 // the replication is successful, sync with local DB
                 if (authState.isAuthenticated()) {
                     try {
                         User userDocument = getUserById(authState.getUser().getId());
-                        Log.d(userDocument.toString());
+                        if (userDocument.getId() == null) {
+                            throw new DocumentNotFoundException("empty revision!?");
+                        }
+                        Log.d("DATASTORE: " + userDocument.toString());
                         // now that we have the pulled user info, sync it!
                         Gson gson = new GsonBuilder()
                                 .registerTypeAdapter(FridgeItem.class, new FridgeItemTypeAdapter())
@@ -500,16 +513,27 @@ public class CloudantService {
                     } catch (ConflictException e) {
                         STATE = SyncState.FAILED;
                         EventBus.getDefault().post(new SyncEvent(STATE));
+                        // publish the broadcast
+                        context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
                         Log.d("ConflictException: " + e.getLocalizedMessage());
                         e.printStackTrace();
+                    } catch (NullPointerException npe) {
+                        STATE = SyncState.FAILED;
+                        EventBus.getDefault().post(new SyncEvent(STATE));
+                        // publish the broadcast
+                        context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
                     }
                 } else {
                     STATE = SyncState.FAILED;
                     EventBus.getDefault().post(new SyncEvent(STATE));
+                    // publish the broadcast
+                    context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
                 }
             }
         } else {
             STATE = SyncState.FAILED;
+            // publish the broadcast
+            context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
             throw new RuntimeException("Push replication not set up correctly");
         }
     }
@@ -523,12 +547,14 @@ public class CloudantService {
      * local
      * document. In the end we push the updated local document no matter what
      */
-    public void startSynchronization() {
+    public void startSynchronization(AuthState authState) {
         if (pullReplicator != null && pullReplicator.getState() != Replicator.State.STARTED
                 && pushReplicator != null
                 && pushReplicator.getState() != Replicator.State.STARTED) {
             STATE = SyncState.SYNCING;
-            startPullReplication();
+            // publish the broadcast
+            context.sendBroadcast(new Intent(MainActivity.ACTION_STARTED_SYNC));
+            startPullReplication(authState);
         } else {
             STATE = SyncState.IDLE;
             EventBus.getDefault().post(new SyncEvent(STATE));
@@ -538,8 +564,10 @@ public class CloudantService {
     /**
      * <p>Stops running replications and reloads the replication settings from
      * the app's preferences.</p>
+     *
+     * @param user the authenticated user
      */
-    public void reloadReplicationSettings()
+    public void reloadReplicationSettings(User user)
             throws URISyntaxException {
 
         // Stop running replications before reloading the replication
@@ -562,7 +590,6 @@ public class CloudantService {
         pushReplicator = ReplicatorFactory.oneway(push);
 
         // get the user ID filter
-        User user = authState.getUser();
         Map<String, String> parameters = new HashMap<>();
         parameters.put("id", user.getId()); // _id should IS the docId
         Replication.Filter filter = new Replication.Filter("filterDoc/FILTER", parameters);
@@ -574,6 +601,7 @@ public class CloudantService {
 
         pullReplicator = ReplicatorFactory.oneway(pull);
 
+        Log.d("reloadReplicationSettings authState.getUser().getId(): " + user.getId());
         Log.d(Log.TAG, "Set up replicators for URI:" + uri.toString());
     }
 

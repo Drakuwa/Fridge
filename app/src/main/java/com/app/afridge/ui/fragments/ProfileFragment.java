@@ -11,18 +11,18 @@ import com.app.afridge.dom.NoteItem;
 import com.app.afridge.dom.RandomStats;
 import com.app.afridge.dom.SyncEvent;
 import com.app.afridge.dom.User;
+import com.app.afridge.dom.enums.SyncState;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
+import com.app.afridge.services.AuthenticatorService;
 import com.app.afridge.ui.MainActivity;
 import com.app.afridge.utils.CircleBorderTransform;
 import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
-import com.app.afridge.utils.Log;
 import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.utils.SyncUtils;
 import com.app.afridge.utils.TimeSpans;
 import com.app.afridge.views.AdvancedTextView;
 import com.balysv.materialripple.MaterialRippleLayout;
-import com.cloudant.sync.datastore.ConflictException;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
@@ -36,6 +36,7 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -407,8 +408,21 @@ public class ProfileFragment extends DialogFragment
     }
 
     @OnClick(R.id.button_logout)
-    public void logoutProfile(View view) {
+    public void logout(View view) {
+        if (CloudantService.STATE != SyncState.SYNCING) {
+            logoutProfile();
+        } else {
+            Toast.makeText(getActivity(), R.string.sync_please_wait, Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    private void logoutProfile() {
+        // stop any ongoing replication
+        ContentResolver.cancelSync(AuthenticatorService.GetAccount(), // Sync account
+                SyncUtils.CONTENT_AUTHORITY // Content authority
+        );
+
+        // logout every social network profile
         SocialNetwork facebookSocialNetwork = socialNetworkManager.getSocialNetwork(FACEBOOK);
         facebookSocialNetwork.logout();
         SocialNetwork twitterSocialNetwork = socialNetworkManager.getSocialNetwork(TWITTER);
@@ -417,17 +431,17 @@ public class ProfileFragment extends DialogFragment
         gPlusSocialNetwork.logout();
 
         // remove the saved User document
-        try {
-            CloudantService.with(getActivity().getApplicationContext()).deleteDocument(
-                    application.authState.getUser());
-            CloudantService.with(getActivity().getApplicationContext()).deleteAllDocuments();
-        } catch (ConflictException e) {
-            Log.d("ConflictException removing User document: " + e.getLocalizedMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            Log.d("Uncaught Exception removing User document: " + e.getLocalizedMessage());
-            e.printStackTrace();
-        }
+//        CloudantService.with(getActivity().getApplicationContext()).deleteAllDocuments();
+//        try {
+//            CloudantService.with(getActivity().getApplicationContext()).deleteDocument(
+//                    application.authState.getUser());
+//        } catch (ConflictException e) {
+//            Log.d("ConflictException removing User document: " + e.getLocalizedMessage());
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            Log.d("Uncaught Exception removing User document: " + e.getLocalizedMessage());
+//            e.printStackTrace();
+//        }
 
         // remove the authState user
         application.authState.clearUser();
@@ -442,9 +456,6 @@ public class ProfileFragment extends DialogFragment
 
         // publish the broadcast
         getActivity().sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
-
-        // refresh the views
-        refreshViewState();
     }
 
     @Override
@@ -484,15 +495,10 @@ public class ProfileFragment extends DialogFragment
         }
         application.authState.setUser(user);
 
-        if (isAdded()) {
-            // set profile stats
-            setProfileStats();
+        // refresh the views
+        refreshState();
 
-            // refresh the views
-            refreshViewState();
-        }
-
-        // TODO do initial sync?
+        // Do initial sync?
         SyncUtils.CreateSyncAccount(application);
         // CloudantService.with(getActivity()).startSynchronization();
     }
@@ -589,7 +595,7 @@ public class ProfileFragment extends DialogFragment
     public void onEventMainThread(SyncEvent event) {
         // Toast.makeText(getActivity(), event.message.name(), Toast.LENGTH_SHORT).show();
         // publish the broadcast
-        getActivity().sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
+        // getActivity().sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
         if (isAdded()) {
             setLastSyncTimestamp();
             if (swipeRefreshLayout != null) {
@@ -649,7 +655,8 @@ public class ProfileFragment extends DialogFragment
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (application.authState.isAuthenticated()) {
+                if (application.authState.isAuthenticated()
+                        && CloudantService.STATE != SyncState.SYNCING) {
                     SyncUtils.TriggerRefresh();
                 }
                 // CloudantService.with(getActivity()).startSynchronization();
