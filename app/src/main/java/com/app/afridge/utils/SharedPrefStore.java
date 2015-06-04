@@ -1,61 +1,76 @@
 package com.app.afridge.utils;
 
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+import com.snappydb.SnappydbException;
+
 import android.content.Context;
-import android.content.SharedPreferences;
 
 
 public class SharedPrefStore {
 
-    private final SharedPreferences sharedPrefs;
+    private final DB sharedPrefs;
 
-    private SharedPrefStore(SharedPreferences sharedPrefs) {
+    private SharedPrefStore(DB sharedPrefs) {
 
         this.sharedPrefs = sharedPrefs;
     }
 
     public static SharedPrefStore load(Context context) {
 
-        return new SharedPrefStore(context.getSharedPreferences(Constants.SHARED_PREFS_FILE,
-                Context.MODE_MULTI_PROCESS));
+        try {
+            return new SharedPrefStore(DBFactory.open(context, Constants.SHARED_PREFS_FILE));
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void set(Pref pref, String value) {
 
         Log.i(Constants.SHARED_PREFS_TAG, "SET " + pref.getKey() + "=" + value);
-        sharedPrefs.edit()
-                .putString(pref.name(), value)
-                .apply();
+        try {
+            sharedPrefs.put(pref.name(), value);
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setInt(Pref pref, int value) {
 
         Log.i(Constants.SHARED_PREFS_TAG, "SET " + pref.getKey() + "=" + value);
-        sharedPrefs.edit()
-                .putInt(pref.name(), value)
-                .apply();
+        try {
+            sharedPrefs.putInt(pref.name(), value);
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
     }
 
     public void clear(Pref pref) {
 
         Log.i(Constants.SHARED_PREFS_TAG, "CLEAR " + pref.getKey());
-        sharedPrefs.edit()
-                .remove(pref.name())
-                .apply();
+        try {
+            sharedPrefs.del(pref.name());
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressWarnings("unused")
     public void clearAll() {
 
-        sharedPrefs.edit()
-                .clear()
-                .apply();
+        try {
+            sharedPrefs.destroy();
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getString(Pref pref) {
 
         String result = null;
         try {
-            result = sharedPrefs.getString(pref.name(), null);
+            result = sharedPrefs.get(pref.name());
             Log.i(Constants.SHARED_PREFS_TAG, "GET " + pref.getKey() + "=" + result);
         } catch (Exception ignored) {
 
@@ -67,7 +82,7 @@ public class SharedPrefStore {
 
         int result = 0;
         try {
-            result = sharedPrefs.getInt(pref.name(), 0);
+            result = sharedPrefs.getInt(pref.name());
             Log.i(Constants.SHARED_PREFS_TAG, "GET " + pref.getKey() + "=" + result);
         } catch (Exception ignored) {
 
@@ -79,7 +94,7 @@ public class SharedPrefStore {
 
         boolean result = false;
         try {
-            result = sharedPrefs.getBoolean(pref.name(), false);
+            result = sharedPrefs.getBoolean(pref.name());
             Log.i(Constants.SHARED_PREFS_TAG, "GET " + pref.getKey() + "=" + result);
         } catch (Exception ignored) {
 
@@ -90,9 +105,11 @@ public class SharedPrefStore {
     public void setBoolean(Pref pref, boolean value) {
 
         Log.i(Constants.SHARED_PREFS_TAG, "SET " + pref.getKey() + "=" + value);
-        sharedPrefs.edit()
-                .putBoolean(pref.name(), value)
-                .apply();
+        try {
+            sharedPrefs.putBoolean(pref.name(), value);
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
     }
 
     public enum Pref {
