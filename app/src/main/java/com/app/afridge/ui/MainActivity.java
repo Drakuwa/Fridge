@@ -6,6 +6,7 @@ import com.app.afridge.R;
 import com.app.afridge.api.CloudantService;
 import com.app.afridge.dom.Ingredient;
 import com.app.afridge.dom.IngredientHelper;
+import com.app.afridge.dom.IngredientsEvent;
 import com.app.afridge.dom.RandomStats;
 import com.app.afridge.dom.enums.MenuType;
 import com.app.afridge.dom.enums.SyncState;
@@ -64,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -183,6 +185,7 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
                                     ActiveAndroid.setTransactionSuccessful();
                                 } finally {
                                     ActiveAndroid.endTransaction();
+                                    EventBus.getDefault().post(new IngredientsEvent("success"));
                                 }
                             }
                         });

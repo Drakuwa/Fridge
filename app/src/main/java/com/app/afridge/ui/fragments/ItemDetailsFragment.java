@@ -68,15 +68,11 @@ import uk.co.senab.photoview.PhotoView;
  * Created by drakuwa on 2/9/15.
  */
 public class ItemDetailsFragment extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener,
-        OnMeasurementTypeChangeListener {
+        implements DatePickerDialog.OnDateSetListener, OnMeasurementTypeChangeListener {
 
     private static final String KEY_CONTENT = "ItemDetailsFragment:Content";
 
     private static final String KEY_CONTENT_ID = "ItemDetailsFragment:Id";
-
-    // Singleton
-    private static volatile ItemDetailsFragment instance = null;
 
     @InjectView(R.id.text_name)
     AdvancedTextView textName;
@@ -139,13 +135,10 @@ public class ItemDetailsFragment extends DialogFragment
      */
     public static ItemDetailsFragment getInstance(int bottomMargin) {
 
-        if (instance == null) {
-            synchronized (ItemDetailsFragment.class) {
-                if (instance == null) {
-                    instance = new ItemDetailsFragment();
-                    instance.bottomMargin = bottomMargin;
-                }
-            }
+        ItemDetailsFragment instance;
+        synchronized (ItemDetailsFragment.class) {
+            instance = new ItemDetailsFragment();
+            instance.bottomMargin = bottomMargin;
         }
         return instance;
     }
@@ -242,7 +235,8 @@ public class ItemDetailsFragment extends DialogFragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE
+                        || actionId == EditorInfo.IME_ACTION_GO) {
                     // save the change
                     item.setQuantity(textQuantity.getText().toString());
                     item.setEditTimestamp(Calendar.getInstance().getTimeInMillis());

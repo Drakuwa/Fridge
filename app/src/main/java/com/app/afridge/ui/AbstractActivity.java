@@ -30,7 +30,11 @@ public abstract class AbstractActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        // allow transitions for Lollipop devices
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        }
         super.onCreate(savedInstanceState);
 
         // get the application instance
@@ -56,12 +60,6 @@ public abstract class AbstractActivity extends AppCompatActivity {
                     .getDimensionPixelSize(
                             getResources().getIdentifier("status_bar_height", "dimen", "android"));
 
-        }
-
-        // allow transitions for Lollipop devices
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         }
 
         // hack for devices with physical menu key to have action bar overflow menu

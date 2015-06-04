@@ -7,6 +7,7 @@ import com.app.afridge.adapters.CircularViewAdapter;
 import com.app.afridge.adapters.IngredientsAutocompleteAdapter;
 import com.app.afridge.dom.FridgeItem;
 import com.app.afridge.dom.HistoryItem;
+import com.app.afridge.dom.IngredientsEvent;
 import com.app.afridge.dom.enums.ChangeType;
 import com.app.afridge.dom.enums.ItemType;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
@@ -62,6 +63,7 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -115,6 +117,8 @@ public class AddItemFragment extends Fragment implements Screenshotable, ImageCh
     private int chooserType;
 
     private ProgressDialog dialog;
+
+    private IngredientsAutocompleteAdapter autocompleteAdapter;
 
     public AddItemFragment() {
         // Required empty public constructor
@@ -231,9 +235,9 @@ public class AddItemFragment extends Fragment implements Screenshotable, ImageCh
             }
         }, 200);
 
-        autoCompleteTextView.setAdapter(
-                new IngredientsAutocompleteAdapter(getActivity(),
-                        android.R.layout.simple_dropdown_item_1line));
+        autocompleteAdapter = new IngredientsAutocompleteAdapter(getActivity(),
+                android.R.layout.simple_dropdown_item_1line);
+        autoCompleteTextView.setAdapter(autocompleteAdapter);
     }
 
     @Override
@@ -553,6 +557,23 @@ public class AddItemFragment extends Fragment implements Screenshotable, ImageCh
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    // Called in Android UI's main thread
+    public void onEventMainThread(IngredientsEvent event) {
+        autocompleteAdapter.notifyDataSetChanged();
     }
 
     /**

@@ -23,13 +23,11 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,6 +190,9 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                                                                     historyItem.save();
                                                                     // FIRE ZE MISSILES!
                                                                     item.setRemoved(true);
+                                                                    item.setEditTimestamp(
+                                                                            Calendar.getInstance()
+                                                                                    .getTimeInMillis());
                                                                     item.save();
                                                                 }
                                                             }
@@ -213,65 +214,78 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                         return;
                     }
 
-                    // View v at position pos is clicked.
-                    // get the fragment container
-                    View containerView = activity.findViewById(R.id.container);
-
                     // get a fragment transaction object
-                    FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager()
+                    FragmentTransaction fragmentTransaction = activity
+                            .getSupportFragmentManager()
                             .beginTransaction();
-                    fragmentTransaction.addToBackStack(null);
-
                     Fragment fragment = ItemDetailsFragment.getInstance(bottomMargin);
-                    int totalHeight, totalWidth;
+                    try {
+                        // View v at position pos is clicked.
+                        // get the fragment container
+                        View containerView = activity.findViewById(R.id.container);
 
-                    // set the item id
-                    Bundle args = new Bundle();
-                    args.putInt(Constants.EXTRA_ITEM_ID, item.getItemId());
-                    fragment.setArguments(args);
+                        if (!fragment.isAdded()) {
+                            fragmentTransaction.addToBackStack(null);
+                            int totalHeight, totalWidth;
 
-                    // use fragment transitions if we are on Lollipop or higher
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        //                    setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
-                        //                    setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
+                            // set the item id
+                            Bundle args = new Bundle();
+                            args.putInt(Constants.EXTRA_ITEM_ID, item.getItemId());
+                            fragment.setArguments(args);
 
-                        // TODO                    setSharedElementEnterTransition(new ChangeBounds());
-                        //                    setSharedElementReturnTransition(new ChangeBounds());
-                        //                    setAllowEnterTransitionOverlap(true);
-                        //                    setAllowReturnTransitionOverlap(true);
+                            // use fragment transitions if we are on Lollipop or higher
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        //                    setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
+//                        //                    setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
+//
+//                        // TODO                    setSharedElementEnterTransition(new ChangeBounds());
+//                        //                    setSharedElementReturnTransition(new ChangeBounds());
+//                        //                    setAllowEnterTransitionOverlap(true);
+//                        //                    setAllowReturnTransitionOverlap(true);
+//
+//                        fragment.setSharedElementEnterTransition(TransitionInflater.from(activity)
+//                                .inflateTransition(R.transition.change_image_transform));
+//                        fragment.setEnterTransition(TransitionInflater.from(activity)
+//                                .inflateTransition(R.transition.change_image_transform));
+//
+//                        fragmentTransaction
+//                                .replace(R.id.container, fragment)
+//                                .addSharedElement(holder.image,
+//                                        activity.getString(R.string.shared_image_transition))
+//                                .addSharedElement(holder.textName,
+//                                        activity.getString(R.string.shared_name_transition))
+//                                .commit();
+//                    } else {
+                            // if we have an item details transaction, set the fragment size to match the clicked view
+                            totalHeight = containerView.getMeasuredHeight();
+                            totalWidth = containerView.getMeasuredWidth();
+                            //                    ((ItemDetailsFragment)fragment).show(fragmentTransaction, "item_details");
 
-                        fragment.setSharedElementEnterTransition(TransitionInflater.from(activity)
-                                .inflateTransition(R.transition.change_image_transform));
-                        fragment.setEnterTransition(TransitionInflater.from(activity)
-                                .inflateTransition(R.transition.change_image_transform));
+                            FrameLayout.LayoutParams params
+                                    = (FrameLayout.LayoutParams) containerView
+                                    .getLayoutParams();
+                            params.width = v.getWidth();
+                            params.height = v.getHeight();
+                            containerView.setLayoutParams(params);
 
-                        fragmentTransaction
-                                .replace(R.id.container, fragment)
-                                .addSharedElement(holder.image,
-                                        activity.getString(R.string.shared_image_transition))
-                                .addSharedElement(holder.textName,
-                                        activity.getString(R.string.shared_name_transition))
-                                .commit();
-                    } else {
-                        // if we have an item details transaction, set the fragment size to match the clicked view
-                        totalHeight = containerView.getMeasuredHeight();
-                        totalWidth = containerView.getMeasuredWidth();
-                        //                    ((ItemDetailsFragment)fragment).show(fragmentTransaction, "item_details");
+                            fragmentTransaction
+                                    .setCustomAnimations(0, 0)
+                                    .replace(R.id.container, fragment, "ITEM_DETAILS")
+                                    .setTransition(FragmentTransaction.TRANSIT_NONE)
+                                    .commit();
 
-                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) containerView
-                                .getLayoutParams();
-                        params.width = v.getWidth();
-                        params.height = v.getHeight();
-                        containerView.setLayoutParams(params);
-
-                        fragmentTransaction
-                                .setCustomAnimations(0, 0)
-                                .replace(R.id.container, fragment)
-                                .setTransition(FragmentTransaction.TRANSIT_NONE)
-                                .commit();
-
-                        // if we are on older version, use the custom expend animation
-                        AnimationsController.expandUp(v, containerView, totalHeight, totalWidth);
+                            // if we are on older version, use the custom expend animation
+                            AnimationsController
+                                    .expandUp(v, containerView, totalHeight, totalWidth);
+                        }
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                        Fragment fragmentTemp = activity.getSupportFragmentManager()
+                                .findFragmentByTag("ITEM_DETAILS");
+                        if (fragmentTemp != null) {
+                            activity.getSupportFragmentManager().beginTransaction()
+                                    .remove(fragmentTemp).commit();
+                        }
                     }
                 }
             }
