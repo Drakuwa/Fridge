@@ -1,7 +1,12 @@
 package com.app.afridge.ui;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Select;
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
+import com.app.afridge.dom.Ingredient;
+import com.app.afridge.dom.IngredientHelper;
+import com.app.afridge.dom.IngredientsEvent;
 import com.app.afridge.interfaces.FragmentLifecycle;
 import com.app.afridge.ui.fragments.wizard.CustomizeFragment;
 import com.app.afridge.ui.fragments.wizard.ShoppingListFragment;
@@ -15,12 +20,20 @@ import com.viewpagerindicator.PageIndicator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 // import android.os.PersistableBundle;
 
@@ -101,6 +114,46 @@ public class FirstTimeWizardActivity extends AbstractActivity {
                 R.id.status_height_hack).getLayoutParams();
         paramsStatus.height = statusBarHeight;
         findViewById(R.id.status_height_hack).setLayoutParams(paramsStatus);
+
+        // get or initialize the ingredients
+        if (new Select().from(Ingredient.class).execute().size() == 0) {
+            // no ingredients...
+            application.api.fcService.getIngredients(new Callback<List<IngredientHelper>>() {
+
+                @Override
+                public void success(final List<IngredientHelper> ingredientHelpers,
+                        Response response) {
+                    EventBus.getDefault().post(new IngredientsEvent("success"));
+                    // run code on background thread
+                    new Handler().post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            // Moves the current Thread into the background
+                            android.os.Process.setThreadPriority(
+                                    android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                            // save the ingredient list
+                            ActiveAndroid.beginTransaction();
+                            try {
+                                for (IngredientHelper ingredient : ingredientHelpers) {
+                                    new Ingredient(Integer.parseInt(ingredient.getId()),
+                                            ingredient.getNaziv()).save();
+                                }
+                                ActiveAndroid.setTransactionSuccessful();
+                            } finally {
+                                ActiveAndroid.endTransaction();
+                                EventBus.getDefault().post(new IngredientsEvent("success"));
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+        }
     }
 
     @Override

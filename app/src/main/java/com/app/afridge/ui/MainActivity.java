@@ -159,45 +159,6 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
             // setup context menu
             setupContextMenu();
 
-            // get or initialize the ingredients
-            if (new Select().from(Ingredient.class).execute().size() == 0) {
-                // no ingredients...
-                application.api.fcService.getIngredients(new Callback<List<IngredientHelper>>() {
-
-                    @Override
-                    public void success(final List<IngredientHelper> ingredientHelpers,
-                            Response response) {
-                        // run code on background thread
-                        new Handler().post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                // Moves the current Thread into the background
-                                android.os.Process.setThreadPriority(
-                                        android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                                // save the ingredient list
-                                ActiveAndroid.beginTransaction();
-                                try {
-                                    for (IngredientHelper ingredient : ingredientHelpers) {
-                                        new Ingredient(Integer.parseInt(ingredient.getId()),
-                                                ingredient.getNaziv()).save();
-                                    }
-                                    ActiveAndroid.setTransactionSuccessful();
-                                } finally {
-                                    ActiveAndroid.endTransaction();
-                                    EventBus.getDefault().post(new IngredientsEvent("success"));
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-
-                    }
-                });
-            }
-
             // initialize the service if it is not already running
             if (!application.prefStore.getBoolean(SharedPrefStore.Pref.IS_SERVICE_RUNNING)) {
                 initExpirationDateService();

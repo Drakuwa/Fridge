@@ -74,8 +74,8 @@
 
             <com.app.afridge.views.SlideSwitch
                 android:id="@+id/switch_measurement_type"
-                android:layout_width="20dp"
-                android:layout_height="25dp"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
                 android:layout_centerInParent="true"
                 slideswitch:isOpen="false"
                 slideswitch:shape="circle"

@@ -1,6 +1,7 @@
 package com.app.afridge.adapters;
 
 import com.app.afridge.FridgeApplication;
+import com.app.afridge.R;
 import com.app.afridge.dom.enums.ItemType;
 import com.sababado.circularview.Marker;
 import com.sababado.circularview.SimpleCircularViewAdapter;
@@ -33,7 +34,7 @@ public class CircularViewAdapter extends SimpleCircularViewAdapter {
         // The marker is intended to be reused. It will never be null.
         marker.setSrc(ItemType.DRAWABLES[position]);
         marker.setFitToCircle(true);
-        marker.setRadius(40);
+        marker.setRadius(application.getResources().getDimension(R.dimen.radius_circular));
         markerList.put(marker.getId(), application.types.get(ItemType.DRAWABLES[position]).name());
     }
 
