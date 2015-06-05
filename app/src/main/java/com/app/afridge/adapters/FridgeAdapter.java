@@ -194,14 +194,11 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                                                                             Calendar.getInstance()
                                                                                     .getTimeInMillis());
                                                                     item.save();
-                                                                    items.remove(item);
-                                                                    filteredItems.remove(item);
-                                                                    notifyDataSetChanged();
                                                                 }
                                                             }
                                                         });
                                                 snackBar.show();
-                                                removeItem(pos);
+                                                removeItem(pos, item);
                                             }
                                         })
                                 .setNegativeButton(android.R.string.cancel,
@@ -304,12 +301,14 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
 
     public void addItem(int position, FridgeItem item) {
 
+        items.add(position, item);
         filteredItems.add(position, item);
         notifyItemInserted(position);
     }
 
-    public void removeItem(int position) {
+    public void removeItem(int position, FridgeItem item) {
 
+        items.remove(item);
         filteredItems.remove(position);
         notifyItemRemoved(position);
     }
