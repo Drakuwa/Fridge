@@ -122,6 +122,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 // delete item it set to true, unless it gets switched by clicking on UNDO
+                removeItem(position);
                 final boolean[] deleteItem = {true};
                 SnackBar snackBar = new SnackBar(activity,
                         String.format(application.getString(R.string.item_deleted), item.getNote()),
@@ -147,7 +148,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                     }
                 });
                 snackBar.show();
-                removeItem(position);
             }
         });
 
@@ -275,12 +275,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             items.add(position, item);
         }
         notifyItemInserted(position);
+        notifyDataSetChanged();
     }
 
     public void removeItem(int position) {
 
         items.remove(position);
         notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
     public void clearAllNotes() {
