@@ -183,8 +183,9 @@ public class FridgeFragment extends Fragment
 
             @Override
             public boolean onQueryTextChange(String query) {
-                if (adapter != null)
+                if (adapter != null) {
                     adapter.getFilter().filter(query);
+                }
                 return false;
             }
         });
@@ -333,19 +334,22 @@ public class FridgeFragment extends Fragment
     @Override
     public void takeScreenShot() {
 
-        Thread thread = new Thread() {
+        new Thread() {
 
             @Override
             public void run() {
 
-                Bitmap bitmap = Bitmap.createBitmap(containerView.getWidth(),
-                        containerView.getHeight(), Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bitmap);
-                containerView.draw(canvas);
-                FridgeFragment.this.bitmap = bitmap;
+                try {
+                    Bitmap bitmap = Bitmap.createBitmap(containerView.getWidth(),
+                            containerView.getHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(bitmap);
+                    containerView.draw(canvas);
+                    FridgeFragment.this.bitmap = bitmap;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        };
-        thread.start();
+        }.start();
     }
 
     @Override
