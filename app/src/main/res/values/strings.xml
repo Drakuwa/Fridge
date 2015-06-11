@@ -120,10 +120,10 @@
     <string name="label_expired">expired: </string>
     <string name="title_notification">Expiration date warning</string>
     <string name="title_notification_deleted">Item deleted</string>
-    <string name="text_about">Fridge is a virtual refrigerator organizer that keeps track of all your fridge items. Never again forget what you have in your refrigerator, let an item expire, or what you need to buy, with the help of this handy organizer application.\n\nFridge is an open source project, and the application code can be found at: https://github.com/Drakuwa/aFridge\n\nIf you like the app and want me to continue with its development ad free, you can show your support by sending any amount of bitcoin to my wallet. Press and hold the button to copy the address…</string>
+    <string name="text_about">Fridge is a virtual refrigerator organizer that keeps track of all your fridge items. Discover the FREE and easy way to a full refrigerator, and never let expired food or an empty ice box spoil your life again, with the help of this handy organizer application.\n\nFridge is an open source project, and the application code can be found at: https://github.com/Drakuwa/Fridge\n\nIf you like the app and want me to continue with its development ad free, you can show your support by sending any amount of bitcoin to my wallet. Press and hold the button to copy the address…</string>
     <string name="text_github">https://github.com/Drakuwa/aFridge</string>
     <string name="app_version">Version: %s</string>
-    <string name="app_name_motto">Fridge - A Virtual Companion</string>
+    <string name="app_name_motto">Helping YOU keep your refrigerator and stomachs happy!</string>
     <string name="donations_bitcoin_toast_copy">Bitcoin address has been copied to the clipboard!</string>
     <string name="donate">DONATE</string>
     <string name="sync_please_wait">Please wait while the sync is complete.</string>

@@ -36,7 +36,7 @@
                 android:layout_marginStart="@dimen/padding_normal"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/web_hi_res_512" />
 
             <com.app.afridge.views.AdvancedTextView
                 android:id="@+id/text_app_name"
