@@ -9,6 +9,7 @@ import com.app.afridge.dom.enums.ChangeType;
 import com.app.afridge.dom.enums.ItemType;
 import com.app.afridge.interfaces.ClickListener;
 import com.app.afridge.ui.MainActivity;
+import com.app.afridge.ui.fragments.FridgeFragment;
 import com.app.afridge.ui.fragments.ItemDetailsFragment;
 import com.app.afridge.utils.AnimationsController;
 import com.app.afridge.utils.CircleTransform;
@@ -23,11 +24,13 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,15 +66,18 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
 
     private MainActivity activity;
 
+    private FridgeFragment fridgeFragment;
+
     private int bottomMargin;
 
     public FridgeAdapter(ArrayList<FridgeItem> items, final FridgeApplication application,
-            MainActivity activity, int bottomMargin) {
+            MainActivity activity, FridgeFragment fridgeFragment, int bottomMargin) {
 
         this.items = items;
         this.filteredItems.addAll(items);
         this.application = application;
         this.activity = activity;
+        this.fridgeFragment = fridgeFragment;
         this.bottomMargin = bottomMargin;
 
         // sort the items by expiration date
@@ -234,49 +240,57 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                             fragment.setArguments(args);
 
                             // use fragment transitions if we are on Lollipop or higher
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        //                    setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
-//                        //                    setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
-//
-//                        // TODO                    setSharedElementEnterTransition(new ChangeBounds());
-//                        //                    setSharedElementReturnTransition(new ChangeBounds());
-//                        //                    setAllowEnterTransitionOverlap(true);
-//                        //                    setAllowReturnTransitionOverlap(true);
-//
-//                        fragment.setSharedElementEnterTransition(TransitionInflater.from(activity)
-//                                .inflateTransition(R.transition.change_image_transform));
-//                        fragment.setEnterTransition(TransitionInflater.from(activity)
-//                                .inflateTransition(R.transition.change_image_transform));
-//
-//                        fragmentTransaction
-//                                .replace(R.id.container, fragment)
-//                                .addSharedElement(holder.image,
-//                                        activity.getString(R.string.shared_image_transition))
-//                                .addSharedElement(holder.textName,
-//                                        activity.getString(R.string.shared_name_transition))
-//                                .commit();
-//                    } else {
-                            // if we have an item details transaction, set the fragment size to match the clicked view
-                            totalHeight = containerView.getMeasuredHeight();
-                            totalWidth = containerView.getMeasuredWidth();
-                            //                    ((ItemDetailsFragment)fragment).show(fragmentTransaction, "item_details");
+                            if (Common.versionAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
+                                // Set shared and scene transitions
+                                fridgeFragment.setSharedElementReturnTransition(
+                                        TransitionInflater.from(activity).inflateTransition(
+                                                R.transition.change_image_transform));
+                                fridgeFragment.setExitTransition(
+                                        TransitionInflater.from(activity)
+                                                .inflateTransition(android.R.transition.explode));
 
-                            FrameLayout.LayoutParams params
-                                    = (FrameLayout.LayoutParams) containerView
-                                    .getLayoutParams();
-                            params.width = v.getWidth();
-                            params.height = v.getHeight();
-                            containerView.setLayoutParams(params);
+                                // Set shared and scene transitions on 2nd fragment
+                                fragment.setSharedElementEnterTransition(
+                                        TransitionInflater.from(activity)
+                                                .inflateTransition(
+                                                        R.transition.change_image_transform));
+                                fragment.setEnterTransition(TransitionInflater.from(activity)
+                                        .inflateTransition(android.R.transition.explode));
 
-                            fragmentTransaction
-                                    .setCustomAnimations(0, 0)
-                                    .replace(R.id.container, fragment, "ITEM_DETAILS")
-                                    .setTransition(FragmentTransaction.TRANSIT_NONE)
-                                    .commit();
+                                // You need to make sure the transitionName is both unique to each instance of the view you
+                                // want to animate as well as known to the 2nd fragment.  Since these views are inside
+                                // a RecyclerView or ListView, they can have many instances.  In your adapter you need to
+                                // set a transitionName dynamically (I use the position), then pass that unique transitionName
+                                // to the 2nd fragment before you animate
+                                fragmentTransaction
+                                        .replace(R.id.container, fragment)
+                                        .addSharedElement(holder.image,
+                                                holder.image.getTransitionName())
+                                        .addSharedElement(holder.textName,
+                                                holder.textName.getTransitionName())
+                                        .commit();
+                            } else {
+                                // if we have an item details transaction, set the fragment size to match the clicked view
+                                totalHeight = containerView.getMeasuredHeight();
+                                totalWidth = containerView.getMeasuredWidth();
 
-                            // if we are on older version, use the custom expend animation
-                            AnimationsController
-                                    .expandUp(v, containerView, totalHeight, totalWidth);
+                                FrameLayout.LayoutParams params
+                                        = (FrameLayout.LayoutParams) containerView
+                                        .getLayoutParams();
+                                params.width = v.getWidth();
+                                params.height = v.getHeight();
+                                containerView.setLayoutParams(params);
+
+                                fragmentTransaction
+                                        .setCustomAnimations(0, 0)
+                                        .replace(R.id.container, fragment, "ITEM_DETAILS")
+                                        .setTransition(FragmentTransaction.TRANSIT_NONE)
+                                        .commit();
+
+                                // if we are on older version, use the custom expend animation
+                                AnimationsController
+                                        .expandUp(v, containerView, totalHeight, totalWidth);
+                            }
                         }
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
@@ -290,6 +304,16 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                 }
             }
         });
+
+        if (Common.versionAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
+            holder.image
+                    .setTransitionName(
+                            activity.getString(R.string.shared_image_transition) + item
+                                    .getItemId());
+            holder.textName
+                    .setTransitionName(
+                            activity.getString(R.string.shared_name_transition) + item.getItemId());
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

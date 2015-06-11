@@ -12,6 +12,7 @@ import com.app.afridge.interfaces.OnMeasurementTypeChangeListener;
 import com.app.afridge.ui.MainActivity;
 import com.app.afridge.utils.AnimationsController;
 import com.app.afridge.utils.CircleTransform;
+import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.KeyboardUtils;
 import com.app.afridge.utils.Log;
@@ -27,6 +28,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -191,6 +193,13 @@ public class ItemDetailsFragment extends DialogFragment
 
         // inject and return the view
         ButterKnife.inject(this, containerView);
+
+        if (Common.versionAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
+            image.setTransitionName(
+                    getActivity().getString(R.string.shared_image_transition) + itemId);
+            textName.setTransitionName(
+                    getActivity().getString(R.string.shared_name_transition) + itemId);
+        }
         return containerView;
     }
 

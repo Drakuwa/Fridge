@@ -285,7 +285,7 @@ public class FridgeFragment extends Fragment
 
             // set the adapter
             adapter = new FridgeAdapter((ArrayList<FridgeItem>) data, application,
-                    (MainActivity) getActivity(), bottomMargin);
+                    (MainActivity) getActivity(), this, bottomMargin);
             recyclerView.setAdapter(adapter);
 
             // restore view state
@@ -304,7 +304,7 @@ public class FridgeFragment extends Fragment
             // the list view cannot take a null pointer as an adapter
             // use an empty list instead
             adapter = new FridgeAdapter(new ArrayList<FridgeItem>(), application,
-                    (MainActivity) getActivity(), bottomMargin);
+                    (MainActivity) getActivity(), this, bottomMargin);
             recyclerView.setAdapter(adapter);
             // show the empty view
             emptyText.setVisibility(View.VISIBLE);
@@ -316,7 +316,7 @@ public class FridgeFragment extends Fragment
         // remove the references to the previous adapter
         try {
             adapter = new FridgeAdapter(new ArrayList<FridgeItem>(), application,
-                    (MainActivity) getActivity(), bottomMargin);
+                    (MainActivity) getActivity(), this, bottomMargin);
             recyclerView.setAdapter(adapter);
         } catch (Exception ignored) {
             ignored.printStackTrace();
