@@ -15,12 +15,10 @@ import com.app.afridge.ui.fragments.wizard.WelcomeFragment;
 import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.JazzyViewPager;
 import com.app.afridge.views.NonSwipableViewPager;
-import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.PageIndicator;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -31,11 +29,10 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import me.relex.circleindicator.CircleIndicator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-// import android.os.PersistableBundle;
 
 
 /**
@@ -70,7 +67,7 @@ public class FirstTimeWizardActivity extends AbstractActivity {
         pager.setAdapter(adapter);
 
         // set the page indicator
-        PageIndicator mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        CircleIndicator mIndicator = (CircleIndicator) findViewById(R.id.indicator);
         mIndicator.setViewPager(pager);
 
         mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -125,27 +122,28 @@ public class FirstTimeWizardActivity extends AbstractActivity {
                         Response response) {
                     EventBus.getDefault().post(new IngredientsEvent("success"));
                     // run code on background thread
-                    new Handler().post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            // Moves the current Thread into the background
-                            android.os.Process.setThreadPriority(
-                                    android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                            // save the ingredient list
-                            ActiveAndroid.beginTransaction();
-                            try {
-                                for (IngredientHelper ingredient : ingredientHelpers) {
-                                    new Ingredient(Integer.parseInt(ingredient.getId()),
-                                            ingredient.getNaziv()).save();
-                                }
-                                ActiveAndroid.setTransactionSuccessful();
-                            } finally {
-                                ActiveAndroid.endTransaction();
-                                EventBus.getDefault().post(new IngredientsEvent("success"));
-                            }
-                        }
-                    });
+                    new SaveIngredientsAsyncTask(ingredientHelpers).execute();
+                    //                    new Handler().post(new Runnable() {
+                    //
+                    //                        @Override
+                    //                        public void run() {
+                    //                            // Moves the current Thread into the background
+                    //                            android.os.Process.setThreadPriority(
+                    //                                    android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                    //                            // save the ingredient list
+                    //                            ActiveAndroid.beginTransaction();
+                    //                            try {
+                    //                                for (IngredientHelper ingredient : ingredientHelpers) {
+                    //                                    new Ingredient(Integer.parseInt(ingredient.getId()),
+                    //                                            ingredient.getNaziv()).save();
+                    //                                }
+                    //                                ActiveAndroid.setTransactionSuccessful();
+                    //                            } finally {
+                    //                                ActiveAndroid.endTransaction();
+                    //                                EventBus.getDefault().post(new IngredientsEvent("success"));
+                    //                            }
+                    //                        }
+                    //                    });
                 }
 
                 @Override
@@ -226,6 +224,39 @@ public class FirstTimeWizardActivity extends AbstractActivity {
             Object obj = super.instantiateItem(container, position);
             pager.setObjectForPosition(obj, position);
             return obj;
+        }
+    }
+
+    /**
+     * AsyncTask that saves all the ingredients in the local database
+     */
+    private class SaveIngredientsAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private List<IngredientHelper> ingredientHelpers;
+
+        public SaveIngredientsAsyncTask(
+                List<IngredientHelper> ingredientHelpers) {
+            this.ingredientHelpers = ingredientHelpers;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Moves the current Thread into the background
+            android.os.Process.setThreadPriority(
+                    android.os.Process.THREAD_PRIORITY_BACKGROUND);
+            // save the ingredient list
+            ActiveAndroid.beginTransaction();
+            try {
+                for (IngredientHelper ingredient : ingredientHelpers) {
+                    new Ingredient(Integer.parseInt(ingredient.getId()),
+                            ingredient.getNaziv()).save();
+                }
+                ActiveAndroid.setTransactionSuccessful();
+            } finally {
+                ActiveAndroid.endTransaction();
+                EventBus.getDefault().post(new IngredientsEvent("success"));
+            }
+            return null;
         }
     }
 }
