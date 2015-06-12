@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/primary_dark"
-        android:elevation="4dp"
+        android:elevation="6dp"
         iosched:popupTheme="@style/ActionBarPopupThemeOverlay"
         iosched:theme="@style/ActionBarThemeOverlay"
         iosched:titleTextAppearance="@style/ActionBar.TitleText"
