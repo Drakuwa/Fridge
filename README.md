@@ -5,7 +5,7 @@ Fridge for Android
 
 **Fridge** is second version of the [aFridge](https://github.com/Drakuwa/aFridge "aFridge") Android application I've published a long time ago, and it's totally rewritten from scratch, implementing some of the newest programming and design trends. Basically, the idea behind the application is the same - it keeps track of your refrigerator items, and has a convenient feature for adding and sharing notes, for example, sharing shopping lists. The application now syncs its records with a CouchDB database server from where they are distributed to its users devices, if the user decides to sign in with their Facebook/Twitter or Google+ accounts.
 
-The application is a free software published under the [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.txt "GNU GPLv3") license.
+The application is a free software published under the [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.txt "GNU GPLv3") license and is published on the [Play Store](https://play.google.com/store/apps/details?id=com.app.afridge "Play Store").
 
 **Project structure:**
 
