@@ -23,10 +23,6 @@ public class DatabaseMigrationAsyncTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-
-        DatabaseMigrationHelper databaseMigrationHelper = new DatabaseMigrationHelper(application);
-        databaseMigrationHelper.tryToMigrateDataBase();
-
         // try to migrate settings
         /**
          * com.app.afridge_preferences.xml
@@ -38,6 +34,10 @@ public class DatabaseMigrationAsyncTask extends AsyncTask<Void, Void, Void> {
          </map>
          */
         try {
+            DatabaseMigrationHelper databaseMigrationHelper = new DatabaseMigrationHelper(
+                    application);
+            databaseMigrationHelper.tryToMigrateDataBase();
+
             SharedPreferences sharedPreferences = application
                     .getSharedPreferences("com.app.afridge_preferences", Context.MODE_PRIVATE);
             application.prefStore.setInt(SharedPrefStore.Pref.SETTINGS_EXP_DATE_WARNING,
@@ -45,7 +45,6 @@ public class DatabaseMigrationAsyncTask extends AsyncTask<Void, Void, Void> {
             application.prefStore.setBoolean(SharedPrefStore.Pref.SETTINGS_SHOW_NOTIFICATION,
                     sharedPreferences.getBoolean("PREF_EXP_DATE", false));
             String measurementType = sharedPreferences.getString("PREF_MEASURE", "metric");
-            assert measurementType != null;
             if (measurementType.equalsIgnoreCase("imperial")) {
                 application.prefStore.setInt(SharedPrefStore.Pref.SETTINGS_MEASUREMENT_TYPE, 1);
             } else {

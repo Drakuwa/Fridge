@@ -77,7 +77,7 @@ public class DatabaseMigrationHelper extends SQLiteOpenHelper {
      * access to the application assets and resources.
      */
     @SuppressWarnings("JavaDoc")
-    public DatabaseMigrationHelper(FridgeApplication application) {
+    public DatabaseMigrationHelper(FridgeApplication application) throws Exception {
 
         super(application.getApplicationContext(), DB_NAME, null, 4);
 
@@ -92,7 +92,7 @@ public class DatabaseMigrationHelper extends SQLiteOpenHelper {
             try {
                 copyDataBase();
             } catch (IOException e) {
-                throw new Error("Error copying database");
+                throw new IOException("Error copying database");
             }
         }
     }
