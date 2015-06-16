@@ -122,7 +122,9 @@ public class DatabaseMigrationHelper extends SQLiteOpenHelper {
             application.prefStore.setBoolean(SharedPrefStore.Pref.HAS_MIGRATED, true);
         } catch (SQLiteException e) {
             e.printStackTrace();
-            application.prefStore.setBoolean(SharedPrefStore.Pref.HAS_MIGRATED, false);
+            // application.prefStore.setBoolean(SharedPrefStore.Pref.HAS_MIGRATED, false);
+            // even if the migration fails, we can't risk duplicating items...
+            application.prefStore.setBoolean(SharedPrefStore.Pref.HAS_MIGRATED, true);
         }
     }
 
@@ -131,7 +133,9 @@ public class DatabaseMigrationHelper extends SQLiteOpenHelper {
         Cursor items = getItems();
         if (items != null && items.moveToFirst()) {
             do {
-                if (items.getInt(6) != 1) {
+                if (items.getInt(items.getColumnIndex(KEY_ISEMPTY)) != 1
+                        && !items.getString(2).toUpperCase(Locale.ENGLISH)
+                        .equalsIgnoreCase("EMPTY")) {
                     // the item is not empty, migrate it
                     FridgeItem fridgeItem = new FridgeItem();
                     if (items.getString(1).length() > 0) {
