@@ -21,6 +21,7 @@ import android.support.multidex.MultiDex;
 import android.view.Display;
 import android.view.WindowManager;
 
+import io.fabric.sdk.android.Fabric;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
@@ -76,7 +77,7 @@ public class FridgeApplication extends Application {
 
         // initialize the crash reporting system
         if (BuildConfig.DEBUG) {
-            Crashlytics.start(this);
+            Fabric.with(this, new Crashlytics());
         }
 
         // initialize the ActiveAndroid library
