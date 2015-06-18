@@ -4,7 +4,7 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/action_clear_history"
-        android:icon="@drawable/ic_clear"
+        android:icon="@drawable/ic_action_delete"
         android:orderInCategory="98"
         android:title="@string/action_clear_history"
         app:showAsAction="always" />
