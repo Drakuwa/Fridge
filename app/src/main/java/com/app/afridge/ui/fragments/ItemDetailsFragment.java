@@ -40,6 +40,9 @@ import android.transitions.everywhere.TransitionManager;
 import android.transitions.everywhere.hidden.ChangeText;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -263,6 +266,32 @@ public class ItemDetailsFragment extends DialogFragment
         if (item.getQuantity() != null && item.getQuantity().length() > 0) {
             showQuantity();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_details, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home) {
+            // Toast.makeText(getActivity(), "Back", Toast.LENGTH_SHORT).show();
+            Log.d(Log.TAG, "Back");
+        } else if (id == R.id.action_delete_item) {
+            ((MainActivity) getActivity()).setDeleteItemId(itemId);
+            getActivity().getSupportFragmentManager().popBackStackImmediate();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateQuantityValue() {

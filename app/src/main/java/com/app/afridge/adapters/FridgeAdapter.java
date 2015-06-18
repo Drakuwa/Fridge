@@ -337,6 +337,84 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
         notifyItemRemoved(position);
     }
 
+    public void deleteItem(int itemId) {
+        for (int pos = 0; pos < filteredItems.size(); pos++) {
+            final FridgeItem item = filteredItems.get(pos);
+
+            if (item.getItemId() != itemId) {
+                continue;
+            }
+
+            // delete item it set to true, unless it gets switched by clicking on UNDO
+            final boolean[] deleteItem = {true};
+            // hack ;) if the clicked view is an ImageView - it has to be the delete view
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(
+                    activity);
+            final int finalPos = pos;
+            builder.setMessage(String.format(
+                    application.getString(R.string.delete_out_confirmation),
+                    item.getName()))
+                    .setPositiveButton(application.getString(R.string.delete),
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    SnackBar snackBar = new SnackBar(activity,
+                                            String.format(application
+                                                            .getString(
+                                                                    R.string.item_deleted),
+                                                    item.getName()),
+                                            application.getString(R.string.undo),
+                                            new View.OnClickListener() {
+
+                                                @Override
+                                                public void onClick(View v) {
+                                                    // cancel deletion and re-insert the item
+                                                    deleteItem[0] = false;
+                                                    addItem(finalPos, item);
+                                                }
+                                            });
+                                    snackBar.setOnhideListener(
+                                            new SnackBar.OnHideListener() {
+
+                                                @Override
+                                                public void onHide() {
+
+                                                    if (deleteItem[0]) {
+                                                        // save the delete in history
+                                                        HistoryItem historyItem
+                                                                = new HistoryItem(item,
+                                                                Calendar.getInstance()
+                                                                        .getTimeInMillis()
+                                                                        / 1000,
+                                                                ChangeType.DELETE);
+                                                        historyItem.save();
+                                                        // FIRE ZE MISSILES!
+                                                        item.setRemoved(true);
+                                                        item.setEditTimestamp(
+                                                                Calendar.getInstance()
+                                                                        .getTimeInMillis());
+                                                        item.save();
+                                                    }
+                                                }
+                                            });
+                                    snackBar.show();
+                                    removeItem(finalPos, item);
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                    dialog.dismiss();
+                                }
+                            });
+            // Create the AlertDialog object and return it
+            builder.create().show();
+        }
+    }
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder

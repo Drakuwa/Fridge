@@ -99,6 +99,8 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
 
     private Screenshotable screenshotable;
 
+    private int deleteItemId = -1;
+
     private BroadcastReceiver syncBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -643,6 +645,14 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         // constants - in this case, AlarmManager.INTERVAL_DAY.
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pIntent);
+    }
+
+    public int getDeleteItemId() {
+        return deleteItemId;
+    }
+
+    public void setDeleteItemId(int deleteItemId) {
+        this.deleteItemId = deleteItemId;
     }
 
     //  private void showNotificatgionTest() {

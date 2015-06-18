@@ -266,6 +266,11 @@ public class FridgeFragment extends Fragment
         ((MainActivity) getActivity()).setActionBarIcon(R.mipmap.ic_launcher);
         ((MainActivity) getActivity())
                 .setActionBarTitle(getString(R.string.app_name).toLowerCase(Locale.ENGLISH));
+        // check if there is an item that we need to delete
+        if (((MainActivity) getActivity()).getDeleteItemId() != -1) {
+            adapter.deleteItem(((MainActivity) getActivity()).getDeleteItemId());
+            ((MainActivity) getActivity()).setDeleteItemId(-1);
+        }
         super.onResume();
     }
 
