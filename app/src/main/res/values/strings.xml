@@ -60,6 +60,7 @@
 
     <!--hints-->
     <string name="hint_no_items">Looks like you have no items in the fridge! :D\n\nHit the button bellow to get started&#8230;</string>
+    <string name="hint_no_items_widget">Looks like you have no items in the fridge! :D</string>
     <string name="hint_no_history">Looks like you had no item modifications at this time period&#8230;</string>
     <string name="hint_no_notes">Looks like you have no notes on the fridge&#8230;</string>
     <string name="hint_all">All Galleries</string>

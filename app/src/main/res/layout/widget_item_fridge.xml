@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stackWidgetItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/padding_small"
+    android:background="@android:drawable/dialog_holo_light_frame"
+    android:padding="@dimen/padding_normal">
+
+    <ImageView
+        android:id="@+id/image_item"
+        android:layout_width="@dimen/grid_image_size"
+        android:layout_height="@dimen/grid_image_size"
+        android:layout_margin="@dimen/padding_normal"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/text_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_normal"
+        android:layout_marginRight="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_small"
+        android:layout_toEndOf="@+id/image_item"
+        android:layout_toRightOf="@+id/image_item"
+        android:textColor="@color/text_primary" />
+
+    <TextView
+        android:id="@+id/text_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_name"
+        android:layout_marginLeft="@dimen/padding_normal"
+        android:layout_marginRight="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_small"
+        android:layout_toEndOf="@+id/image_item"
+        android:layout_toRightOf="@+id/image_item"
+        android:textColor="@color/text_secondary" />
+
+    <TextView
+        android:id="@+id/text_expiration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_quantity"
+        android:layout_marginLeft="@dimen/padding_normal"
+        android:layout_marginRight="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_small"
+        android:layout_toEndOf="@+id/image_item"
+        android:layout_toRightOf="@+id/image_item"
+        android:textColor="@color/accent" />
+</RelativeLayout>

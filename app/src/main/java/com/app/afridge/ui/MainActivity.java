@@ -1,12 +1,7 @@
 package com.app.afridge.ui;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.query.Select;
 import com.app.afridge.R;
 import com.app.afridge.api.CloudantService;
-import com.app.afridge.dom.Ingredient;
-import com.app.afridge.dom.IngredientHelper;
-import com.app.afridge.dom.IngredientsEvent;
 import com.app.afridge.dom.RandomStats;
 import com.app.afridge.dom.enums.MenuType;
 import com.app.afridge.dom.enums.SyncState;
@@ -32,6 +27,7 @@ import com.app.afridge.utils.SyncUtils;
 import com.app.afridge.utils.animations.SupportAnimator;
 import com.app.afridge.utils.animations.ViewAnimationUtils;
 import com.app.afridge.views.AdvancedTextView;
+import com.app.afridge.widget.FridgeAppWidgetProvider;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -39,6 +35,7 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -53,6 +50,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -63,12 +61,6 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-
-import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 
 public class MainActivity extends AbstractActivity implements OnMenuItemClickListener,
@@ -124,6 +116,8 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
                         ((ProfileFragment) fragment).refreshState();
                     }
                 }
+                // update widget
+                updateWidget();
             } else if (intent.getAction().equalsIgnoreCase(ACTION_STARTED_SYNC)) {
                 CloudantService.STATE = SyncState.SYNCING;
             }
@@ -191,6 +185,25 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
                         .replace(R.id.container, fragment)
                         .setTransition(FragmentTransaction.TRANSIT_NONE)
                         .commit();
+            } else if (getIntent().hasExtra(Constants.EXTRA_ACTION)) {
+                // clear backstack entries if any
+                FragmentManager manager = getSupportFragmentManager();
+                if (manager.getBackStackEntryCount() > 0) {
+                    FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+                    manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+                // show notes
+                String fragmentName = getIntent().getStringExtra(Constants.EXTRA_ACTION);
+                if (fragmentName.equalsIgnoreCase(NotesFragment.class.getCanonicalName())) {
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                            .beginTransaction();
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                            .replace(R.id.container, NotesFragment.getInstance(bottomMargin))
+                            .setTransition(FragmentTransaction.TRANSIT_NONE)
+                            .commit();
+                }
             }
         }
     }
@@ -532,6 +545,8 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         if (application.authState.isAuthenticated()) {
             SyncUtils.TriggerRefresh();
         }
+        // update the widget if it is active
+        updateWidget();
         super.onDestroy();
     }
 
@@ -645,6 +660,19 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         // constants - in this case, AlarmManager.INTERVAL_DAY.
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pIntent);
+    }
+
+    public void updateWidget() {
+        int ids[] = AppWidgetManager
+                .getInstance(getApplication())
+                .getAppWidgetIds(new ComponentName(getApplication(),
+                        FridgeAppWidgetProvider.class));
+        Intent intent = new Intent(this, FridgeAppWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+        // since it seems the onUpdate() is only fired on that:
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
     }
 
     public int getDeleteItemId() {

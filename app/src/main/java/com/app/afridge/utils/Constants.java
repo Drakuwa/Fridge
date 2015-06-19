@@ -37,6 +37,8 @@ public class Constants {
 
     public static final String EXTRA_NOTIFICATION_ID = "notificationId";
 
+    public static final String EXTRA_ACTION = "widgetAction";
+
     public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
 
     public static final int DISMISS_NOTIFICATION_LENGTH = 5000;

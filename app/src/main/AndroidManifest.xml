@@ -87,6 +87,11 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
+        <service
+            android:name=".widget.FridgeWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <receiver
             android:name=".receivers.BootReceiver"
             android:enabled="false">
@@ -103,6 +108,15 @@
 
                 <action android:name="com.app.afridge.UNDO_DELETE" />
             </intent-filter>
+        </receiver>
+
+        <receiver android:name=".widget.FridgeAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/fridge_appwidget_info" />
         </receiver>
 
         <provider

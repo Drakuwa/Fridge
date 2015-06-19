@@ -1,6 +1,5 @@
 package com.app.afridge.utils;
 
-import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
 import com.app.afridge.dom.FridgeItem;
 import com.app.afridge.dom.HistoryItem;
@@ -205,7 +204,7 @@ public class Common {
         return new Point(l1[0], l1[1]);
     }
 
-    public static String getTimestamp(Object item, FridgeApplication application) {
+    public static String getTimestamp(Object item, Context application) {
         // "2014-11-20T17:33:38Z"
 
         String prefix = "";
