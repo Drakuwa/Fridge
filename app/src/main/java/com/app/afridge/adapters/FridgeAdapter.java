@@ -3,6 +3,7 @@ package com.app.afridge.adapters;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
+import com.app.afridge.dom.DeleteItemEvent;
 import com.app.afridge.dom.FridgeItem;
 import com.app.afridge.dom.HistoryItem;
 import com.app.afridge.dom.enums.ChangeType;
@@ -46,6 +47,7 @@ import java.util.Collections;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -200,6 +202,9 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                                                                             Calendar.getInstance()
                                                                                     .getTimeInMillis());
                                                                     item.save();
+                                                                    EventBus.getDefault()
+                                                                            .post(new DeleteItemEvent(
+                                                                                    ""));
                                                                 }
                                                             }
                                                         });
@@ -395,6 +400,9 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
                                                                 Calendar.getInstance()
                                                                         .getTimeInMillis());
                                                         item.save();
+                                                        EventBus.getDefault()
+                                                                .post(new DeleteItemEvent(
+                                                                        ""));
                                                     }
                                                 }
                                             });

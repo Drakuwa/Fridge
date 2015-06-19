@@ -4,6 +4,7 @@ import com.activeandroid.query.Select;
 import com.app.afridge.FridgeApplication;
 import com.app.afridge.R;
 import com.app.afridge.adapters.FridgeAdapter;
+import com.app.afridge.dom.DeleteItemEvent;
 import com.app.afridge.dom.FridgeItem;
 import com.app.afridge.interfaces.OnFragmentInteractionListener;
 import com.app.afridge.interfaces.Screenshotable;
@@ -18,6 +19,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -43,6 +45,7 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -222,6 +225,26 @@ public class FridgeFragment extends Fragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    /**
+     * If we have a case where the button is hidden and the list isn't
+     * scrollable any more, we need a way to show the button again :)
+     */
+    public void onEvent(@SuppressWarnings("UnusedParameters") DeleteItemEvent event) {
+        buttonNew.show(true);
+    }
+
+    @Override
     public void onDestroyView() {
 
         super.onDestroyView();
@@ -268,8 +291,17 @@ public class FridgeFragment extends Fragment
                 .setActionBarTitle(getString(R.string.app_name).toLowerCase(Locale.ENGLISH));
         // check if there is an item that we need to delete
         if (((MainActivity) getActivity()).getDeleteItemId() != -1) {
-            adapter.deleteItem(((MainActivity) getActivity()).getDeleteItemId());
-            ((MainActivity) getActivity()).setDeleteItemId(-1);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        adapter.deleteItem(((MainActivity) getActivity()).getDeleteItemId());
+                        ((MainActivity) getActivity()).setDeleteItemId(-1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 200);
         }
         super.onResume();
     }
