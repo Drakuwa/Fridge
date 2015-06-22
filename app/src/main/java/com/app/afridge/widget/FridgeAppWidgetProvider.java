@@ -54,9 +54,9 @@ public class FridgeAppWidgetProvider extends AppWidgetProvider {
         int[] ids = appWidgetManager
                 .getAppWidgetIds(new ComponentName(context, FridgeAppWidgetProvider.class));
         for (int id : ids) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                    R.layout.fridge_appwidget);
-            appWidgetManager.updateAppWidget(id, remoteViews);
+            // RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+            //        R.layout.fridge_appwidget);
+            // appWidgetManager.updateAppWidget(id, remoteViews);
             appWidgetManager.notifyAppWidgetViewDataChanged(id, R.id.stack_view_fridge);
         }
         //        int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,

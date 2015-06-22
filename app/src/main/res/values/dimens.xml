@@ -21,6 +21,7 @@
     <dimen name="toolbar_title_height">36dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
     <dimen name="history_item_logo">72dp</dimen>
+    <dimen name="widget_item_logo">64dp</dimen>
     <dimen name="icon_delete">42dp</dimen>
     <dimen name="divider">0.3dp</dimen>
     <dimen name="picker_item_size">60dp</dimen>

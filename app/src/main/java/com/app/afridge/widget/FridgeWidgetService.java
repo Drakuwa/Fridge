@@ -181,8 +181,8 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getLoadingView() {
         // You can create a custom loading view (for instance when getViewAt() is slow.) If you
         // return null here, you will get the default loading view.
-        // return null;
-        return new RemoteViews(mContext.getPackageName(), R.layout.widget_item_loading);
+        return null;
+        // return new RemoteViews(mContext.getPackageName(), R.layout.widget_item_loading);
     }
 
     public int getViewTypeCount() {

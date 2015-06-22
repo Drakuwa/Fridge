@@ -38,12 +38,11 @@
             android:textSize="@dimen/text_action_size" />
     </LinearLayout>
 
-    <StackView
+    <ListView
         android:id="@+id/stack_view_fridge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:loopViews="true" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/empty_view"
@@ -54,8 +53,8 @@
         android:gravity="center"
         android:padding="@dimen/activity_horizontal_margin"
         android:text="@string/hint_no_items_widget"
-        android:textColor="@color/text_primary"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textColor="@color/text_secondary"
+        android:textSize="18sp"
+        android:textStyle="normal" />
 
 </LinearLayout>
