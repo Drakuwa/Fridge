@@ -114,7 +114,7 @@ public class RandomStats {
 
     public Stat getNoteCount() {
 
-        int noteItemsCount = new Select().from(NoteItem.class).count();
+        int noteItemsCount = new Select().from(NoteItem.class).where("status != ?", true).count();
         return new Stat("Sticky notes on your fridge door:",
                 noteItemsCount >= 100 ? " :D" : String.valueOf(noteItemsCount));
     }

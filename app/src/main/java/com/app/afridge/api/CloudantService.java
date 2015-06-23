@@ -263,6 +263,7 @@ public class CloudantService {
      */
     public void startPushReplication() {
 
+        Log.d("startPushReplication");
         if (pushReplicator != null) {
             // Use a CountDownLatch to provide a lightweight way to wait for completion
             CountDownLatch latch = new CountDownLatch(1);
@@ -363,102 +364,118 @@ public class CloudantService {
                                 .size());
                         for (FridgeItem cloudItem : cloudFridgeItems) {
                             for (FridgeItem dbItem : dbFridgeItems) {
-                                // here we need to check for item ID match
-                                if (cloudItem.getItemId() == dbItem.getItemId()) {
-                                    Log.d("cloudItem.getItemId() == dbItem.getItemId(): "
-                                            + cloudItem.getName());
-                                    // now we check for timestamps
-                                    if (cloudItem.getEditTimestamp() > dbItem.getEditTimestamp()) {
-                                        Log.d("cloudItem.getEditTimestamp() > dbItem.getEditTimestamp(): "
+                                try {
+                                    // here we need to check for item ID match
+                                    if (cloudItem.getItemId() == dbItem.getItemId()) {
+                                        Log.d("cloudItem.getItemId() == dbItem.getItemId(): "
                                                 + cloudItem.getName());
-                                        // set every updated cloud item values to the DB item
-                                        dbItem.setName(cloudItem.getName());
-                                        dbItem.setExpirationDate(cloudItem.getExpirationDate());
-                                        dbItem.setQuantity(cloudItem.getQuantity());
-                                        dbItem.setTypeOfQuantity(cloudItem.getTypeOfQuantity());
-                                        dbItem.setRemoved(cloudItem.isRemoved());
-                                        dbItem.setDetails(cloudItem.getDetails());
-                                        dbItem.setEditTimestamp(cloudItem.getEditTimestamp());
-                                        // save the type if we have a numeric string
-                                        if (TextUtils.isDigitsOnly(cloudItem.getType())) {
-                                            dbItem.setType(cloudItem.getType());
-                                        } else {
-                                            // save the image if we have a Base64 encoded string
-                                            byte[] decodedString = Base64.decode(
-                                                    cloudItem.getType(), Base64.DEFAULT);
-                                            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(
-                                                    decodedString, 0, decodedString.length);
-                                            File savedImageFile = Common
-                                                    .storeImage(decodedBitmap, context);
-                                            assert savedImageFile != null;
-                                            dbItem.setType(savedImageFile.getAbsolutePath());
-                                        }
-                                        dbItem.save();
+                                        // now we check for timestamps
+                                        if (cloudItem.getEditTimestamp() > dbItem
+                                                .getEditTimestamp()) {
+                                            Log.d("cloudItem.getEditTimestamp() > dbItem.getEditTimestamp(): "
+                                                    + cloudItem.getName());
+                                            // set every updated cloud item values to the DB item
+                                            dbItem.setName(cloudItem.getName());
+                                            dbItem.setExpirationDate(cloudItem.getExpirationDate());
+                                            dbItem.setQuantity(cloudItem.getQuantity());
+                                            dbItem.setTypeOfQuantity(cloudItem.getTypeOfQuantity());
+                                            dbItem.setRemoved(cloudItem.isRemoved());
+                                            dbItem.setDetails(cloudItem.getDetails());
+                                            dbItem.setEditTimestamp(cloudItem.getEditTimestamp());
+                                            // save the type if we have a numeric string
+                                            if (TextUtils.isDigitsOnly(cloudItem.getType())) {
+                                                dbItem.setType(cloudItem.getType());
+                                            } else {
+                                                // save the image if we have a Base64 encoded string
+                                                byte[] decodedString = Base64.decode(
+                                                        cloudItem.getType(), Base64.DEFAULT);
+                                                Bitmap decodedBitmap = BitmapFactory
+                                                        .decodeByteArray(
+                                                                decodedString, 0,
+                                                                decodedString.length);
+                                                File savedImageFile = Common
+                                                        .storeImage(decodedBitmap, context);
+                                                assert savedImageFile != null;
+                                                dbItem.setType(savedImageFile.getAbsolutePath());
+                                            }
+                                            dbItem.save();
 
-                                        // save the change when the item has changed
-                                        if (dbItem.isRemoved()) {
-                                            HistoryItem historyItem = new HistoryItem(dbItem,
-                                                    dbItem.getEditTimestamp() == 0 ? Calendar
-                                                            .getInstance().getTimeInMillis() / 1000
-                                                            : dbItem.getEditTimestamp() / 1000,
-                                                    ChangeType.DELETE);
-                                            historyItem.save();
-                                        } else {
-                                            HistoryItem historyItem = new HistoryItem(dbItem,
-                                                    dbItem.getEditTimestamp() == 0 ? Calendar
-                                                            .getInstance().getTimeInMillis() / 1000
-                                                            : dbItem.getEditTimestamp() / 1000,
-                                                    ChangeType.MODIFY);
-                                            historyItem.save();
+                                            // save the change when the item has changed
+                                            if (dbItem.isRemoved()) {
+                                                HistoryItem historyItem = new HistoryItem(dbItem,
+                                                        dbItem.getEditTimestamp() == 0 ? Calendar
+                                                                .getInstance().getTimeInMillis()
+                                                                / 1000
+                                                                : dbItem.getEditTimestamp() / 1000,
+                                                        ChangeType.DELETE);
+                                                historyItem.save();
+                                            } else {
+                                                HistoryItem historyItem = new HistoryItem(dbItem,
+                                                        dbItem.getEditTimestamp() == 0 ? Calendar
+                                                                .getInstance().getTimeInMillis()
+                                                                / 1000
+                                                                : dbItem.getEditTimestamp() / 1000,
+                                                        ChangeType.MODIFY);
+                                                historyItem.save();
+                                            }
                                         }
                                     }
+                                } catch (NullPointerException npe) {
+
+                                    npe.printStackTrace();
+                                    Log.d("NullPointerException: " + npe.getLocalizedMessage());
                                 }
                             }
                             if (!dbItemIDSet.contains(cloudItem.getItemId())) {
-                                // if the local list doesn't have the cloud item, save it
-                                Log.d("!dbItemIDSet.contains(cloudItem.getItemId()): "
-                                        + cloudItem.getName());
-                                FridgeItem dbItem = new FridgeItem();
-                                dbItem.setItemId(cloudItem.getItemId());
-                                dbItem.setName(cloudItem.getName());
-                                dbItem.setExpirationDate(cloudItem.getExpirationDate());
-                                dbItem.setQuantity(cloudItem.getQuantity());
-                                dbItem.setTypeOfQuantity(cloudItem.getTypeOfQuantity());
-                                dbItem.setRemoved(cloudItem.isRemoved());
-                                dbItem.setDetails(cloudItem.getDetails());
-                                dbItem.setEditTimestamp(cloudItem.getEditTimestamp());
-                                // save the type if we have a numeric string
-                                if (TextUtils.isDigitsOnly(cloudItem.getType())) {
-                                    dbItem.setType(cloudItem.getType());
-                                } else {
-                                    // save the image if we have a Base64 encoded string
-                                    byte[] decodedString = Base64.decode(
-                                            cloudItem.getType(), Base64.DEFAULT);
-                                    Bitmap decodedBitmap = BitmapFactory.decodeByteArray(
-                                            decodedString, 0, decodedString.length);
-                                    File savedImageFile = Common
-                                            .storeImage(decodedBitmap, context);
-                                    assert savedImageFile != null;
-                                    dbItem.setType(savedImageFile.getAbsolutePath());
-                                }
-                                Log.d(dbItem.toString());
-                                dbItem.save();
+                                try {
+                                    // if the local list doesn't have the cloud item, save it
+                                    Log.d("!dbItemIDSet.contains(cloudItem.getItemId()): "
+                                            + cloudItem.getName());
+                                    FridgeItem dbItem = new FridgeItem();
+                                    dbItem.setItemId(cloudItem.getItemId());
+                                    dbItem.setName(cloudItem.getName());
+                                    dbItem.setExpirationDate(cloudItem.getExpirationDate());
+                                    dbItem.setQuantity(cloudItem.getQuantity());
+                                    dbItem.setTypeOfQuantity(cloudItem.getTypeOfQuantity());
+                                    dbItem.setRemoved(cloudItem.isRemoved());
+                                    dbItem.setDetails(cloudItem.getDetails());
+                                    dbItem.setEditTimestamp(cloudItem.getEditTimestamp());
+                                    // save the type if we have a numeric string
+                                    if (TextUtils.isDigitsOnly(cloudItem.getType())) {
+                                        dbItem.setType(cloudItem.getType());
+                                    } else {
+                                        // save the image if we have a Base64 encoded string
+                                        byte[] decodedString = Base64.decode(
+                                                cloudItem.getType(), Base64.DEFAULT);
+                                        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(
+                                                decodedString, 0, decodedString.length);
+                                        File savedImageFile = Common
+                                                .storeImage(decodedBitmap, context);
+                                        assert savedImageFile != null;
+                                        dbItem.setType(savedImageFile.getAbsolutePath());
+                                    }
+                                    Log.d(dbItem.toString());
+                                    dbItem.save();
 
-                                // add the saved item to history
-                                if (dbItem.isRemoved()) {
-                                    HistoryItem historyItem = new HistoryItem(dbItem,
-                                            dbItem.getEditTimestamp() == 0 ? Calendar
-                                                    .getInstance().getTimeInMillis() / 1000
-                                                    : dbItem.getEditTimestamp() / 1000,
-                                            ChangeType.DELETE);
-                                    historyItem.save();
-                                } else {
-                                    HistoryItem historyItem = new HistoryItem(dbItem,
-                                            dbItem.getEditTimestamp() == 0 ? Calendar
-                                                    .getInstance().getTimeInMillis() / 1000
-                                                    : dbItem.getEditTimestamp() / 1000,
-                                            ChangeType.ADD);
-                                    historyItem.save();
+                                    // add the saved item to history
+                                    if (dbItem.isRemoved()) {
+                                        HistoryItem historyItem = new HistoryItem(dbItem,
+                                                dbItem.getEditTimestamp() == 0 ? Calendar
+                                                        .getInstance().getTimeInMillis() / 1000
+                                                        : dbItem.getEditTimestamp() / 1000,
+                                                ChangeType.DELETE);
+                                        historyItem.save();
+                                    } else {
+                                        HistoryItem historyItem = new HistoryItem(dbItem,
+                                                dbItem.getEditTimestamp() == 0 ? Calendar
+                                                        .getInstance().getTimeInMillis() / 1000
+                                                        : dbItem.getEditTimestamp() / 1000,
+                                                ChangeType.ADD);
+                                        historyItem.save();
+                                    }
+                                } catch (NullPointerException npe) {
+                                    npe.printStackTrace();
+                                    Log.d("NullPointerException: " + npe.getLocalizedMessage());
                                 }
                             }
                         }
@@ -478,34 +495,46 @@ public class CloudantService {
 
                         for (NoteItem cloudItem : cloudNoteItems) {
                             for (NoteItem dbItem : dbNoteItems) {
-                                // here we need to check for item ID match
-                                if (cloudItem.getItemId() == dbItem.getItemId()) {
-                                    // now we check for timestamps
-                                    if (cloudItem.getTimestamp() > dbItem.getTimestamp()) {
-                                        dbItem.setNote(cloudItem.getNote());
-                                        dbItem.setChecked(cloudItem.isChecked());
-                                        dbItem.setTimestamp(cloudItem.getTimestamp());
-                                        dbItem.save();
+                                try {
+                                    // here we need to check for item ID match
+                                    if (cloudItem.getItemId() == dbItem.getItemId()) {
+                                        // now we check for timestamps
+                                        if (cloudItem.getTimestamp() > dbItem.getTimestamp()) {
+                                            dbItem.setNote(cloudItem.getNote());
+                                            dbItem.setChecked(cloudItem.isChecked());
+                                            dbItem.setTimestamp(cloudItem.getTimestamp());
+                                            dbItem.setRemoved(cloudItem.isRemoved());
+                                            dbItem.save();
+                                        }
                                     }
+                                } catch (NullPointerException npe) {
+                                    npe.printStackTrace();
+                                    Log.d("NullPointerException: " + npe.getLocalizedMessage());
                                 }
                             }
                             if (!dbNoteItemIDSet.contains(cloudItem.getItemId())) {
-                                // if the local list doesn't have the cloud item, save it
-                                Log.d("!dbNoteItemIDSet.contains(cloudItem.getItemId()): "
-                                        + cloudItem.getNote());
-                                NoteItem dbItem = new NoteItem();
-                                dbItem.setItemId(cloudItem.getItemId());
-                                dbItem.setNote(cloudItem.getNote());
-                                dbItem.setChecked(cloudItem.isChecked());
-                                dbItem.setTimestamp(cloudItem.getTimestamp());
-                                dbItem.save();
-                                Log.d(dbItem.toString());
+                                try {
+                                    // if the local list doesn't have the cloud item, save it
+                                    Log.d("!dbNoteItemIDSet.contains(cloudItem.getItemId()): "
+                                            + cloudItem.getNote());
+                                    NoteItem dbItem = new NoteItem();
+                                    dbItem.setItemId(cloudItem.getItemId());
+                                    dbItem.setNote(cloudItem.getNote());
+                                    dbItem.setChecked(cloudItem.isChecked());
+                                    dbItem.setRemoved(cloudItem.isRemoved());
+                                    dbItem.setTimestamp(cloudItem.getTimestamp());
+                                    dbItem.save();
+                                    Log.d(dbItem.toString());
+                                } catch (NullPointerException npe) {
+                                    npe.printStackTrace();
+                                    Log.d("NullPointerException: " + npe.getLocalizedMessage());
+                                }
                             }
                         }
 
                         // now we need to update and save the User document in the dataStore
                         userDocument.setFridgeItemsJson(ItemList.getItemList());
-                        List<FridgeItem> noteItems = new Select()
+                        List<NoteItem> noteItems = new Select()
                                 .from(NoteItem.class).execute();
                         userDocument.setNoteItemsJson(gson.toJson(noteItems));
                         updateDocument(userDocument);
@@ -526,13 +555,15 @@ public class CloudantService {
                         context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
                         Log.d("ConflictException: " + e.getLocalizedMessage());
                         e.printStackTrace();
-                    } catch (NullPointerException npe) {
+                    } catch (Exception e) {
                         STATE = SyncState.FAILED;
                         EventBus.getDefault().post(new SyncEvent(STATE));
                         // publish the broadcast
                         context.sendBroadcast(new Intent(MainActivity.ACTION_FINISHED_SYNC));
+                        Log.d("Exception: " + e.getLocalizedMessage());
                     }
                 } else {
+                    Log.d("User not authenticated");
                     STATE = SyncState.FAILED;
                     EventBus.getDefault().post(new SyncEvent(STATE));
                     // publish the broadcast

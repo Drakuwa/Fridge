@@ -121,7 +121,7 @@ public class User {
                 .registerTypeAdapter(NoteItem.class, new NoteItemTypeAdapter())
                 .create();
         setFridgeItemsJson(ItemList.getItemList());
-        List<FridgeItem> noteItems = new Select()
+        List<NoteItem> noteItems = new Select()
                 .from(NoteItem.class).execute();
         setNoteItemsJson(gson.toJson(noteItems));
 

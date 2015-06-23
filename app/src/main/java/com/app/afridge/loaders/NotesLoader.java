@@ -49,6 +49,7 @@ public class NotesLoader extends AsyncTaskLoader<List<NoteItem>> {
         adapterList = new ArrayList<>();
         adapterList = new Select()
                 .from(NoteItem.class)
+                .where("status != ?", true)
                         // .where("receiver_id = ?", myId)
                         // .or("sender_id = ?", myId)
                 .execute();

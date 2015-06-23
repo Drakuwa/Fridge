@@ -201,7 +201,7 @@ public class NotesFragment extends Fragment
                         // save the note
                         Calendar calendar = Calendar.getInstance();
                         NoteItem noteItem = new NoteItem(editListItem.getText().toString().trim(),
-                                calendar.getTimeInMillis() / 1000, false);
+                                calendar.getTimeInMillis() / 1000, false, false);
                         noteItem.setItemId(noteItem.hashCode());
                         noteItem.save();
                         addItemOrRestartLoader();
@@ -395,7 +395,9 @@ public class NotesFragment extends Fragment
             builder.create().show();
         } else if (id == R.id.action_share_notes) {
             // if there are unchecked notes, create a send intent
-            List<NoteItem> notes = new Select().from(NoteItem.class).where("is_checked = ?", false)
+            List<NoteItem> notes = new Select().from(NoteItem.class)
+                    .where("is_checked = ?", false)
+                    .and("status != ?", true)
                     .execute();
             if (notes.size() > 0) {
                 // generate text from unchecked notes

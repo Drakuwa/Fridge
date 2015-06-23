@@ -22,6 +22,7 @@ public class NoteItemTypeAdapter implements JsonSerializer<NoteItem> {
         jsonObject.addProperty("note", src.getNote());
         jsonObject.addProperty("timestamp", src.getTimestamp());
         jsonObject.addProperty("is_checked", src.isChecked());
+        jsonObject.addProperty("status", src.isRemoved());
         return jsonObject;
     }
 }

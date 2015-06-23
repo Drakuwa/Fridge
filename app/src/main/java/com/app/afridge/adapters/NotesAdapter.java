@@ -142,7 +142,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
                         if (deleteItem[0]) {
                             // really remove the note
-                            item.delete();
+                            item.setRemoved(true);
+                            item.setTimestamp(Calendar.getInstance().getTimeInMillis() / 1000);
+                            item.save();
                             listener.onNoteChange();
                         }
                     }

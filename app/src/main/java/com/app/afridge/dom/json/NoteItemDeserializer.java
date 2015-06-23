@@ -25,6 +25,9 @@ public class NoteItemDeserializer implements JsonDeserializer<NoteItem> {
         noteItem.setNote(jObject.get("note").getAsString());
         noteItem.setChecked(jObject.get("is_checked").getAsBoolean());
         noteItem.setTimestamp(jObject.get("timestamp").getAsLong());
+        if (jObject.has("status")) {
+            noteItem.setRemoved(jObject.get("status").getAsBoolean());
+        }
         return noteItem;
     }
 }

@@ -25,17 +25,21 @@ public class NoteItem extends Model {
     @Column(name = "is_checked")
     private boolean isChecked;
 
+    @Column(name = "status")
+    private boolean isRemoved = false;
+
     public NoteItem() {
         // empty constructor
         super();
     }
 
-    public NoteItem(String note, long timestamp, boolean isChecked) {
+    public NoteItem(String note, long timestamp, boolean isChecked, boolean isRemoved) {
 
         super();
         this.note = note;
         this.timestamp = timestamp;
         this.isChecked = isChecked;
+        this.isRemoved = isRemoved;
     }
 
     public String getNote() {
@@ -78,6 +82,16 @@ public class NoteItem extends Model {
         this.isChecked = isChecked;
     }
 
+    public boolean isRemoved() {
+
+        return isRemoved;
+    }
+
+    public void setRemoved(boolean isRemoved) {
+
+        this.isRemoved = isRemoved;
+    }
+
     @Override
     public String toString() {
 
@@ -86,6 +100,7 @@ public class NoteItem extends Model {
         noteStr += "note: " + getNote() + "\n";
         noteStr += "timestamp: " + getTimestamp() + "\n";
         noteStr += "is_checked: " + isChecked() + "\n";
+        noteStr += "is_removed: " + isRemoved() + "\n";
         return noteStr;
     }
 }
