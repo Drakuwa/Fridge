@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -232,7 +233,18 @@ public class NotesFragment extends Fragment
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                textListName.setError(null);
+                if (isAdded()) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                textListName.setError(null);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, 50);
+                }
             }
 
             @Override

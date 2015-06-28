@@ -758,19 +758,29 @@ public class AddItemFragment extends Fragment implements Screenshotable, ImageCh
                 case MotionEvent.ACTION_MOVE:
                     double currentAngle = getAngle(event.getX(), event.getY());
                     circularView.setHighlightedDegree((float) currentAngle);
-                    Marker marker = circularView.getHighlightedMarker();
-                    circularView.getCenterCircle().setSrc(marker.getDrawable());
-                    // startAngle = currentAngle;
-                    textType.setText(adapter.getMarkerName(marker.getId()));
+                    final Marker marker = circularView.getHighlightedMarker();
+                    if (isAdded()) {
+                        try {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    circularView.getCenterCircle().setSrc(marker.getDrawable());
+                                    // startAngle = currentAngle;
+                                    textType.setText(adapter.getMarkerName(marker.getId()));
+                                }
+                            }, 50);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    marker = circularView.getHighlightedMarker();
-                    Log.d(Log.TAG, "selected: " + marker.getId());
+                    // marker = circularView.getHighlightedMarker();
+                    // Log.d(Log.TAG, "selected: " + marker.getId());
                     // Toast.makeText(getActivity(), "selected: " + marker.getId(), Toast.LENGTH_SHORT).show();
                     break;
             }
-
             return true;
         }
 
