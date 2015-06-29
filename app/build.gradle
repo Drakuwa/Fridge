@@ -19,7 +19,7 @@ repositories {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.0 rc2"
 
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
@@ -29,8 +29,8 @@ android {
         applicationId "com.app.afridge"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 10
-        versionName "2.1.1"
+        versionCode 11
+        versionName "2.1.2"
 
         // Enabling multidex support.
         multiDexEnabled true
