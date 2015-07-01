@@ -10,6 +10,7 @@ import com.app.afridge.views.AutoResizeEditText;
 import com.gc.materialdesign.widgets.SnackBar;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -230,7 +231,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                holder.textNote.setError(null);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            holder.textNote.setError(null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, 50);
             }
 
             @Override
