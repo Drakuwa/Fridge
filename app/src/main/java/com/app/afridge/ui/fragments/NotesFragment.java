@@ -262,7 +262,18 @@ public class NotesFragment extends Fragment
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                editListItem.setError(null);
+                if (isAdded()) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                editListItem.setError(null);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, 50);
+                }
             }
 
             @Override
