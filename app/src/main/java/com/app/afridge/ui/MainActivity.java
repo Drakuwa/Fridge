@@ -537,6 +537,8 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
     @Override
     protected void onPause() {
         unregisterReceiver(syncBroadcastReceiver);
+        // update the widget if it is active
+        updateWidget();
         super.onPause();
     }
 
@@ -545,8 +547,6 @@ public class MainActivity extends AbstractActivity implements OnMenuItemClickLis
         if (application.authState.isAuthenticated()) {
             SyncUtils.TriggerRefresh();
         }
-        // update the widget if it is active
-        updateWidget();
         super.onDestroy();
     }
 
