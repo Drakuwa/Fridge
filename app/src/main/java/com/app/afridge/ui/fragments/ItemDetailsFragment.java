@@ -23,6 +23,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -30,6 +31,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
@@ -197,13 +199,18 @@ public class ItemDetailsFragment extends DialogFragment
         // inject and return the view
         ButterKnife.inject(this, containerView);
 
+        setTransition();
+        return containerView;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setTransition() {
         if (Common.versionAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
             image.setTransitionName(
                     getActivity().getString(R.string.shared_image_transition) + itemId);
             textName.setTransitionName(
                     getActivity().getString(R.string.shared_name_transition) + itemId);
         }
-        return containerView;
     }
 
     @Override
@@ -570,7 +577,18 @@ public class ItemDetailsFragment extends DialogFragment
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                    textEditName.setError(null);
+                    if (isAdded()) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    textEditName.setError(null);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, 50);
+                    }
                 }
 
                 @Override
@@ -588,6 +606,13 @@ public class ItemDetailsFragment extends DialogFragment
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, monthOfYear);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        // Set expiration date to be 8:15am, so that the warning fires up in every case!
+        // This prevents a notification not showing the given day, for example,
+        // if warning days are set to 3, and a notification should show in 9am, and
+        // the items expiration date is set in the afternoon... you get the point :D
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        calendar.set(Calendar.MINUTE, 15);
+        calendar.set(Calendar.SECOND, 0);
 
         // save the item and change the date
         item.setExpirationDate(calendar.getTimeInMillis() / 1000);
