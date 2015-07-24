@@ -191,7 +191,7 @@
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_quantity"
+                android:src="@drawable/ic_scale"
                 android:visibility="gone"/>
 
             <com.app.afridge.views.AdvancedTextView
