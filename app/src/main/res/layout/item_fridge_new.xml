@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:font="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/padding_small"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="2dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/frame_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image_item"
+                android:layout_width="@dimen/grid_image_size"
+                android:layout_height="@dimen/grid_image_size"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginEnd="@dimen/padding_normal"
+                android:layout_marginStart="@dimen/padding_normal"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:transitionName="@string/shared_image_transition" />
+
+            <ImageView
+                android:id="@+id/image_delete"
+                android:layout_width="@dimen/icon_delete"
+                android:layout_height="@dimen/icon_delete"
+                android:layout_gravity="end"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/padding_normal"
+                android:src="@drawable/ic_action_delete" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/frame_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.app.afridge.views.AdvancedTextView
+                android:id="@+id/text_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_small"
+                android:layout_marginLeft="@dimen/padding_normal"
+                android:layout_marginRight="@dimen/padding_normal"
+                android:layout_marginTop="@dimen/padding_small"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_action_size"
+                android:transitionName="@string/shared_name_transition"
+                font:customFont="@string/font_light" />
+
+            <com.app.afridge.views.AdvancedTextView
+                android:id="@+id/text_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_normal"
+                android:layout_marginRight="@dimen/padding_normal"
+                android:drawableLeft="@drawable/ic_scale_small"
+                android:drawablePadding="@dimen/padding_normal"
+                android:drawableStart="@drawable/ic_scale_small"
+                android:gravity="center_vertical"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_medium"
+                font:customFont="@string/font_light" />
+
+            <com.app.afridge.views.AdvancedTextView
+                android:id="@+id/text_expiration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_normal"
+                android:layout_marginLeft="@dimen/padding_normal"
+                android:layout_marginRight="@dimen/padding_normal"
+                android:drawableLeft="@drawable/ic_expiration_small"
+                android:drawablePadding="@dimen/padding_normal"
+                android:drawableStart="@drawable/ic_expiration_small"
+                android:textColor="@color/accent"
+                android:textSize="@dimen/text_size_medium"
+                font:customFont="@string/font_light" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
