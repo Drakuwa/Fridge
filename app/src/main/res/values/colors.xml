@@ -9,4 +9,12 @@
     <color name="accent">#ff4081</color>
     <color name="divider">#B6B6B6</color>
 
+    <!--random palette-->
+    <color name="random1">#7C4DFF</color>
+    <color name="random2">#D32F2F</color>
+    <color name="random3">#009688</color>
+    <color name="random4">#8BC34A</color>
+    <color name="random5">#00BCD4</color>
+    <color name="random6">#FF5722</color>
+
 </resources>
