@@ -14,12 +14,14 @@ import com.app.afridge.ui.fragments.FridgeFragment;
 import com.app.afridge.ui.fragments.ItemDetailsFragment;
 import com.app.afridge.utils.AnimationsController;
 import com.app.afridge.utils.CircleTransform;
+import com.app.afridge.utils.ColorUtils;
 import com.app.afridge.utils.Common;
 import com.app.afridge.utils.Constants;
 import com.app.afridge.utils.FridgeItemComparator;
 import com.app.afridge.utils.Log;
+import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.AdvancedTextView;
-import com.balysv.materialripple.MaterialRippleLayout;
+import com.app.afridge.views.MaterialRippleLayout;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -72,6 +74,9 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
 
     private int bottomMargin;
 
+    private final int[] colors = {R.color.random1, R.color.random2, R.color.random3,
+            R.color.random4, R.color.random5, R.color.random6};
+
     public FridgeAdapter(ArrayList<FridgeItem> items, final FridgeApplication application,
             MainActivity activity, FridgeFragment fridgeFragment, int bottomMargin) {
 
@@ -95,7 +100,7 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
         // set the view's size, margins, padding and layout parameters
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new ViewHolder(
-                MaterialRippleLayout.on(inflater.inflate(R.layout.item_fridge, parent, false))
+                MaterialRippleLayout.on(inflater.inflate(R.layout.item_fridge_new, parent, false))
                         .rippleOverlay(true)
                         .rippleAlpha(0.2f)
                         .rippleColor(0xFF585858)
@@ -141,6 +146,38 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
         } else {
             holder.textExpirationDate.setVisibility(View.GONE);
         }
+
+        // set the quantity
+        if (item.getQuantity() != null && item.getQuantity().length() > 0) {
+            String quantity = item.getQuantity() + " ";
+            if (item.getTypeOfQuantity() != -1) {
+                // get the selected measurement type
+                int selectedMeasurementType = application.prefStore.getInt(
+                        SharedPrefStore.Pref.SETTINGS_MEASUREMENT_TYPE);
+                switch (selectedMeasurementType) {
+                    case 0: // metric
+                        quantity += application.getResources()
+                                .getStringArray(R.array.quantity_type_metric)[item
+                                .getTypeOfQuantity()];
+                        break;
+                    case 1: // imperial
+                        quantity += application.getResources()
+                                .getStringArray(R.array.quantity_type_imperial)[item
+                                .getTypeOfQuantity()];
+                        break;
+                }
+            }
+
+            holder.textQuantity.setVisibility(View.VISIBLE);
+            holder.textQuantity.setText(quantity);
+        } else {
+            holder.textQuantity.setVisibility(View.GONE);
+        }
+
+        // set random background color
+        // int color = colors[position % colors.length];
+        // holder.frameImage.setBackgroundColor(application.getResources().getColor(color));
+        holder.frameImage.setBackgroundColor(ColorUtils.randomColor());
 
         // set the item click listener
         holder.setClickListener(new ClickListener() {
@@ -444,6 +481,12 @@ public class FridgeAdapter extends RecyclerView.Adapter<FridgeAdapter.ViewHolder
 
         @InjectView(R.id.text_expiration)
         AdvancedTextView textExpirationDate;
+
+        @InjectView(R.id.text_quantity)
+        AdvancedTextView textQuantity;
+
+        @InjectView(R.id.frame_image)
+        FrameLayout frameImage;
 
         // private FridgeItem item;
         private ClickListener clickListener;
