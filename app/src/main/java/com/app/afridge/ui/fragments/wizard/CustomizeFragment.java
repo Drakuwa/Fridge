@@ -7,9 +7,9 @@ import com.app.afridge.ui.FirstTimeWizardActivity;
 import com.app.afridge.utils.AnimationsController;
 import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.views.AdvancedTextView;
+import com.app.afridge.views.MaterialRippleLayout;
 import com.app.afridge.views.SlideSwitch;
 import com.app.afridge.views.Typewriter;
-import com.balysv.materialripple.MaterialRippleLayout;
 
 import android.app.Activity;
 import android.os.Bundle;

@@ -22,7 +22,7 @@ import com.app.afridge.utils.SharedPrefStore;
 import com.app.afridge.utils.SyncUtils;
 import com.app.afridge.utils.TimeSpans;
 import com.app.afridge.views.AdvancedTextView;
-import com.balysv.materialripple.MaterialRippleLayout;
+import com.app.afridge.views.MaterialRippleLayout;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
