@@ -64,10 +64,10 @@ public class NotificationReceiver extends BroadcastReceiver {
             // recreate the notification with the same id
             final NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.ic_photo_camera)
+                            .setSmallIcon(R.drawable.ic_stat_fridge)
                             .setContentTitle(context.getString(R.string.title_notification_deleted))
                             .setContentText(
-                                    "Item: " + item.getName() + " has been successfully deleted. " +
+                                    item.getName() + " has been successfully deleted. " +
                                             "Click on the UNDO button to revert the changes.")
                             .setAutoCancel(true);
 
