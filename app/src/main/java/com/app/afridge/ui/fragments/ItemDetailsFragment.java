@@ -610,8 +610,8 @@ public class ItemDetailsFragment extends DialogFragment
         // This prevents a notification not showing the given day, for example,
         // if warning days are set to 3, and a notification should show in 9am, and
         // the items expiration date is set in the afternoon... you get the point :D
-        calendar.set(Calendar.HOUR_OF_DAY, 8);
-        calendar.set(Calendar.MINUTE, 15);
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
         // save the item and change the date
