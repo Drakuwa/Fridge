@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,6 +32,7 @@ import android.text.TextUtils;
 import java.io.File;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 
 /**
@@ -110,28 +112,42 @@ public class ExpirationDateService extends IntentService {
                         .execute();
 
                 // look through all the items
-                for (FridgeItem item : items) {
+                for (final FridgeItem item : items) {
+                    // format expiration date time, so we cover every case
+                    Calendar tempCalendar = Calendar.getInstance();
+                    long tempExpirationDateMillis = item.getExpirationDate() * 1000;
+                    tempCalendar.setTimeInMillis(tempExpirationDateMillis);
+                    tempCalendar.set(Calendar.HOUR_OF_DAY, 7);
+                    tempCalendar.set(Calendar.MINUTE, 0);
+                    tempCalendar.set(Calendar.SECOND, 0);
+                    item.setExpirationDate(tempCalendar.getTimeInMillis() / 1000);
+                    // create the simple countdown latch for synchronization
+                    CountDownLatch latch = new CountDownLatch(1);
                     if ((item.getExpirationDate() - currentTimestamp) < warningSeconds) {
                         // we've found an item that has expired, or warning level
                         Log.d(Log.TAG, item.toString());
                         // show the notification
-                        showNotification(item);
+                        showNotification(item, latch);
+                        try {
+                            latch.await();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-
             } else {
                 Log.d(Log.TAG, "user has disabled notifications");
             }
         }
     }
 
-    private void showNotification(final FridgeItem item) {
+    private void showNotification(final FridgeItem item, final CountDownLatch latch) {
 
         final NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_photo_camera)
+                        .setSmallIcon(R.drawable.ic_stat_fridge)
                         .setContentTitle(getString(R.string.title_notification))
-                        .setContentText("Item: " + item.getName() + " " + Common
+                        .setContentText(item.getName() + " " + Common
                                 .getTimestamp(item, application) +
                                 " Would you like to remove it from the Fridge?")
                         .setAutoCancel(true);
@@ -169,11 +185,31 @@ public class ExpirationDateService extends IntentService {
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 // mId allows you to update the notification later on.
                 mNotificationManager.notify(item.getItemId(), mBuilder.build());
+                latch.countDown();
             }
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
+                mBuilder.setLargeIcon(BitmapFactory.decodeResource(application.getResources(),
+                        R.drawable.fridge_placeholder));
 
+                // Creates an explicit intent for an Activity in your app
+                Intent resultIntent = new Intent(ExpirationDateService.this, MainActivity.class);
+                resultIntent.putExtra(Constants.EXTRA_ITEM_ID, item.getItemId());
+
+                PendingIntent contentIntent = PendingIntent.getActivity(ExpirationDateService.this,
+                        (int) System.currentTimeMillis(), resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                mBuilder.setContentIntent(contentIntent);
+                mBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
+                mBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel,
+                        getString(R.string.delete), piDelete);
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                // mId allows you to update the notification later on.
+                mNotificationManager.notify(item.getItemId(), mBuilder.build());
+                latch.countDown();
             }
 
             @Override
@@ -201,6 +237,7 @@ public class ExpirationDateService extends IntentService {
 
                 requestCreator
                         .error(R.mipmap.ic_launcher)
+                        .placeholder(R.drawable.fridge_placeholder)
                         .into(target);
             }
         };
@@ -224,9 +261,9 @@ public class ExpirationDateService extends IntentService {
 
         final NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_photo_camera)
+                        .setSmallIcon(R.drawable.ic_stat_fridge)
                         .setContentTitle("Expiration date warning")
-                        .setContentText("Item: " + item.getName() + " is about to expire.")
+                        .setContentText(item.getName() + " is about to expire.")
                         .setAutoCancel(true);
 
         final NotificationCompat.BigPictureStyle bigPictureStyle
